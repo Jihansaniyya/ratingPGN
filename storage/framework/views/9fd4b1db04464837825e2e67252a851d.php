@@ -1,0 +1,61 @@
+
+
+<?php $__env->startSection('title', 'Ubah Password'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="fas fa-key"></i>
+        Ubah Password
+    </h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lock me-2"></i>Formulir Ubah Password
+            </div>
+            <div class="card-body">
+                <?php if($errors->any()): ?>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <?php echo e($errors->first()); ?>
+
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="<?php echo e(route('password.update')); ?>">
+                    <?php echo csrf_field(); ?>
+                    <div class="mb-3">
+                        <label class="form-label">Password Saat Ini <span class="text-danger">*</span></label>
+                        <input type="password" name="current_password" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password Baru <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" required>
+                        <small class="text-muted">Minimal 6 karakter</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Konfirmasi Password Baru <span class="text-danger">*</span></label>
+                        <input type="password" name="password_confirmation" class="form-control" required>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Simpan Password
+                        </button>
+                        <a href="<?php echo e(route('dashboard')); ?>" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Batal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Jihan Saniyya\ratingPGN-app\resources\views/auth/change-password.blade.php ENDPATH**/ ?>

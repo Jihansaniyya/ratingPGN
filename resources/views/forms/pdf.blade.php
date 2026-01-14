@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $form->customer->customer_name }} - Formulir Kunjungan {{ $form->form_date ? $form->form_date->format('d-m-Y') : now()->format('d-m-Y') }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+            background: #fff;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Kop Surat dengan Logo */
+        .kop-surat {
+            display: flex;
+            align-items: center;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #1a5276;
+        }
+        
+        .kop-logo {
+            width: 130px;
+            margin-right: 20px;
+        }
+        
+        .kop-logo img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .kop-text {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .kop-text h1 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1a5276;
+            margin-bottom: 2px;
+            letter-spacing: 3px;
+        }
+        
+        .kop-text h2 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2874a6;
+            margin-bottom: 5px;
+        }
+        
+        .kop-text .alamat {
+            font-size: 9px;
+            color: #555;
+            margin-bottom: 2px;
+        }
+        
+        .kop-spacer {
+            width: 130px;
+        }
+        
+        /* Judul Form */
+        .form-title {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1a5276 0%, #2874a6 100%);
+            color: #fff;
+            border-radius: 5px;
+        }
+        
+        .form-title h3 {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .section {
+            margin-bottom: 12px;
+        }
+        
+        .section-title {
+            font-size: 11px;
+            font-weight: bold;
+            background: #1a5276;
+            color: #fff;
+            padding: 5px 10px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+        }
+        
+        .section-title.olive {
+            background: #27ae60;
+        }
+        
+        table.info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table.info-table td {
+            padding: 3px 8px;
+            vertical-align: top;
+            font-size: 10px;
+        }
+        
+        table.info-table td.label {
+            width: 130px;
+            font-weight: bold;
+            color: #1a5276;
+        }
+        
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        
+        table.data-table th,
+        table.data-table td {
+            border: 1px solid #1a5276;
+            padding: 6px;
+            text-align: left;
+            font-size: 10px;
+        }
+        
+        table.data-table th {
+            background: #1a5276;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 8px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .checkbox {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #1a5276;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            border-radius: 2px;
+        }
+        
+        .checkbox.checked {
+            background: #1a5276;
+            color: #fff;
+        }
+        
+        .text-area {
+            border: 1px solid #bdc3c7;
+            min-height: 50px;
+            padding: 6px;
+            margin: 5px 0;
+            border-radius: 3px;
+            background: #f9f9f9;
+            font-size: 10px;
+        }
+        
+        .assessment-section {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .assessment-options {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        
+        .assessment-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .assessment-item.active-tidak-puas {
+            background: #fadbd8;
+        }
+        
+        .assessment-item.active-puas {
+            background: #fcf3cf;
+        }
+        
+        .assessment-item.active-sangat-puas {
+            background: #d5f5e3;
+        }
+        
+        .signature-table {
+            page-break-inside: avoid;
+        }
+        
+        .signature-box {
+            border: 1px solid #1a5276;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .signature-box .title {
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #333;
+            font-size: 10px;
+        }
+        
+        .signature-box .company {
+            color: #1a5276;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 10px;
+        }
+        
+        .footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #1a5276;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+        }
+        
+        .footer img {
+            height: 20px;
+            margin-bottom: 3px;
+        }
+        
+        .print-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a5276 0%, #2874a6 100%);
+            border-radius: 8px;
+        }
+        
+        .print-buttons button {
+            padding: 10px 25px;
+            margin: 0 5px;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .btn-print {
+            background: #fff;
+            color: #1a5276;
+        }
+        
+        .btn-back {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 2px solid #fff !important;
+        }
+        
+        @media print {
+            @page {
+                margin: 10mm;
+                size: A4;
+            }
+            
+            .print-buttons {
+                display: none !important;
+            }
+            
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+                font-size: 10px;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .container {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .kop-logo {
+                width: 140px;
+                margin-right: 20px;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+                margin-bottom: 8px;
+            }
+            
+            .kop-surat {
+                padding-bottom: 10px;
+                margin-bottom: 12px;
+            }
+            
+            .form-title {
+                margin-bottom: 10px;
+                padding: 8px;
+            }
+            
+            .section-title {
+                padding: 4px 8px;
+                margin-bottom: 5px;
+            }
+            
+            table.info-table td {
+                padding: 2px 5px;
+            }
+            
+            table.data-table th,
+            table.data-table td {
+                padding: 4px;
+            }
+            
+            .text-area {
+                min-height: 35px;
+                padding: 4px;
+            }
+            
+            .footer {
+                margin-top: 10px;
+                padding-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Print Buttons -->
+        <div class="print-buttons">
+            <button class="btn-print" onclick="window.print()">
+                Cetak / Simpan PDF
+            </button>
+            <button class="btn-back" onclick="window.close(); window.history.back();">
+                ← Kembali
+            </button>
+        </div>
+
+        <!-- Kop Surat dengan Logo -->
+        <div class="kop-surat">
+            <div class="kop-logo">
+                <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo Gasnet">
+            </div>
+            <div class="kop-text">
+                <h1>GASNET</h1>
+                <h2>PT TELEMEDIA DINAMIKA SARANA</h2>
+                <p class="alamat">Jl. Raya Industri No. 123, Jakarta Pusat 10110</p>
+                <p class="alamat">Telp: (021) 1234567 | Email: info@gasnet.co.id | www.gasnet.co.id</p>
+            </div>
+            <div class="kop-spacer"></div>
+        </div>
+
+        <!-- Judul Form -->
+        <div class="form-title">
+            <h3>FORM ON SITE CUSTOMER</h3>
+        </div>
+
+        <!-- Customer Detail -->
+        <div class="section">
+            <div class="section-title">CUSTOMER DETAIL</div>
+            <table class="info-table">
+                <tr>
+                    <td class="label">Customer Name</td>
+                    <td>: {{ $form->customer->customer_name }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Address</td>
+                    <td>: {{ $form->customer->alamat_lengkap }}, {{ $form->customer->kelurahan }}, {{ $form->customer->kecamatan }}, {{ $form->customer->kota_kabupaten }}, {{ $form->customer->provinsi }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Layanan / Service</td>
+                    <td>: {{ $form->customer->layanan_service }}</td>
+                </tr>
+                <tr>
+                    <td class="label">Kapasitas / Capacity</td>
+                    <td>: {{ $form->customer->kapasitas_capacity }}</td>
+                </tr>
+                <tr>
+                    <td class="label">No. Telp (PIC)</td>
+                    <td>: {{ $form->customer->no_telp_pic }}</td>
+                </tr>
+                <tr>
+                    <td class="label">E-mail</td>
+                    <td>: {{ $form->customer->email }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Maintenance Device -->
+        <div class="section">
+            <div class="section-title">MAINTENANCE DEVICE</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No</th>
+                        <th style="width: 47.5%;">Device Name</th>
+                        <th style="width: 47.5%;">Serial Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($form->maintenanceDevices as $index => $device)
+                    <tr>
+                        <td style="text-align: center;">{{ $index + 1 }}</td>
+                        <td>{{ $device->device_name }}</td>
+                        <td>{{ $device->serial_number }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td style="text-align: center;">1</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Technical Detail -->
+        <div class="section">
+            <div class="section-title olive">TECHNICAL DETAIL</div>
+            
+            <table class="info-table">
+                <tr>
+                    <td class="label">Activity</td>
+                    <td>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <div class="checkbox {{ $form->activity_survey ? 'checked' : '' }}">{{ $form->activity_survey ? '✓' : '' }}</div>
+                                <span>Survey</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox {{ $form->activity_activation ? 'checked' : '' }}">{{ $form->activity_activation ? '✓' : '' }}</div>
+                                <span>Activation</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox {{ $form->activity_upgrade ? 'checked' : '' }}">{{ $form->activity_upgrade ? '✓' : '' }}</div>
+                                <span>Upgrade</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox {{ $form->activity_downgrade ? 'checked' : '' }}">{{ $form->activity_downgrade ? '✓' : '' }}</div>
+                                <span>Downgrade</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox {{ $form->activity_troubleshoot ? 'checked' : '' }}">{{ $form->activity_troubleshoot ? '✓' : '' }}</div>
+                                <span>Troubleshoot</span>
+                            </div>
+                            <div class="checkbox-item">
+                                <div class="checkbox {{ $form->activity_preventive_maintenance ? 'checked' : '' }}">{{ $form->activity_preventive_maintenance ? '✓' : '' }}</div>
+                                <span>Preventive Maintenance</span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <table class="info-table" style="margin-top: 8px;">
+                <tr>
+                    <td class="label">Complaint</td>
+                    <td>:</td>
+                </tr>
+            </table>
+            <div class="text-area">{{ $form->complaint ?: '-' }}</div>
+            
+            <table class="info-table">
+                <tr>
+                    <td class="label">Action</td>
+                    <td>:</td>
+                </tr>
+            </table>
+            <div class="text-area">{{ $form->action ?: '-' }}</div>
+        </div>
+
+        <!-- Assessment -->
+        <div class="section">
+            <div class="assessment-section">
+                <table class="info-table">
+                    <tr>
+                        <td class="label"><strong>Assessment</strong></td>
+                        <td>
+                            <div class="assessment-options">
+                                <div class="assessment-item {{ $form->assessment == 'tidak_puas' ? 'active-tidak-puas' : '' }}">
+                                    <div class="checkbox {{ $form->assessment == 'tidak_puas' ? 'checked' : '' }}">{{ $form->assessment == 'tidak_puas' ? '✓' : '' }}</div>
+                                    <span>Tidak Puas</span>
+                                </div>
+                                <div class="assessment-item {{ $form->assessment == 'puas' ? 'active-puas' : '' }}">
+                                    <div class="checkbox {{ $form->assessment == 'puas' ? 'checked' : '' }}">{{ $form->assessment == 'puas' ? '✓' : '' }}</div>
+                                    <span>Puas</span>
+                                </div>
+                                <div class="assessment-item {{ $form->assessment == 'sangat_puas' ? 'active-sangat-puas' : '' }}">
+                                    <div class="checkbox {{ $form->assessment == 'sangat_puas' ? 'checked' : '' }}">{{ $form->assessment == 'sangat_puas' ? '✓' : '' }}</div>
+                                    <span>Sangat Puas</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Date and Location -->
+        <div style="text-align: right; margin: 10px 0 8px 0; font-style: italic; font-weight: bold; color: #1a5276; font-size: 10px;">
+            {{ $form->location }}, {{ $form->form_date ? $form->form_date->format('d F Y') : '' }}
+        </div>
+
+        <!-- Signature -->
+        <table class="signature-table" style="width: 100%; border-collapse: collapse; page-break-inside: avoid;">
+            <tr>
+                <td style="width: 50%; padding: 5px; vertical-align: top;">
+                    <div class="signature-box">
+                        <div class="title">Pihak Pertama,</div>
+                        <div class="company">PT TELEMEDIA DINAMIKA SARANA</div>
+                        <div style="height: 80px; display: flex; align-items: center; justify-content: center;">
+                            @if($form->signature_first_party)
+                                <img src="{{ $form->signature_first_party }}" alt="Signature" style="max-height: 70px; max-width: 180px;">
+                            @endif
+                        </div>
+                        <div style="border-top: 1px solid #1a5276; padding-top: 5px; margin-top: 5px; font-size: 10px;">
+                            <strong>( {{ $form->first_party_name ?: '________________' }} )</strong>
+                        </div>
+                    </div>
+                </td>
+                <td style="width: 50%; padding: 5px; vertical-align: top;">
+                    <div class="signature-box">
+                        <div class="title">Pihak Kedua,</div>
+                        <div style="height: 14px;">&nbsp;</div>
+                        <div style="height: 80px; display: flex; align-items: center; justify-content: center;">
+                            @if($form->signature_second_party)
+                                <img src="{{ $form->signature_second_party }}" alt="Signature" style="max-height: 70px; max-width: 180px;">
+                            @endif
+                        </div>
+                        <div style="border-top: 1px solid #1a5276; padding-top: 5px; margin-top: 5px; font-size: 10px;">
+                            <strong>( {{ $form->second_party_name ?: '________________' }} )</strong>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+            <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo">
+            <p><strong>PT TELEMEDIA DINAMIKA SARANA - GASNET</strong></p>
+            <p>Dokumen ini dicetak dari Sistem Rating Customer Gasnet | © {{ date('Y') }} All Rights Reserved</p>
+        </div>
+    </div>
+
+    <script>
+        // Set document title untuk nama file PDF saat save
+        (function() {
+            var customerName = @json($form->customer->customer_name);
+            var formDate = '{{ $form->form_date ? $form->form_date->format("d-m-Y") : now()->format("d-m-Y") }}';
+            var pdfTitle = customerName + ' - Formulir ' + formDate;
+            document.title = pdfTitle;
+        })();
+        
+        @if(request('print'))
+            window.onload = function() {
+                setTimeout(function() {
+                    window.print();
+                }, 500);
+            }
+        @endif
+    </script>
+</body>
+</html>

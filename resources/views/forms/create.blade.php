@@ -1,0 +1,535 @@
+@extends('layouts.app')
+
+@section('title', 'Buat Form On Site Customer')
+
+@section('content')
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="fas fa-plus-circle"></i>
+        Form On Site Customer
+    </h1>
+    <a href="{{ route('forms.index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i> Kembali
+    </a>
+</div>
+
+<form action="{{ route('forms.store') }}" method="POST" id="onSiteForm">
+    @csrf
+    
+    @if($errors->any())
+        <div class="alert alert-danger mb-4">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Terdapat kesalahan:</h6>
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
+    <!-- Customer Detail Section -->
+    <div class="form-section">
+        <h4 class="form-section-title">
+            <i class="fas fa-user me-2"></i> Customer Detail
+        </h4>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Customer Name <span class="text-danger">*</span></label>
+                <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" 
+                       value="{{ old('customer_name') }}" required>
+                @error('customer_name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Layanan / Service <span class="text-danger">*</span></label>
+                <input type="text" name="layanan_service" class="form-control @error('layanan_service') is-invalid @enderror" 
+                       value="{{ old('layanan_service') }}" required>
+                @error('layanan_service')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            <!-- Address Section with Dropdowns -->
+            <div class="col-12 mb-3">
+                <label class="form-label fw-bold"><i class="fas fa-map-marker-alt me-1"></i> Alamat</label>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
+                <select name="provinsi" id="provinsi" class="form-select @error('provinsi') is-invalid @enderror" required>
+                    <option value="">-- Pilih Provinsi --</option>
+                </select>
+                @error('provinsi')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Kota / Kabupaten <span class="text-danger">*</span></label>
+                <select name="kota_kabupaten" id="kota_kabupaten" class="form-select @error('kota_kabupaten') is-invalid @enderror" required disabled>
+                    <option value="">-- Pilih Kota/Kabupaten --</option>
+                </select>
+                @error('kota_kabupaten')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
+                <select name="kecamatan" id="kecamatan" class="form-select @error('kecamatan') is-invalid @enderror" required disabled>
+                    <option value="">-- Pilih Kecamatan --</option>
+                </select>
+                @error('kecamatan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
+                <select name="kelurahan" id="kelurahan" class="form-select @error('kelurahan') is-invalid @enderror" required disabled>
+                    <option value="">-- Pilih Kelurahan --</option>
+                </select>
+                @error('kelurahan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+                <textarea name="alamat_lengkap" class="form-control @error('alamat_lengkap') is-invalid @enderror" 
+                          rows="2" placeholder="Nama jalan, nomor rumah, RT/RW, dll..." required>{{ old('alamat_lengkap') }}</textarea>
+                @error('alamat_lengkap')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Kapasitas / Capacity <span class="text-danger">*</span></label>
+                <input type="text" name="kapasitas_capacity" class="form-control @error('kapasitas_capacity') is-invalid @enderror" 
+                       value="{{ old('kapasitas_capacity') }}" required>
+                @error('kapasitas_capacity')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">No. Telp (PIC) <span class="text-danger">*</span></label>
+                <input type="text" name="no_telp_pic" class="form-control @error('no_telp_pic') is-invalid @enderror" 
+                       value="{{ old('no_telp_pic') }}" required>
+                @error('no_telp_pic')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">E-mail <span class="text-danger">*</span></label>
+                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
+                       value="{{ old('email') }}" required>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+    </div>
+
+    <!-- Maintenance Device Section -->
+    <div class="form-section">
+        <h4 class="form-section-title">
+            <i class="fas fa-tools me-2"></i> Maintenance Device
+        </h4>
+        <div id="devices-container">
+            <div class="row device-row mb-2">
+                <div class="col-md-5">
+                    <input type="text" name="devices[0][device_name]" class="form-control" placeholder="Device Name">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="devices[0][serial_number]" class="form-control" placeholder="Serial Number">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)" disabled>
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-outline-primary mt-2" onclick="addDevice()">
+            <i class="fas fa-plus me-2"></i> Tambah Device
+        </button>
+    </div>
+
+    <!-- Technical Detail Section -->
+    <div class="form-section">
+        <h4 class="form-section-title">
+            <i class="fas fa-cogs me-2"></i> Technical Detail
+        </h4>
+        
+        <div class="mb-4">
+            <label class="form-label fw-bold">Activity</label>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activity_survey" value="1" id="survey">
+                        <label class="form-check-label" for="survey">Survey</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activity_activation" value="1" id="activation">
+                        <label class="form-check-label" for="activation">Activation</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activity_upgrade" value="1" id="upgrade">
+                        <label class="form-check-label" for="upgrade">Upgrade</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activity_downgrade" value="1" id="downgrade">
+                        <label class="form-check-label" for="downgrade">Downgrade</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot">
+                        <label class="form-check-label" for="troubleshoot">Troubleshoot</label>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive">
+                        <label class="form-check-label" for="preventive">Preventive Maintenance</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Complaint</label>
+            <textarea name="complaint" class="form-control" rows="3" placeholder="Masukkan keluhan customer...">{{ old('complaint') }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Action</label>
+            <textarea name="action" class="form-control" rows="3" placeholder="Masukkan tindakan yang dilakukan...">{{ old('action') }}</textarea>
+        </div>
+    </div>
+
+    <!-- Assessment Section -->
+    <div class="form-section">
+        <h4 class="form-section-title">
+            <i class="fas fa-star me-2"></i> Assessment
+        </h4>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-3">
+                <label class="assessment-option tidak-puas w-100" onclick="selectAssessment(this, 'tidak_puas')">
+                    <input type="radio" name="assessment" value="tidak_puas" required>
+                    <i class="fas fa-frown d-block"></i>
+                    <span class="fw-bold">Tidak Puas</span>
+                </label>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="assessment-option puas w-100" onclick="selectAssessment(this, 'puas')">
+                    <input type="radio" name="assessment" value="puas">
+                    <i class="fas fa-meh d-block"></i>
+                    <span class="fw-bold">Puas</span>
+                </label>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="assessment-option sangat-puas w-100" onclick="selectAssessment(this, 'sangat_puas')">
+                    <input type="radio" name="assessment" value="sangat_puas">
+                    <i class="fas fa-smile-beam d-block"></i>
+                    <span class="fw-bold">Sangat Puas</span>
+                </label>
+            </div>
+        </div>
+        @error('assessment')
+            <div class="text-danger text-center">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <!-- Signature Section -->
+    <div class="form-section">
+        <h4 class="form-section-title">
+            <i class="fas fa-signature me-2"></i> Tanda Tangan <span class="text-danger">*</span>
+        </h4>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Lokasi <span class="text-danger">*</span></label>
+                <input type="text" name="location" class="form-control @error('location') is-invalid @enderror" value="{{ old('location') }}" placeholder="Contoh: Jakarta" required>
+                @error('location')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Tanggal <span class="text-danger">*</span></label>
+                <input type="date" name="form_date" class="form-control @error('form_date') is-invalid @enderror" value="{{ old('form_date', date('Y-m-d')) }}" required>
+                @error('form_date')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card @error('signature_first_party') border-danger @enderror">
+                    <div class="card-header bg-primary text-white text-center">
+                        Pihak Pertama <span class="text-warning">*</span><br>
+                        <strong>PT TELEMEDIA DINAMIKA SARANA</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <input type="text" name="first_party_name" class="form-control @error('first_party_name') is-invalid @enderror" placeholder="Nama Pihak Pertama *" required>
+                            @error('first_party_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="signature-pad" id="signaturePad1">
+                            <canvas id="canvas1"></canvas>
+                        </div>
+                        <input type="hidden" name="signature_first_party" id="signature_first_party" required>
+                        @error('signature_first_party')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="clearSignature(1)">
+                            <i class="fas fa-eraser me-1"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card @error('signature_second_party') border-danger @enderror">
+                    <div class="card-header bg-secondary text-white text-center">
+                        Pihak Kedua <span class="text-warning">*</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <input type="text" name="second_party_name" class="form-control @error('second_party_name') is-invalid @enderror" placeholder="Nama Pihak Kedua *" required>
+                            @error('second_party_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="signature-pad" id="signaturePad2">
+                            <canvas id="canvas2"></canvas>
+                        </div>
+                        <input type="hidden" name="signature_second_party" id="signature_second_party" required>
+                        @error('signature_second_party')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="clearSignature(2)">
+                            <i class="fas fa-eraser me-1"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-section text-center">
+        <button type="submit" class="btn btn-primary btn-lg px-5">
+            <i class="fas fa-save me-2"></i> Simpan Form
+        </button>
+        <a href="{{ route('forms.index') }}" class="btn btn-secondary btn-lg px-5 ms-2">
+            <i class="fas fa-times me-2"></i> Batal
+        </a>
+    </div>
+</form>
+@endsection
+
+@push('styles')
+<style>
+    .signature-pad canvas {
+        border: 1px solid #e3e6f0;
+        border-radius: 5px;
+        cursor: crosshair;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+    let deviceIndex = 1;
+    let signaturePad1, signaturePad2;
+
+    // API Base URL for Indonesia regions
+    const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+    // Initialize signature pads and load provinces
+    document.addEventListener('DOMContentLoaded', function() {
+        const canvas1 = document.getElementById('canvas1');
+        const canvas2 = document.getElementById('canvas2');
+        
+        // Set canvas dimensions
+        canvas1.width = canvas1.parentElement.offsetWidth - 4;
+        canvas1.height = 150;
+        canvas2.width = canvas2.parentElement.offsetWidth - 4;
+        canvas2.height = 150;
+
+        signaturePad1 = new SignaturePad(canvas1, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+        
+        signaturePad2 = new SignaturePad(canvas2, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+
+        // Save signature data on form submit
+        document.getElementById('onSiteForm').addEventListener('submit', function() {
+            if (!signaturePad1.isEmpty()) {
+                document.getElementById('signature_first_party').value = signaturePad1.toDataURL();
+            }
+            if (!signaturePad2.isEmpty()) {
+                document.getElementById('signature_second_party').value = signaturePad2.toDataURL();
+            }
+        });
+
+        // Load provinces
+        loadProvinces();
+    });
+
+    // Load Provinces
+    async function loadProvinces() {
+        try {
+            const response = await fetch(`${API_BASE}/provinces.json`);
+            const provinces = await response.json();
+            const select = document.getElementById('provinsi');
+            select.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
+            provinces.forEach(prov => {
+                select.innerHTML += `<option value="${prov.name}" data-id="${prov.id}">${prov.name}</option>`;
+            });
+        } catch (error) {
+            console.error('Error loading provinces:', error);
+        }
+    }
+
+    // Load Cities/Regencies
+    document.getElementById('provinsi').addEventListener('change', async function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const provId = selectedOption.dataset.id;
+        const kotaSelect = document.getElementById('kota_kabupaten');
+        const kecSelect = document.getElementById('kecamatan');
+        const kelSelect = document.getElementById('kelurahan');
+
+        // Reset dependent dropdowns
+        kotaSelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
+        kotaSelect.disabled = true;
+        kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+        kecSelect.disabled = true;
+        kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+        kelSelect.disabled = true;
+
+        if (provId) {
+            try {
+                const response = await fetch(`${API_BASE}/regencies/${provId}.json`);
+                const cities = await response.json();
+                cities.forEach(city => {
+                    kotaSelect.innerHTML += `<option value="${city.name}" data-id="${city.id}">${city.name}</option>`;
+                });
+                kotaSelect.disabled = false;
+            } catch (error) {
+                console.error('Error loading cities:', error);
+            }
+        }
+    });
+
+    // Load Districts
+    document.getElementById('kota_kabupaten').addEventListener('change', async function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const cityId = selectedOption.dataset.id;
+        const kecSelect = document.getElementById('kecamatan');
+        const kelSelect = document.getElementById('kelurahan');
+
+        // Reset dependent dropdowns
+        kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+        kecSelect.disabled = true;
+        kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+        kelSelect.disabled = true;
+
+        if (cityId) {
+            try {
+                const response = await fetch(`${API_BASE}/districts/${cityId}.json`);
+                const districts = await response.json();
+                districts.forEach(dist => {
+                    kecSelect.innerHTML += `<option value="${dist.name}" data-id="${dist.id}">${dist.name}</option>`;
+                });
+                kecSelect.disabled = false;
+            } catch (error) {
+                console.error('Error loading districts:', error);
+            }
+        }
+    });
+
+    // Load Villages
+    document.getElementById('kecamatan').addEventListener('change', async function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const distId = selectedOption.dataset.id;
+        const kelSelect = document.getElementById('kelurahan');
+
+        // Reset dependent dropdown
+        kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+        kelSelect.disabled = true;
+
+        if (distId) {
+            try {
+                const response = await fetch(`${API_BASE}/villages/${distId}.json`);
+                const villages = await response.json();
+                villages.forEach(vil => {
+                    kelSelect.innerHTML += `<option value="${vil.name}">${vil.name}</option>`;
+                });
+                kelSelect.disabled = false;
+            } catch (error) {
+                console.error('Error loading villages:', error);
+            }
+        }
+    });
+
+    function clearSignature(padNumber) {
+        if (padNumber === 1) {
+            signaturePad1.clear();
+        } else {
+            signaturePad2.clear();
+        }
+    }
+
+    function addDevice() {
+        const container = document.getElementById('devices-container');
+        const html = `
+            <div class="row device-row mb-2">
+                <div class="col-md-5">
+                    <input type="text" name="devices[${deviceIndex}][device_name]" class="form-control" placeholder="Device Name">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="devices[${deviceIndex}][serial_number]" class="form-control" placeholder="Serial Number">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+        deviceIndex++;
+        updateRemoveButtons();
+    }
+
+    function removeDevice(btn) {
+        btn.closest('.device-row').remove();
+        updateRemoveButtons();
+    }
+
+    function updateRemoveButtons() {
+        const rows = document.querySelectorAll('.device-row');
+        rows.forEach((row, index) => {
+            const btn = row.querySelector('.btn-remove-device');
+            btn.disabled = rows.length === 1;
+        });
+    }
+
+    function selectAssessment(element, value) {
+        document.querySelectorAll('.assessment-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        element.querySelector('input').checked = true;
+    }
+</script>
+@endpush
