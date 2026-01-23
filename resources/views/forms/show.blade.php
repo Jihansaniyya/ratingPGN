@@ -120,6 +120,8 @@
                     <tr>
                         <th>Device Name</th>
                         <th>Serial Number</th>
+                        <th>Foto Produk</th>
+                        <th>Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -127,10 +129,20 @@
                     <tr>
                         <td>{{ $device->device_name }}</td>
                         <td>{{ $device->serial_number }}</td>
+                        <td class="text-center">
+                            @if($device->product_photo)
+                                <a href="{{ asset('storage/' . $device->product_photo) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $device->product_photo) }}" alt="Foto Produk" class="img-thumbnail" style="max-height: 80px;">
+                                </a>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td>{{ $device->keterangan ?? '-' }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="2" class="text-center text-muted">Tidak ada device</td>
+                        <td colspan="4" class="text-center text-muted">Tidak ada device</td>
                     </tr>
                     @endforelse
                 </tbody>

@@ -46,14 +46,20 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Password::min(6)],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()   // minimal satu huruf kapital dan satu huruf kecil
+                    ->symbols(),    // minimal satu simbol
+            ],
         ], [
             'name.required' => 'Nama wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah terdaftar.',
             'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
@@ -98,7 +104,12 @@ class UserController extends Controller
 
         // Only validate password if provided
         if ($request->filled('password')) {
-            $rules['password'] = ['confirmed', Password::min(6)];
+            $rules['password'] = [
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()   // minimal satu huruf kapital dan satu huruf kecil
+                    ->symbols(),    // minimal satu simbol
+            ];
         }
 
         $validated = $request->validate($rules, [
@@ -106,7 +117,7 @@ class UserController extends Controller
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah terdaftar.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 

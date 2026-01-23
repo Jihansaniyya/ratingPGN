@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Assessment - PT TELEMEDIA DINAMIKA SARANA</title>
+    <title>Laporan Assessment Customer - PT TELEMEDIA DINAMIKA SARANA</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12pt;
-            line-height: 1.6;
+            line-height: 1.5;
             color: #000;
             background: #fff;
         }
@@ -22,21 +22,21 @@
         .container {
             max-width: 210mm;
             margin: 0 auto;
-            padding: 15mm 20mm;
+            padding: 10mm 20mm;
         }
         
-        /* Kop Surat dengan Logo */
+        /* Kop Surat Resmi */
         .kop-surat {
             display: flex;
             align-items: center;
-            border-bottom: 4px solid #1a5276;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            border-bottom: 3px double #000;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
         }
         
         .kop-logo {
-            width: 150px;
-            margin-right: 25px;
+            width: 80px;
+            margin-right: 15px;
         }
         
         .kop-logo img {
@@ -50,221 +50,180 @@
         }
         
         .kop-text h1 {
-            font-size: 22pt;
+            font-size: 16pt;
             font-weight: bold;
-            color: #1a5276;
-            margin-bottom: 3px;
-            letter-spacing: 4px;
+            color: #000;
+            margin-bottom: 2px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
         
         .kop-text h2 {
-            font-size: 14pt;
-            font-weight: bold;
-            color: #2874a6;
-            margin-bottom: 8px;
+            font-size: 11pt;
+            font-weight: normal;
+            color: #000;
+            margin-bottom: 3px;
         }
         
         .kop-text .alamat {
-            font-size: 10pt;
-            color: #333;
-            margin-bottom: 2px;
-        }
-        
-        .kop-text .contact {
             font-size: 9pt;
-            color: #555;
+            color: #333;
         }
         
         .kop-spacer {
-            width: 150px;
+            width: 80px;
         }
         
         /* Judul Laporan */
         .judul-laporan {
             text-align: center;
-            margin: 30px 0 25px 0;
-            padding: 15px;
-            background: linear-gradient(135deg, #1a5276 0%, #2874a6 100%);
-            color: #fff;
-            border-radius: 8px;
+            margin: 20px 0 15px 0;
         }
         
         .judul-laporan h2 {
-            font-size: 16pt;
+            font-size: 13pt;
             font-weight: bold;
-            margin-bottom: 5px;
-            letter-spacing: 2px;
+            margin-bottom: 3px;
+            text-decoration: underline;
         }
         
         .judul-laporan p {
-            font-size: 11pt;
-            opacity: 0.9;
+            font-size: 10pt;
         }
         
-        /* Info Section */
-        .info-section {
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-left: 4px solid #1a5276;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .info-section table {
-            border: none;
-            width: 100%;
-        }
-        
-        .info-section td {
-            padding: 5px 10px 5px 0;
-            border: none;
-            font-size: 11pt;
-        }
-        
-        .info-section td:first-child {
-            font-weight: bold;
-            width: 150px;
-            color: #1a5276;
-        }
-        
-        /* Ringkasan */
-        .ringkasan {
-            margin-bottom: 30px;
-        }
-        
+        /* Section Title */
         .section-title {
-            font-size: 13pt;
+            font-size: 11pt;
             font-weight: bold;
-            color: #1a5276;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #1a5276;
-            display: flex;
-            align-items: center;
+            margin: 20px 0 10px 0;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #000;
         }
         
-        .section-title::before {
-            content: '';
+        /* Chart Container */
+        .chart-section {
+            margin: 20px 0;
+            page-break-inside: avoid;
+            text-align: center;
+        }
+        
+        .chart-box {
             display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #1a5276;
-            margin-right: 10px;
-            border-radius: 2px;
+            text-align: center;
         }
         
+        .chart-box canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+        
+        /* Ringkasan Table */
         .ringkasan-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 10pt;
         }
         
         .ringkasan-table th,
         .ringkasan-table td {
-            border: 1px solid #1a5276;
-            padding: 12px 15px;
+            border: 1px solid #000;
+            padding: 8px 10px;
             text-align: center;
         }
         
         .ringkasan-table th {
-            background: #1a5276;
-            color: #fff;
+            background: #f0f0f0;
             font-weight: bold;
-            font-size: 11pt;
-        }
-        
-        .ringkasan-table td {
-            font-size: 11pt;
         }
         
         .ringkasan-table td strong {
-            font-size: 14pt;
-            color: #1a5276;
+            font-size: 13pt;
+            display: block;
+            margin-bottom: 2px;
+        }
+        
+        .ringkasan-table td small {
+            font-size: 9pt;
+            color: #555;
         }
         
         .ringkasan-table .total-cell {
-            background: #d4e6f1;
+            background: #e8e8e8;
         }
         
         .ringkasan-table .sangat-puas {
-            background: #d5f5e3;
-            color: #196f3d;
+            background: #d4edda;
         }
         
         .ringkasan-table .puas {
-            background: #fcf3cf;
-            color: #9a7d0a;
+            background: #fff3cd;
         }
         
         .ringkasan-table .tidak-puas {
-            background: #fadbd8;
-            color: #922b21;
+            background: #f8d7da;
         }
         
         /* Data Table */
-        .data-section {
-            margin-bottom: 30px;
-        }
-        
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10pt;
+            font-size: 9pt;
+            margin-bottom: 10px;
         }
         
         .data-table th,
         .data-table td {
-            border: 1px solid #bdc3c7;
-            padding: 10px 8px;
+            border: 1px solid #000;
+            padding: 6px 5px;
             text-align: left;
         }
         
         .data-table th {
-            background: #1a5276;
-            color: #fff;
+            background: #f0f0f0;
             font-weight: bold;
             text-align: center;
-            font-size: 10pt;
         }
         
         .data-table tbody tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-        
-        .data-table tbody tr:hover {
-            background: #ebf5fb;
+            background: #fafafa;
         }
         
         .data-table td.center {
             text-align: center;
         }
-        
+        /*
         .badge {
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 9pt;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 8pt;
             font-weight: bold;
             display: inline-block;
+            border: 1px solid;
         }
         
         .badge-success {
-            background: #27ae60;
-            color: #fff;
+            background: #d4edda;
+            color: #155724;
+            border-color: #155724;
         }
         
         .badge-warning {
-            background: #f39c12;
-            color: #fff;
+            background: #fff3cd;
+            color: #856404;
+            border-color: #856404;
         }
         
         .badge-danger {
-            background: #e74c3c;
-            color: #fff;
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #721c24;
         }
+        */
         
-        /* Footer / TTD */
+        /* TTD Section */
         .ttd-section {
-            margin-top: 50px;
+            margin-top: 30px;
             page-break-inside: avoid;
         }
         
@@ -276,7 +235,7 @@
             width: 50%;
             text-align: center;
             vertical-align: top;
-            padding: 10px;
+            padding: 8px;
         }
         
         .ttd-box {
@@ -284,60 +243,54 @@
         }
         
         .ttd-box .tempat-tanggal {
-            font-size: 11pt;
-            margin-bottom: 5px;
+            font-size: 10pt;
+            margin-bottom: 3px;
         }
         
         .ttd-box .jabatan {
-            margin-bottom: 70px;
+            margin-bottom: 60px;
             font-weight: bold;
+            font-size: 10pt;
         }
         
         .ttd-box .nama {
             font-weight: bold;
             text-decoration: underline;
-            font-size: 12pt;
+            font-size: 11pt;
+            margin-bottom: 2px;
         }
         
         .ttd-box .nip {
-            font-size: 10pt;
-            color: #555;
-        }
-        
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            padding-top: 15px;
-            border-top: 2px solid #1a5276;
-            text-align: center;
             font-size: 9pt;
-            color: #666;
+            color: #333;
         }
         
-        .footer img {
-            height: 30px;
-            margin-bottom: 5px;
+        /* Catatan Kaki */
+        .catatan-kaki {
+            margin-top: 20px;
+            padding-top: 8px;
+            border-top: 1px solid #ccc;
+            font-size: 8pt;
+            color: #666;
         }
         
         /* Print buttons */
         .print-buttons {
             text-align: center;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: linear-gradient(135deg, #1a5276 0%, #2874a6 100%);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1a5276;
+            border-radius: 8px;
         }
         
         .print-buttons button {
-            padding: 12px 30px;
+            padding: 10px 25px;
             margin: 0 8px;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             border: none;
-            border-radius: 6px;
+            border-radius: 5px;
             font-weight: bold;
-            transition: all 0.3s;
         }
         
         .btn-print {
@@ -345,18 +298,10 @@
             color: #1a5276;
         }
         
-        .btn-print:hover {
-            background: #d4e6f1;
-        }
-        
         .btn-back {
-            background: rgba(255,255,255,0.2);
+            background: transparent;
             color: #fff;
             border: 2px solid #fff !important;
-        }
-        
-        .btn-back:hover {
-            background: rgba(255,255,255,0.3);
         }
         
         @media print {
@@ -370,202 +315,276 @@
             }
             
             .container {
-                padding: 10mm 15mm;
-            }
-            
-            .judul-laporan {
-                background: #1a5276 !important;
-                -webkit-print-color-adjust: exact;
+                padding: 8mm 15mm;
             }
             
             .ringkasan-table th,
             .data-table th {
-                background: #1a5276 !important;
+                background: #f0f0f0 !important;
                 -webkit-print-color-adjust: exact;
             }
+            
+            .ringkasan-table .total-cell,
+            .ringkasan-table .sangat-puas,
+            .ringkasan-table .puas,
+            .ringkasan-table .tidak-puas {
+                background: #f5f5f5 !important;
+            }
+            
+            .chart-section {
+                page-break-inside: avoid;
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .chart-box canvas {
+                max-width: 250px !important;
+                height: auto !important;
+            }
         }
+        
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Print Buttons -->
         <div class="print-buttons">
-            <button class="btn-print" onclick="window.print()">
-                Cetak / Simpan PDF
-            </button>
-            <button class="btn-back" onclick="window.close(); window.history.back();">
-                ← Kembali ke Laporan
-            </button>
+            <button class="btn-print" onclick="window.print()">Cetak / Simpan PDF</button>
+            <button class="btn-back" onclick="window.close(); window.history.back();">← Kembali</button>
         </div>
 
-        <!-- Kop Surat dengan Logo -->
+        <!-- Kop Surat Resmi -->
         <div class="kop-surat">
             <div class="kop-logo">
-                <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Logo Gasnet">
+                <?php
+                    $logoPath = public_path('images/logoGASNET.png');
+                    $logoData = '';
+                    if (file_exists($logoPath)) {
+                        $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+                    }
+                ?>
+                <?php if($logoData): ?>
+                    <img src="<?php echo e($logoData); ?>" alt="Logo Gasnet">
+                <?php else: ?>
+                    <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Logo Gasnet">
+                <?php endif; ?>
             </div>
             <div class="kop-text">
-                <h1>GASNET</h1>
-                <h2>PT TELEMEDIA DINAMIKA SARANA</h2>
-                <p class="alamat">Jl. Raya Industri No. 123, Jakarta Pusat 10110</p>
-                <p class="contact">Telp: (021) 1234567 | Fax: (021) 1234568 | Email: info@gasnet.co.id | www.gasnet.co.id</p>
+                <h1>PT TELEMEDIA DINAMIKA SARANA</h1>
+                <h2>GASNET Internet Service Provider</h2>
+                <p class="alamat">Jl. Raya Industri No. 123, Jakarta Pusat 10110 | Telp: (021) 1234567</p>
             </div>
             <div class="kop-spacer"></div>
         </div>
 
-        <!-- Judul Laporan -->
-        <div class="judul-laporan">
-            <h2>LAPORAN ASSESSMENT CUSTOMER</h2>
-            <p>Periode: <?php echo e(request('start_date') ? date('d/m/Y', strtotime(request('start_date'))) : 'Semua Tanggal'); ?> s.d. <?php echo e(request('end_date') ? date('d/m/Y', strtotime(request('end_date'))) : 'Semua Tanggal'); ?></p>
-        </div>
+        <!-- Nomor Surat -->
+        <?php
+        $bulanRomawi = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV',
+            5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII',
+            9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
 
-        <!-- Info Section -->
-        <div class="info-section">
-            <table>
+        $bulan = (int) now()->format('m');
+        $tahun = now()->format('Y');
+        $nomorUrut = $forms->first() ? $forms->first()->id : 1;
+        ?>
+
+        <div style="text-align: right; margin-bottom: 10px; font-size: 10pt;">
+            <table style="margin-right: auto;">
                 <tr>
-                    <td>Tanggal Cetak</td>
-                    <td>:</td>
-                    <td><?php echo e(now()->format('d F Y, H:i')); ?> WIB</td>
+                    <td style="padding: 2px 5px;">Nomor</td>
+                    <td style="padding: 2px 5px;">:</td>
+                    <td style="padding: 2px 5px; font-weight: bold;"><?php echo e(sprintf('%03d', $nomorUrut)); ?>/LAP-GASNET/<?php echo e($bulanRomawi[$bulan]); ?>/<?php echo e($tahun); ?></td>
                 </tr>
                 <tr>
-                    <td>Filter Assessment</td>
-                    <td>:</td>
-                    <td>
-                        <?php if(request('assessment') && request('assessment') !== 'semua'): ?>
-                            <?php if(request('assessment') == 'sangat_puas'): ?> Sangat Puas
-                            <?php elseif(request('assessment') == 'puas'): ?> Puas
-                            <?php else: ?> Tidak Puas
+                    <td style="padding: 2px 5px;">Tanggal</td>
+                    <td style="padding: 2px 5px;">:</td>
+                    <td style="padding: 2px 5px;"><?php echo e(now()->translatedFormat('d F Y')); ?></td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 5px;">Perihal</td>
+                    <td style="padding: 2px 5px;">:</td>
+                    <td style="padding: 2px 5px;">Laporan Assessment Customer</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Diagram Penilaian -->
+        <h3 class="section-title">I. DIAGRAM PENILAIAN</h3>
+        <table style="width: 100%; border: none; margin-bottom: 15px;">
+            <tr>
+                <td style="width: 30%; text-align: center; vertical-align: middle; border: none; padding: 10px;">
+                    <canvas id="printChart" width="160" height="160"></canvas>
+                </td>
+                <td style="width: 70%; vertical-align: middle; padding-left: 20px; border: none;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
+                        <tr>
+                            <th style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: left; width: 50%;">Kategori</th>
+                            <th style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: center; width: 25%;">Jumlah</th>
+                            <th style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: center; width: 25%;">Persentase</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 10px; border: 1px solid #000;">
+                                <span style="display: inline-block; width: 12px; height: 12px; background: #27ae60; margin-right: 8px; vertical-align: middle;"></span>
+                                Sangat Puas
+                            </td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;"><?php echo e($stats['sangat_puas']); ?></td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;"><?php echo e($stats['total'] > 0 ? number_format($stats['sangat_puas']/$stats['total']*100, 1) : 0); ?>%</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 10px; border: 1px solid #000;">
+                                <span style="display: inline-block; width: 12px; height: 12px; background: #f39c12; margin-right: 8px; vertical-align: middle;"></span>
+                                Puas
+                            </td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;"><?php echo e($stats['puas']); ?></td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;"><?php echo e($stats['total'] > 0 ? number_format($stats['puas']/$stats['total']*100, 1) : 0); ?>%</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 10px; border: 1px solid #000;">
+                                <span style="display: inline-block; width: 12px; height: 12px; background: #e74c3c; margin-right: 8px; vertical-align: middle;"></span>
+                                Tidak Puas
+                            </td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;"><?php echo e($stats['tidak_puas']); ?></td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;"><?php echo e($stats['total'] > 0 ? number_format($stats['tidak_puas']/$stats['total']*100, 1) : 0); ?>%</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0;"><strong>Total</strong></td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: center;"><strong><?php echo e($stats['total']); ?></strong></td>
+                            <td style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: center;"><strong>100%</strong></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Data Detail -->
+        <h3 class="section-title">II. DATA DETAIL</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width: 4%;">No.</th>
+                    <th style="width: 10%;">Tanggal</th>
+                    <th style="width: 22%;">Nama Customer</th>
+                    <th style="width: 18%;">Layanan</th>
+                    <th style="width: 10%;">Kapasitas</th>
+                    <th style="width: 18%;">Petugas</th>
+                    <th style="width: 12%;">Penilaian</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $__empty_1 = true; $__currentLoopData = $forms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <tr>
+                        <td class="center"><?php echo e($index + 1); ?></td>
+                        <td class="center"><?php echo e($form->form_date ? $form->form_date->format('d/m/Y') : '-'); ?></td>
+                        <td><?php echo e($form->customer->customer_name ?? '-'); ?></td>
+                        <td><?php echo e($form->customer->layanan_service ?? '-'); ?></td>
+                        <td class="center"><?php echo e($form->customer->kapasitas_capacity ?? '-'); ?></td>
+                        <td><?php echo e($form->user->name ?? '-'); ?></td>
+                        <td class="center">
+                            <?php if($form->assessment == 'sangat_puas'): ?>
+                                Sangat Puas
+                            <?php elseif($form->assessment == 'puas'): ?>
+                                Puas
+                            <?php else: ?>
+                                Tidak Puas
                             <?php endif; ?>
-                        <?php else: ?>
-                            Semua Assessment
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Dicetak Oleh</td>
-                    <td>:</td>
-                    <td><?php echo e(auth()->user()->name ?? '-'); ?></td>
-                </tr>
-            </table>
-        </div>
+                        </td>
 
-        <!-- Ringkasan -->
-        <div class="ringkasan">
-            <h3 class="section-title">RINGKASAN ASSESSMENT</h3>
-            <table class="ringkasan-table">
-                <thead>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
-                        <th>Total Form</th>
-                        <th>Sangat Puas</th>
-                        <th>Puas</th>
-                        <th>Tidak Puas</th>
+                        <td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data.</td>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="total-cell">
-                            <strong><?php echo e($stats['total']); ?></strong><br>
-                            <small>100%</small>
-                        </td>
-                        <td class="sangat-puas">
-                            <strong><?php echo e($stats['sangat_puas']); ?></strong><br>
-                            <small><?php echo e($stats['total'] > 0 ? number_format($stats['sangat_puas']/$stats['total']*100, 1) : 0); ?>%</small>
-                        </td>
-                        <td class="puas">
-                            <strong><?php echo e($stats['puas']); ?></strong><br>
-                            <small><?php echo e($stats['total'] > 0 ? number_format($stats['puas']/$stats['total']*100, 1) : 0); ?>%</small>
-                        </td>
-                        <td class="tidak-puas">
-                            <strong><?php echo e($stats['tidak_puas']); ?></strong><br>
-                            <small><?php echo e($stats['total'] > 0 ? number_format($stats['tidak_puas']/$stats['total']*100, 1) : 0); ?>%</small>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Data Section -->
-        <div class="data-section">
-            <h3 class="section-title">DATA DETAIL ASSESSMENT</h3>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">No</th>
-                        <th style="width: 12%;">Tanggal</th>
-                        <th style="width: 22%;">Nama Customer</th>
-                        <th style="width: 20%;">Email</th>
-                        <th style="width: 15%;">Layanan</th>
-                        <th style="width: 13%;">Kapasitas</th>
-                        <th style="width: 13%;">Assessment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php $__empty_1 = true; $__currentLoopData = $forms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <tr>
-                            <td class="center"><?php echo e($index + 1); ?></td>
-                            <td class="center"><?php echo e($form->form_date ? $form->form_date->format('d/m/Y') : '-'); ?></td>
-                            <td><?php echo e($form->customer->customer_name ?? '-'); ?></td>
-                            <td><?php echo e($form->customer->email ?? '-'); ?></td>
-                            <td><?php echo e($form->customer->layanan_service ?? '-'); ?></td>
-                            <td class="center"><?php echo e($form->customer->kapasitas_capacity ?? '-'); ?></td>
-                            <td class="center">
-                                <?php if($form->assessment == 'sangat_puas'): ?>
-                                    <span class="badge badge-success">Sangat Puas</span>
-                                <?php elseif($form->assessment == 'puas'): ?>
-                                    <span class="badge badge-warning">Puas</span>
-                                <?php else: ?>
-                                    <span class="badge badge-danger">Tidak Puas</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                        <tr>
-                            <td colspan="7" style="text-align: center; padding: 30px; color: #666;">
-                                <em>Tidak ada data yang ditemukan</em>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-            <p style="font-size: 9pt; color: #666; margin-top: 10px; text-align: right;">
-                Total Data: <?php echo e(count($forms)); ?> record
-            </p>
-        </div>
+                <?php endif; ?>
+            </tbody>
+        </table>
 
         <!-- TTD Section -->
-        <div class="ttd-section">
-            <table class="ttd-table">
+        <div style="margin-top: 30px; page-break-inside: avoid;">
+            <table style="width: 100%;">
                 <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                        <div class="ttd-box">
-                            <p class="tempat-tanggal">Jakarta, <?php echo e(now()->format('d F Y')); ?></p>
-                            <p class="jabatan">Mengetahui,</p>
-                            <p class="nama">_________________________</p>
-                            <p class="nip">Manager / Supervisor</p>
-                        </div>
+                    <td style="width: 50%; text-align: center; vertical-align: top;">
+                    </td>
+                    <td style="width: 50%; text-align: center; vertical-align: top;">
+                        <p style="margin: 0 0 10px 0;">Jakarta, <?php echo e(now()->translatedFormat('d F Y')); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%; text-align: center; vertical-align: top;">
+                        <p style="margin: 0;">Dibuat Oleh,</p>
+                    </td>
+                    <td style="width: 50%; text-align: center; vertical-align: top;">
+                        <p style="margin: 0;">Mengetahui,</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; padding-top: 60px;">
+                        <p style="margin: 0; font-weight: bold; text-decoration: underline;"><?php echo e(auth()->user()->name ?? '____________________'); ?></p>
+                        <p style="margin: 0; font-size: 9pt;">Staff Administrasi</p>
+                    </td>
+                    <td style="text-align: center; padding-top: 60px;">
+                        <p style="margin: 0; font-weight: bold;">____________________</p>
+                        <p style="margin: 0; font-size: 9pt;">Manager Operasional</p>
                     </td>
                 </tr>
             </table>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Logo Gasnet">
-            <p><strong>PT TELEMEDIA DINAMIKA SARANA</strong></p>
-            <p>Dokumen ini dicetak secara otomatis oleh Sistem Rating Customer Gasnet</p>
-            <p>© <?php echo e(date('Y')); ?> Gasnet - All Rights Reserved</p>
+        <!-- Catatan Kaki -->
+        <div class="catatan-kaki">
+            <p>Dokumen ini dicetak otomatis oleh Sistem Rating Customer Gasnet pada <?php echo e(now()->format('d/m/Y H:i')); ?> WIB</p>
         </div>
     </div>
 
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
     <script>
-        // Auto print when loaded
+        const statsData = {
+            total: <?php echo e($stats['total']); ?>,
+            sangat_puas: <?php echo e($stats['sangat_puas']); ?>,
+            puas: <?php echo e($stats['puas']); ?>,
+            tidak_puas: <?php echo e($stats['tidak_puas']); ?>
+
+        };
+        
+        const colors = {
+            sangat_puas: '#27ae60',
+            puas: '#f39c12',
+            tidak_puas: '#e74c3c'
+        };
+        
+        const ctx = document.getElementById('printChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Sangat Puas', 'Puas', 'Tidak Puas'],
+                datasets: [{
+                    data: [statsData.sangat_puas, statsData.puas, statsData.tidak_puas],
+                    backgroundColor: [colors.sangat_puas, colors.puas, colors.tidak_puas],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: true,
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
         window.onload = function() {
-            // Delay sedikit untuk memastikan semua gambar loaded
-            setTimeout(function() {
-                window.print();
-            }, 500);
+            setTimeout(function() { window.print(); }, 1000);
         }
     </script>
+    
 </body>
 </html>
+
 <?php /**PATH C:\Users\Jihan Saniyya\ratingPGN-app\resources\views/reports/print.blade.php ENDPATH**/ ?>

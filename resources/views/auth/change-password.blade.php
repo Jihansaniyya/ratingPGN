@@ -34,7 +34,7 @@
                     <div class="mb-3">
                         <label class="form-label">Password Baru <span class="text-danger">*</span></label>
                         <input type="password" name="password" class="form-control" required>
-                        <small class="text-muted">Minimal 6 karakter</small>
+                        <small class="text-muted">Minimal 8 karakter, harus ada huruf kapital dan simbol (!@#$%^&* dll)</small>
                     </div>
 
                     <div class="mb-4">

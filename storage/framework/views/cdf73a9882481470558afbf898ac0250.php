@@ -103,7 +103,7 @@
         <div class="login-card">
             <div class="login-logo">
                 <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Gasnet Logo">
-                <h4><i class="fas fa-star text-warning me-2"></i>Rating Customer</h4>
+                <h4> On-Site Customer</h4>
                 <small>PT Telemedia Dinamika Sarana</small>
             </div>
 

@@ -13,7 +13,7 @@
     </a>
 </div>
 
-<form action="{{ route('forms.update', $form) }}" method="POST" id="onSiteForm">
+<form action="{{ route('forms.update', $form) }}" method="POST" id="onSiteForm" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     
@@ -123,37 +123,69 @@
     <!-- Maintenance Device Section -->
     <div class="form-section">
         <h4 class="form-section-title">
-            <i class="fas fa-tools me-2"></i> Maintenance Device
+            <i class="fas fa-tools me-2"></i> Maintenance Device <span class="text-danger">*</span>
         </h4>
         <div id="devices-container">
             @forelse($form->maintenanceDevices as $index => $device)
-            <div class="row device-row mb-2">
-                <div class="col-md-5">
-                    <input type="text" name="devices[{{ $index }}][device_name]" class="form-control" 
-                           placeholder="Device Name" value="{{ $device->device_name }}">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="devices[{{ $index }}][serial_number]" class="form-control" 
-                           placeholder="Serial Number" value="{{ $device->serial_number }}">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)">
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <div class="device-row mb-3 p-3 border rounded bg-light">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Device Name <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[{{ $index }}][device_name]" class="form-control" 
+                               placeholder="Masukkan nama device" value="{{ $device->device_name }}" required>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Serial Number <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[{{ $index }}][serial_number]" class="form-control" 
+                               placeholder="Masukkan serial number" value="{{ $device->serial_number }}" required>
+                    </div>
+                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-remove-device w-100" onclick="removeDevice(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-box me-1"></i> Foto Produk <span class="text-danger">*</span></label>
+                        @if($device->product_photo)
+                            <div class="mb-2">
+                                <img src="{{ asset('storage/' . $device->product_photo) }}" alt="Foto Produk" class="img-thumbnail" style="max-height: 100px;">
+                                <input type="hidden" name="devices[{{ $index }}][existing_product_photo]" value="{{ $device->product_photo }}">
+                            </div>
+                        @endif
+                        <input type="file" name="devices[{{ $index }}][product_photo]" class="form-control" accept="image/jpeg,image/png,image/jpg"{{ !$device->product_photo ? ' required' : '' }}>
+                        <small class="text-muted">Format: JPG, PNG. Maks: 2MB. {{ $device->product_photo ? 'Kosongkan jika tidak ingin mengubah.' : '' }}</small>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan <span class="text-danger">*</span></label>
+                        <textarea name="devices[{{ $index }}][keterangan]" class="form-control" rows="2" placeholder="Masukkan keterangan device..." required>{{ $device->keterangan }}</textarea>
+                    </div>
                 </div>
             </div>
             @empty
-            <div class="row device-row mb-2">
-                <div class="col-md-5">
-                    <input type="text" name="devices[0][device_name]" class="form-control" placeholder="Device Name">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="devices[0][serial_number]" class="form-control" placeholder="Serial Number">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)" disabled>
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <div class="device-row mb-3 p-3 border rounded bg-light">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Device Name <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[0][device_name]" class="form-control" placeholder="Masukkan nama device" required>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Serial Number <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[0][serial_number]" class="form-control" placeholder="Masukkan serial number" required>
+                    </div>
+                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-remove-device w-100" onclick="removeDevice(this)" disabled>
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-box me-1"></i> Foto Produk <span class="text-danger">*</span></label>
+                        <input type="file" name="devices[0][product_photo]" class="form-control" accept="image/jpeg,image/png,image/jpg" required>
+                        <small class="text-muted">Format: JPG, PNG. Maks: 2MB</small>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan <span class="text-danger">*</span></label>
+                        <textarea name="devices[0][keterangan]" class="form-control" rows="2" placeholder="Masukkan keterangan device..." required></textarea>
+                    </div>
                 </div>
             </div>
             @endforelse
@@ -170,63 +202,71 @@
         </h4>
         
         <div class="mb-4">
-            <label class="form-label fw-bold">Activity</label>
-            <div class="row">
+            <label class="form-label fw-bold">Activity <span class="text-danger">*</span></label>
+            <small class="text-muted d-block mb-2">Pilih minimal satu aktivitas</small>
+            <div class="row" id="activity-group">
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_survey" value="1" id="survey"
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_survey" value="1" id="survey"
                                {{ $form->activity_survey ? 'checked' : '' }}>
                         <label class="form-check-label" for="survey">Survey</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_activation" value="1" id="activation"
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_activation" value="1" id="activation"
                                {{ $form->activity_activation ? 'checked' : '' }}>
                         <label class="form-check-label" for="activation">Activation</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_upgrade" value="1" id="upgrade"
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_upgrade" value="1" id="upgrade"
                                {{ $form->activity_upgrade ? 'checked' : '' }}>
                         <label class="form-check-label" for="upgrade">Upgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_downgrade" value="1" id="downgrade"
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_downgrade" value="1" id="downgrade"
                                {{ $form->activity_downgrade ? 'checked' : '' }}>
                         <label class="form-check-label" for="downgrade">Downgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot"
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot"
                                {{ $form->activity_troubleshoot ? 'checked' : '' }}>
                         <label class="form-check-label" for="troubleshoot">Troubleshoot</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive"
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive"
                                {{ $form->activity_preventive_maintenance ? 'checked' : '' }}>
                         <label class="form-check-label" for="preventive">Preventive Maintenance</label>
                     </div>
                 </div>
             </div>
+            <div id="activity-error" class="text-danger small mt-1" style="display: none;">Pilih minimal satu aktivitas</div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Complaint</label>
-            <textarea name="complaint" class="form-control" rows="3" 
-                      placeholder="Masukkan keluhan customer...">{{ old('complaint', $form->complaint) }}</textarea>
+            <label class="form-label fw-bold">Complaint <span class="text-danger">*</span></label>
+            <textarea name="complaint" class="form-control @error('complaint') is-invalid @enderror" rows="3" 
+                      placeholder="Masukkan keluhan customer..." required>{{ old('complaint', $form->complaint) }}</textarea>
+            @error('complaint')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Action</label>
-            <textarea name="action" class="form-control" rows="3" 
-                      placeholder="Masukkan tindakan yang dilakukan...">{{ old('action', $form->action) }}</textarea>
+            <label class="form-label fw-bold">Action <span class="text-danger">*</span></label>
+            <textarea name="action" class="form-control @error('action') is-invalid @enderror" rows="3" 
+                      placeholder="Masukkan tindakan yang dilakukan..." required>{{ old('action', $form->action) }}</textarea>
+            @error('action')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
     </div>
 
@@ -461,17 +501,30 @@
     function addDevice() {
         const container = document.getElementById('devices-container');
         const html = `
-            <div class="row device-row mb-2">
-                <div class="col-md-5">
-                    <input type="text" name="devices[${deviceIndex}][device_name]" class="form-control" placeholder="Device Name">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="devices[${deviceIndex}][serial_number]" class="form-control" placeholder="Serial Number">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)">
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <div class="device-row mb-3 p-3 border rounded bg-light">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Device Name <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[${deviceIndex}][device_name]" class="form-control" placeholder="Masukkan nama device" required>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Serial Number <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[${deviceIndex}][serial_number]" class="form-control" placeholder="Masukkan serial number" required>
+                    </div>
+                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-remove-device w-100" onclick="removeDevice(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-box me-1"></i> Foto Produk <span class="text-danger">*</span></label>
+                        <input type="file" name="devices[${deviceIndex}][product_photo]" class="form-control" accept="image/jpeg,image/png,image/jpg" required>
+                        <small class="text-muted">Format: JPG, PNG. Maks: 2MB</small>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan <span class="text-danger">*</span></label>
+                        <textarea name="devices[${deviceIndex}][keterangan]" class="form-control" rows="2" placeholder="Masukkan keterangan device..." required></textarea>
+                    </div>
                 </div>
             </div>
         `;
@@ -500,6 +553,49 @@
         element.classList.add('selected');
         element.querySelector('input').checked = true;
     }
+
+    // Form validation before submit
+    document.getElementById('onSiteForm').addEventListener('submit', function(e) {
+        // Validate at least one activity is checked
+        const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
+        const isAnyActivityChecked = Array.from(activityCheckboxes).some(cb => cb.checked);
+        
+        if (!isAnyActivityChecked) {
+            e.preventDefault();
+            document.getElementById('activity-error').style.display = 'block';
+            document.getElementById('activity-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        } else {
+            document.getElementById('activity-error').style.display = 'none';
+        }
+
+        // Validate signatures
+        if (signaturePad1.isEmpty()) {
+            e.preventDefault();
+            alert('Tanda tangan Pihak Pertama wajib diisi!');
+            document.getElementById('signaturePad1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+        
+        if (signaturePad2.isEmpty()) {
+            e.preventDefault();
+            alert('Tanda tangan Pihak Kedua wajib diisi!');
+            document.getElementById('signaturePad2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+
+        // Save signature data
+        document.getElementById('signature_first_party').value = signaturePad1.toDataURL();
+        document.getElementById('signature_second_party').value = signaturePad2.toDataURL();
+    });
+
+    // Hide activity error when any checkbox is checked
+    document.querySelectorAll('.activity-checkbox').forEach(cb => {
+        cb.addEventListener('change', function() {
+            const isAnyChecked = Array.from(document.querySelectorAll('.activity-checkbox')).some(c => c.checked);
+            document.getElementById('activity-error').style.display = isAnyChecked ? 'none' : 'block';
+        });
+    });
 
     // Initialize remove buttons state
     updateRemoveButtons();

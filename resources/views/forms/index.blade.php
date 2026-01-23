@@ -12,77 +12,64 @@
         <a href="{{ route('reports.print', request()->query()) }}" target="_blank" class="btn btn-outline-secondary">
             <i class="fas fa-print me-1"></i> Cetak Laporan
         </a>
-        <a href="{{ route('forms.create') }}" class="btn btn-dark">
+        <a href="{{ route('forms.create') }}" class="btn btn-sm btn-primary">
             <i class="fas fa-plus me-2"></i> Buat Formulir Baru
         </a>
     </div>
 </div>
 
-<!-- Statistik Ringkas -->
-<div class="row mb-4 g-3">
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body d-flex align-items-center py-3">
-                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(0,0,0,0.05);">
-                    <i class="fas fa-file-alt text-secondary"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 fw-bold text-dark">{{ $stats['total'] ?? $forms->total() }}</h4>
-                    <small class="text-muted">Total Formulir</small>
-                </div>
-            </div>
-        </div>
+<!-- Diagram Penilaian -->
+<div class="card mb-4">
+    <div class="card-header">
+        <strong>Ringkasan Penilaian</strong>
+        <span class="text-muted ms-2">(Total: {{ $stats['total'] ?? 0 }} data)</span>
     </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body d-flex align-items-center py-3">
-                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(40, 167, 69, 0.1);">
-                    <i class="fas fa-smile-beam text-success"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 fw-bold text-dark">{{ $stats['sangat_puas'] ?? 0 }}</h4>
-                    <small class="text-muted">Sangat Puas</small>
-                </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <canvas id="formAssessmentChart" style="max-width: 140px; margin: 0 auto;"></canvas>
             </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body d-flex align-items-center py-3">
-                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(255, 193, 7, 0.1);">
-                    <i class="fas fa-meh text-warning"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 fw-bold text-dark">{{ $stats['puas'] ?? 0 }}</h4>
-                    <small class="text-muted">Puas</small>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 bg-light h-100">
-            <div class="card-body d-flex align-items-center py-3">
-                <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(220, 53, 69, 0.1);">
-                    <i class="fas fa-frown text-danger"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0 fw-bold text-dark">{{ $stats['tidak_puas'] ?? 0 }}</h4>
-                    <small class="text-muted">Tidak Puas</small>
-                </div>
+            <div class="col-md-9">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Kategori</th>
+                            <th class="text-center" style="width: 100px;">Jumlah</th>
+                            <th class="text-center" style="width: 100px;">Persentase</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="display:inline-block;width:10px;height:10px;background:#27ae60;margin-right:8px;"></span>Sangat Puas</td>
+                            <td class="text-center">{{ $stats['sangat_puas'] ?? 0 }}</td>
+                            <td class="text-center">{{ ($stats['total'] ?? 0) > 0 ? number_format(($stats['sangat_puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0 }}%</td>
+                        </tr>
+                        <tr>
+                            <td><span style="display:inline-block;width:10px;height:10px;background:#f39c12;margin-right:8px;"></span>Puas</td>
+                            <td class="text-center">{{ $stats['puas'] ?? 0 }}</td>
+                            <td class="text-center">{{ ($stats['total'] ?? 0) > 0 ? number_format(($stats['puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0 }}%</td>
+                        </tr>
+                        <tr>
+                            <td><span style="display:inline-block;width:10px;height:10px;background:#e74c3c;margin-right:8px;"></span>Tidak Puas</td>
+                            <td class="text-center">{{ $stats['tidak_puas'] ?? 0 }}</td>
+                            <td class="text-center">{{ ($stats['total'] ?? 0) > 0 ? number_format(($stats['tidak_puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0 }}%</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Filter & Tabel Data -->
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-bottom">
+<div class="card">
+    <div class="card-header">
         <form method="GET" action="{{ route('forms.index') }}" class="row g-2 align-items-center">
             <div class="col-md-4">
                 <div class="input-group input-group-sm">
                     <input type="text" name="search" class="form-control" 
                            placeholder="Cari nama pelanggan..." value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-dark">
+                    <button type="submit" class= "btn btn-sm btn-primary">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -95,10 +82,18 @@
                         <option value="puas" {{ request('filter') == 'puas' ? 'selected' : '' }}>Puas</option>
                         <option value="sangat_puas" {{ request('filter') == 'sangat_puas' ? 'selected' : '' }}>Sangat Puas</option>
                     </select>
-                    <input type="date" name="start_date" class="form-control form-control-sm" 
-                           value="{{ request('start_date') }}" title="Tanggal Mulai" style="width: 140px;">
-                    <input type="date" name="end_date" class="form-control form-control-sm" 
-                           value="{{ request('end_date') }}" title="Tanggal Akhir" style="width: 140px;">
+
+                    <input type="date" name="start_date" class="form-control form-control-sm"
+                        value="{{ request('start_date') }}" title="Tanggal Mulai" style="width: 140px;">
+
+                    <input type="date" name="end_date" class="form-control form-control-sm"
+                        value="{{ request('end_date') }}" title="Tanggal Akhir" style="width: 140px;">
+
+                    <!-- tombol terapkan filter -->
+                    <button type="submit" class="btn btn-sm btn-primary" title="Terapkan Filter">
+                        <i class="fas fa-check me-1"></i> Terapkan
+                    </button>
+
                     @if(request('filter') || request('search') || request('start_date') || request('end_date'))
                         <a href="{{ route('forms.index') }}" class="btn btn-sm btn-outline-secondary" title="Atur Ulang">
                             <i class="fas fa-times"></i>
@@ -106,6 +101,7 @@
                     @endif
                 </div>
             </div>
+            
         </form>
     </div>
     <div class="card-body p-0">
@@ -227,7 +223,49 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statsData = {
+            total: {{ $stats['total'] ?? 0 }},
+            sangat_puas: {{ $stats['sangat_puas'] ?? 0 }},
+            puas: {{ $stats['puas'] ?? 0 }},
+            tidak_puas: {{ $stats['tidak_puas'] ?? 0 }}
+        };
+        
+        const ctx = document.getElementById('formAssessmentChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sangat Puas', 'Puas', 'Tidak Puas'],
+                datasets: [{
+                    data: [statsData.sangat_puas, statsData.puas, statsData.tidak_puas],
+                    backgroundColor: ['#27ae60', '#f39c12', '#e74c3c'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const total = statsData.total;
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return context.label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '55%'
+            }
+        });
+    });
+    
     function confirmDelete(id) {
         if (confirm('Apakah Anda yakin ingin menghapus formulir ini? Data yang dihapus tidak dapat dikembalikan.')) {
             document.getElementById('delete-form-' + id).submit();

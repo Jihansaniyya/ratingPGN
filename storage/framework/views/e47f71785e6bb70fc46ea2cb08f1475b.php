@@ -2,159 +2,190 @@
 
 <?php $__env->startSection('title', 'Dashboard - Rating PGN'); ?>
 
+<?php $__env->startPush('styles'); ?>
+<style>
+    /* Card hover effects */
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    /* Table row hover */
+    .table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+    .table tbody tr:hover td {
+        background-color: #f8f9fc;
+    }
+    
+    /* Badge pulse on hover */
+    .badge {
+        transition: transform 0.15s ease;
+    }
+    .badge:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Eye icon hover */
+    .table a.text-secondary {
+        transition: color 0.15s ease, transform 0.15s ease;
+        display: inline-block;
+    }
+    .table a.text-secondary:hover {
+        color: #4e73df !important;
+        transform: scale(1.2);
+    }
+    
+    /* Button hover effect */
+    .btn-primary {
+        transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(78, 115, 223, 0.3);
+    }
+    
+    /* Stat number counter animation */
+    .stat-number {
+        display: inline-block;
+    }
+    
+    /* Fade in animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .row.mb-4 .col-md-6:nth-child(1) .card { animation: fadeInUp 0.3s ease forwards; }
+    .row.mb-4 .col-md-6:nth-child(2) .card { animation: fadeInUp 0.3s ease 0.1s forwards; }
+    .row.mb-4 .col-md-6:nth-child(3) .card { animation: fadeInUp 0.3s ease 0.2s forwards; }
+    .row.mb-4 .col-md-6:nth-child(4) .card { animation: fadeInUp 0.3s ease 0.3s forwards; }
+    .row.mb-4 .col-md-6:nth-child(5) .card { animation: fadeInUp 0.3s ease 0.4s forwards; }
+</style>
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startSection('content'); ?>
 <div class="page-header">
-    <h1 class="page-title">
-        <i class="fas fa-home"></i>
-        Dashboard
-    </h1>
-    <div class="text-end">
-        <p class="mb-0 text-dark"><i class="fas fa-calendar-alt me-2"></i><?php echo e(now()->translatedFormat('d F Y')); ?></p>
-        <small class="text-muted">Penanggung Jawab: <?php echo e(auth()->user()->name); ?></small>
-    </div>
+    <h4 class="page-title"><i class="fa-solid fa-chart-line"></i>Dashboard</h4>
+    <small class="text-secondary"><?php echo e(now()->translatedFormat('l, d F Y')); ?></small>
 </div>
 
-<!-- Stats Cards -->
-<div class="row mb-4">
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="stat-label">Total Form</div>
-                    <div class="stat-value"><?php echo e($stats['total_forms']); ?></div>
-                </div>
-                <div class="stat-icon primary">
-                    <i class="fas fa-file-alt"></i>
-                </div>
+<!-- Stats Row -->
+<div class="row mb-5">
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card h-100" style="border-left: 4px solid #4e73df;">
+            <div class="card-body py-3">
+                <div class="text-uppercase text-secondary small mb-1">
+                    <i class="fa-solid fa-copy"></i> Total Formulir</div>
+                <div class="h4 mb-0 fw-bold text-dark"><?php echo e($stats['total_forms']); ?></div>
             </div>
         </div>
     </div>
-    
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="stat-card info">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="stat-label">Total Customer</div>
-                    <div class="stat-value"><?php echo e($stats['total_customers']); ?></div>
-                </div>
-                <div class="stat-icon info">
-                    <i class="fas fa-users"></i>
-                </div>
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card h-100" style="border-left: 4px solid #36b9cc;">
+            <div class="card-body py-3">
+                <div class="text-uppercase text-secondary small mb-1">
+                    <i class="fa-solid fa-users"></i> Total Pengguna</div>
+                <div class="h4 mb-0 fw-bold text-dark"><?php echo e($stats['total_users']); ?></div>
             </div>
         </div>
     </div>
-
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="stat-card success">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="stat-label">Sangat Puas</div>
-                    <div class="stat-value"><?php echo e($stats['total_sangat_puas']); ?></div>
-                </div>
-                <div class="stat-icon success">
-                    <i class="fas fa-smile-beam"></i>
-                </div>
+    <div class="col-md-6 col-lg-2 mb-3">
+        <div class="card h-100" style="border-left: 4px solid #27ae60;">
+            <div class="card-body py-3">
+                <div class="text-uppercase text-secondary small mb-1">
+                    <i class="fa-solid fa-face-smile"></i> Sangat Puas</div>
+                <div class="h4 mb-0 fw-bold" style="color: #27ae60;"><?php echo e($stats['total_sangat_puas']); ?></div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="stat-card warning">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="stat-label">Puas</div>
-                    <div class="stat-value"><?php echo e($stats['total_puas']); ?></div>
-                </div>
-                <div class="stat-icon warning">
-                    <i class="fas fa-meh"></i>
-                </div>
+    <div class="col-md-6 col-lg-2 mb-3">
+        <div class="card h-100" style="border-left: 4px solid #f39c12;">
+            <div class="card-body py-3">
+                <div class="text-uppercase text-secondary small mb-1">
+                    <i class="fa-solid fa-face-meh"></i> Puas</div>
+                <div class="h4 mb-0 fw-bold" style="color: #f39c12;"><?php echo e($stats['total_puas']); ?></div>
             </div>
         </div>
     </div>
-    
-    <div class="col-xl-4 col-md-6 mb-4">
-        <div class="stat-card danger">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="stat-label">Tidak Puas</div>
-                    <div class="stat-value"><?php echo e($stats['total_tidak_puas']); ?></div>
-                </div>
-                <div class="stat-icon danger">
-                    <i class="fas fa-frown"></i>
-                </div>
+    <div class="col-md-6 col-lg-2 mb-3">
+        <div class="card h-100" style="border-left: 4px solid #e74a3b;">
+            <div class="card-body py-3">
+                <div class="text-uppercase text-secondary small mb-1">
+                    <i class="fa-solid fa-face-frown"></i> Tidak Puas</div>
+                <div class="h4 mb-0 fw-bold" style="color: #e74a3b;"><?php echo e($stats['total_tidak_puas']); ?></div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <!-- Assessment Chart -->
-    <div class="col-xl-4 mb-4">
+    <!-- Chart -->
+    <div class="col-lg-4 mb-4">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-chart-pie me-2"></i> Distribusi Assessment</span>
+            <div class="card-header bg-white py-3">
+                <span class="fw-semibold text-dark">Distribusi Kepuasan</span>
             </div>
             <div class="card-body">
-                <canvas id="assessmentChart"></canvas>
+                <canvas id="assessmentChart" height="220"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Recent Forms -->
-    <div class="col-xl-8 mb-4">
+    <!-- Table -->
+    <div class="col-lg-8 mb-4">
         <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-clock me-2"></i> Form Terbaru</span>
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold text-dark">Formulir Terbaru</span>
                 <a href="<?php echo e(route('forms.index')); ?>" class="btn btn-sm btn-primary">Lihat Semua</a>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Customer</th>
-                                <th>Layanan</th>
-                                <th>Assessment</th>
-                                <th>Tanggal</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $__empty_1 = true; $__currentLoopData = $recentForms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <tr>
-                                <td><?php echo e($index + 1); ?></td>
-                                <td><?php echo e($form->customer->customer_name); ?></td>
-                                <td><?php echo e($form->customer->layanan_service); ?></td>
-                                <td>
-                                    <?php if($form->assessment == 'sangat_puas'): ?>
-                                        <span class="badge bg-success">Sangat Puas</span>
-                                    <?php elseif($form->assessment == 'puas'): ?>
-                                        <span class="badge bg-warning text-dark">Puas</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-danger">Tidak Puas</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td><?php echo e($form->created_at->format('d/m/Y')); ?></td>
-                                <td>
-                                    <a href="<?php echo e(route('forms.show', $form)); ?>" class="btn btn-outline-secondary" title="Lihat">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr class="bg-light">
+                            <th class="border-0 ps-4">Pelanggan</th>
+                            <th class="border-0">Layanan</th>
+                            <th class="border-0">Penilaian</th>
+                            <th class="border-0">Tanggal</th>
+                            <th class="border-0 text-center pe-4">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $__empty_1 = true; $__currentLoopData = $recentForms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr>
+                            <td class="ps-4"><?php echo e($form->customer->customer_name); ?></td>
+                            <td class="text-secondary"><?php echo e($form->customer->layanan_service); ?></td>
+                            <td>
+                                <?php if($form->assessment == 'sangat_puas'): ?>
+                                    <span class="badge bg-success">Sangat Puas</span>
+                                <?php elseif($form->assessment == 'puas'): ?>
+                                    <span class="badge bg-warning text-dark">Puas</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger">Tidak Puas</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-secondary"><?php echo e($form->created_at->format('d/m/Y')); ?></td>
+                            <td class="text-center pe-4">
+                                <a href="<?php echo e(route('forms.show', $form)); ?>" class="text-secondary" title="Lihat">
                                     <i class="fas fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
-                                    Belum ada data form
-                                </td>
-                            </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Belum ada data</td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -164,26 +195,59 @@
 <?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Assessment Chart
-    const ctx = document.getElementById('assessmentChart').getContext('2d');
-    new Chart(ctx, {
+    // Chart dengan animasi
+    new Chart(document.getElementById('assessmentChart'), {
         type: 'doughnut',
         data: {
             labels: <?php echo json_encode($assessmentData['labels']); ?>,
-            datasets: [{
+            datasets: [{ 
                 data: <?php echo json_encode($assessmentData['data']); ?>,
-                backgroundColor: ['#e74a3b', '#f6c23e', '#1cc88a'],
-                borderWidth: 0
+                backgroundColor: ['#e74c3c', '#f39c12', '#27ae60'],
+                hoverOffset: 8,
+                borderWidth: 2,
+                borderColor: '#fff'
             }]
         },
         options: {
-            responsive: true,
             maintainAspectRatio: false,
+            cutout: '70%',
+            animation: {
+                animateRotate: true,
+                animateScale: true,
+                duration: 800,
+                easing: 'easeOutQuart'
+            },
             plugins: {
-                legend: {
-                    position: 'bottom'
+                legend: { 
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    padding: 12,
+                    cornerRadius: 8
                 }
             }
+        }
+    });
+
+    // Animasi angka statistik
+    document.querySelectorAll('.h4.fw-bold').forEach(el => {
+        const target = parseInt(el.textContent);
+        if (!isNaN(target) && target > 0) {
+            let current = 0;
+            const increment = Math.ceil(target / 20);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                el.textContent = current;
+            }, 30);
         }
     });
 </script>

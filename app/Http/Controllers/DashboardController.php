@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OnSiteForm;
-use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -15,7 +15,7 @@ class DashboardController extends Controller
     {
         $stats = [
             'total_forms' => OnSiteForm::count(),
-            'total_customers' => Customer::count(),
+            'total_users' => User::count(),
             'total_tidak_puas' => OnSiteForm::where('assessment', 'tidak_puas')->count(),
             'total_puas' => OnSiteForm::where('assessment', 'puas')->count(),
             'total_sangat_puas' => OnSiteForm::where('assessment', 'sangat_puas')->count(),

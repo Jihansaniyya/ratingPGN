@@ -403,7 +403,7 @@
     <nav class="sidebar">
         <div class="sidebar-brand">
             <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Gasnet" style="max-width: 150px; margin-bottom: 10px;">
-            <h2><i class="fas fa-star me-2"></i>Rating Gasnet</h2>
+            <h2>On-Site Gasnet</h2>
             <small>PT Telemedia Dinamika Sarana</small>
         </div>
         <div class="sidebar-menu">

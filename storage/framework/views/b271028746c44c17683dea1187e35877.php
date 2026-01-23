@@ -13,7 +13,7 @@
     </a>
 </div>
 
-<form action="<?php echo e(route('forms.store')); ?>" method="POST" id="onSiteForm">
+<form action="<?php echo e(route('forms.store')); ?>" method="POST" id="onSiteForm" enctype="multipart/form-data">
     <?php echo csrf_field(); ?>
     
     <?php if($errors->any()): ?>
@@ -269,20 +269,33 @@ unset($__errorArgs, $__bag); ?>
     <!-- Maintenance Device Section -->
     <div class="form-section">
         <h4 class="form-section-title">
-            <i class="fas fa-tools me-2"></i> Maintenance Device
+            <i class="fas fa-tools me-2"></i> Maintenance Device <span class="text-danger">*</span>
         </h4>
         <div id="devices-container">
-            <div class="row device-row mb-2">
-                <div class="col-md-5">
-                    <input type="text" name="devices[0][device_name]" class="form-control" placeholder="Device Name">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="devices[0][serial_number]" class="form-control" placeholder="Serial Number">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)" disabled>
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <div class="device-row mb-3 p-3 border rounded bg-light">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Device Name <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[0][device_name]" class="form-control" placeholder="Masukkan nama device" required>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Serial Number <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[0][serial_number]" class="form-control" placeholder="Masukkan serial number" required>
+                    </div>
+                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-remove-device w-100" onclick="removeDevice(this)" disabled>
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-box me-1"></i> Foto Produk <span class="text-danger">*</span></label>
+                        <input type="file" name="devices[0][product_photo]" class="form-control" accept="image/jpeg,image/png,image/jpg" required>
+                        <small class="text-muted">Format: JPG, PNG. Maks: 2MB</small>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan <span class="text-danger">*</span></label>
+                        <textarea name="devices[0][keterangan]" class="form-control" rows="2" placeholder="Masukkan keterangan device..." required></textarea>
+                    </div>
                 </div>
             </div>
         </div>
@@ -298,55 +311,91 @@ unset($__errorArgs, $__bag); ?>
         </h4>
         
         <div class="mb-4">
-            <label class="form-label fw-bold">Activity</label>
-            <div class="row">
+            <label class="form-label fw-bold">Activity <span class="text-danger">*</span></label>
+            <small class="text-muted d-block mb-2">Pilih minimal satu aktivitas</small>
+            <div class="row" id="activity-group">
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_survey" value="1" id="survey">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_survey" value="1" id="survey">
                         <label class="form-check-label" for="survey">Survey</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_activation" value="1" id="activation">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_activation" value="1" id="activation">
                         <label class="form-check-label" for="activation">Activation</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_upgrade" value="1" id="upgrade">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_upgrade" value="1" id="upgrade">
                         <label class="form-check-label" for="upgrade">Upgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_downgrade" value="1" id="downgrade">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_downgrade" value="1" id="downgrade">
                         <label class="form-check-label" for="downgrade">Downgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot">
                         <label class="form-check-label" for="troubleshoot">Troubleshoot</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive">
                         <label class="form-check-label" for="preventive">Preventive Maintenance</label>
                     </div>
                 </div>
             </div>
+            <div id="activity-error" class="text-danger small mt-1" style="display: none;">Pilih minimal satu aktivitas</div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Complaint</label>
-            <textarea name="complaint" class="form-control" rows="3" placeholder="Masukkan keluhan customer..."><?php echo e(old('complaint')); ?></textarea>
+            <label class="form-label fw-bold">Complaint <span class="text-danger">*</span></label>
+            <textarea name="complaint" class="form-control <?php $__errorArgs = ['complaint'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" rows="3" placeholder="Masukkan keluhan customer..." required><?php echo e(old('complaint')); ?></textarea>
+            <?php $__errorArgs = ['complaint'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <div class="invalid-feedback"><?php echo e($message); ?></div>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Action</label>
-            <textarea name="action" class="form-control" rows="3" placeholder="Masukkan tindakan yang dilakukan..."><?php echo e(old('action')); ?></textarea>
+            <label class="form-label fw-bold">Action <span class="text-danger">*</span></label>
+            <textarea name="action" class="form-control <?php $__errorArgs = ['action'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" rows="3" placeholder="Masukkan tindakan yang dilakukan..." required><?php echo e(old('action')); ?></textarea>
+            <?php $__errorArgs = ['action'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <div class="invalid-feedback"><?php echo e($message); ?></div>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
         </div>
     </div>
 
@@ -439,9 +488,9 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <div class="card <?php $__errorArgs = ['signature_first_party'];
+        <div class="row align-items-stretch">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card w-100 <?php $__errorArgs = ['signature_first_party'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -453,7 +502,7 @@ unset($__errorArgs, $__bag); ?>">
                         Pihak Pertama <span class="text-warning">*</span><br>
                         <strong>PT TELEMEDIA DINAMIKA SARANA</strong>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <div class="mb-2">
                             <input type="text" name="first_party_name" class="form-control <?php $__errorArgs = ['first_party_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -474,7 +523,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
-                        <div class="signature-pad" id="signaturePad1">
+                        <div class="signature-pad flex-grow-1" id="signaturePad1">
                             <canvas id="canvas1"></canvas>
                         </div>
                         <input type="hidden" name="signature_first_party" id="signature_first_party" required>
@@ -494,8 +543,8 @@ unset($__errorArgs, $__bag); ?>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <div class="card <?php $__errorArgs = ['signature_second_party'];
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card w-100 <?php $__errorArgs = ['signature_second_party'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -504,9 +553,10 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>">
                     <div class="card-header bg-secondary text-white text-center">
-                        Pihak Kedua <span class="text-warning">*</span>
+                        Pihak Kedua <span class="text-warning">*</span><br>
+                        <strong>&nbsp;</strong>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <div class="mb-2">
                             <input type="text" name="second_party_name" class="form-control <?php $__errorArgs = ['second_party_name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -527,7 +577,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
-                        <div class="signature-pad" id="signaturePad2">
+                        <div class="signature-pad flex-grow-1" id="signaturePad2">
                             <canvas id="canvas2"></canvas>
                         </div>
                         <input type="hidden" name="signature_second_party" id="signature_second_party" required>
@@ -647,6 +697,9 @@ unset($__errorArgs, $__bag); ?>
         kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
         kelSelect.disabled = true;
 
+        // Reset lokasi field when province changes
+        document.querySelector('input[name="location"]').value = '';
+
         if (provId) {
             try {
                 const response = await fetch(`${API_BASE}/regencies/${provId}.json`);
@@ -665,6 +718,7 @@ unset($__errorArgs, $__bag); ?>
     document.getElementById('kota_kabupaten').addEventListener('change', async function() {
         const selectedOption = this.options[this.selectedIndex];
         const cityId = selectedOption.dataset.id;
+        const cityName = selectedOption.value;
         const kecSelect = document.getElementById('kecamatan');
         const kelSelect = document.getElementById('kelurahan');
 
@@ -673,6 +727,16 @@ unset($__errorArgs, $__bag); ?>
         kecSelect.disabled = true;
         kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
         kelSelect.disabled = true;
+
+        // Auto-fill lokasi berdasarkan kota yang dipilih
+        const locationInput = document.querySelector('input[name="location"]');
+        if (cityName) {
+            // Hapus prefix KOTA/KABUPATEN jika ada
+            let cleanCityName = cityName.replace(/^(KOTA |KABUPATEN |KAB\. )/i, '');
+            locationInput.value = cleanCityName;
+        } else {
+            locationInput.value = '';
+        }
 
         if (cityId) {
             try {
@@ -723,17 +787,30 @@ unset($__errorArgs, $__bag); ?>
     function addDevice() {
         const container = document.getElementById('devices-container');
         const html = `
-            <div class="row device-row mb-2">
-                <div class="col-md-5">
-                    <input type="text" name="devices[${deviceIndex}][device_name]" class="form-control" placeholder="Device Name">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="devices[${deviceIndex}][serial_number]" class="form-control" placeholder="Serial Number">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-remove-device" onclick="removeDevice(this)">
-                        <i class="fas fa-trash"></i>
-                    </button>
+            <div class="device-row mb-3 p-3 border rounded bg-light">
+                <div class="row">
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Device Name <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[${deviceIndex}][device_name]" class="form-control" placeholder="Masukkan nama device" required>
+                    </div>
+                    <div class="col-md-5 mb-2">
+                        <label class="form-label">Serial Number <span class="text-danger">*</span></label>
+                        <input type="text" name="devices[${deviceIndex}][serial_number]" class="form-control" placeholder="Masukkan serial number" required>
+                    </div>
+                    <div class="col-md-2 mb-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-remove-device w-100" onclick="removeDevice(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-box me-1"></i> Foto Produk <span class="text-danger">*</span></label>
+                        <input type="file" name="devices[${deviceIndex}][product_photo]" class="form-control" accept="image/jpeg,image/png,image/jpg" required>
+                        <small class="text-muted">Format: JPG, PNG. Maks: 2MB</small>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan <span class="text-danger">*</span></label>
+                        <textarea name="devices[${deviceIndex}][keterangan]" class="form-control" rows="2" placeholder="Masukkan keterangan device..." required></textarea>
+                    </div>
                 </div>
             </div>
         `;
@@ -762,6 +839,49 @@ unset($__errorArgs, $__bag); ?>
         element.classList.add('selected');
         element.querySelector('input').checked = true;
     }
+
+    // Form validation before submit
+    document.getElementById('onSiteForm').addEventListener('submit', function(e) {
+        // Validate at least one activity is checked
+        const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
+        const isAnyActivityChecked = Array.from(activityCheckboxes).some(cb => cb.checked);
+        
+        if (!isAnyActivityChecked) {
+            e.preventDefault();
+            document.getElementById('activity-error').style.display = 'block';
+            document.getElementById('activity-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        } else {
+            document.getElementById('activity-error').style.display = 'none';
+        }
+
+        // Validate signatures
+        if (signaturePad1.isEmpty()) {
+            e.preventDefault();
+            alert('Tanda tangan Pihak Pertama wajib diisi!');
+            document.getElementById('signaturePad1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+        
+        if (signaturePad2.isEmpty()) {
+            e.preventDefault();
+            alert('Tanda tangan Pihak Kedua wajib diisi!');
+            document.getElementById('signaturePad2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+
+        // Save signature data
+        document.getElementById('signature_first_party').value = signaturePad1.toDataURL();
+        document.getElementById('signature_second_party').value = signaturePad2.toDataURL();
+    });
+
+    // Hide activity error when any checkbox is checked
+    document.querySelectorAll('.activity-checkbox').forEach(cb => {
+        cb.addEventListener('change', function() {
+            const isAnyChecked = Array.from(document.querySelectorAll('.activity-checkbox')).some(c => c.checked);
+            document.getElementById('activity-error').style.display = isAnyChecked ? 'none' : 'block';
+        });
+    });
 </script>
 <?php $__env->stopPush(); ?>
 

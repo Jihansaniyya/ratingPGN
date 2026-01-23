@@ -20,7 +20,7 @@
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" 
                            placeholder="Cari nama atau email petugas..." value="<?php echo e(request('search')); ?>">
-                    <button class="btn btn-dark" type="submit">
+                    <button class="btn btn-sm btn-primary" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
                     <?php if(request('search')): ?>
@@ -55,10 +55,10 @@
                         <td><?php echo e($user->created_at->format('d/m/Y H:i')); ?></td>
                         <td class="text-center">
                             <div class="btn-group">
-                                <a href="<?php echo e(route('users.edit', $user)); ?>" class="btn btn-sm btn-warning" title="Edit">
+                                <a href="<?php echo e(route('users.edit', $user)); ?>" class="btn btn-outline-secondary" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button type="button" class="btn btn-sm btn-danger" title="Hapus" 
+                                <button type="button" class="btn btn-outline-secondary" title="Hapus" 
                                         onclick="confirmDelete(<?php echo e($user->id); ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>

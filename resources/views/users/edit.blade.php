@@ -53,7 +53,7 @@
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Biarkan kosong apabila tidak ingin mengubah kata sandi.</small>
+                        <small class="text-muted">Biarkan kosong apabila tidak ingin mengubah kata sandi. Jika diisi: minimal 8 karakter, harus ada huruf kapital dan simbol (!@#$%^&* dll)</small>
                     </div>
 
                     <div class="mb-4">

@@ -370,22 +370,66 @@
         <!-- Kop Surat dengan Logo -->
         <div class="kop-surat">
             <div class="kop-logo">
-                <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo Gasnet">
+                @php
+                    $logoPath = public_path('images/logoGASNET.png');
+                    $logoData = '';
+                    if (file_exists($logoPath)) {
+                        $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+                    }
+                @endphp
+                @if($logoData)
+                    <img src="{{ $logoData }}" alt="Logo Gasnet">
+                @else
+                    <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo Gasnet">
+                @endif
             </div>
             <div class="kop-text">
-                <h1>GASNET</h1>
-                <h2>PT TELEMEDIA DINAMIKA SARANA</h2>
-                <p class="alamat">Jl. Raya Industri No. 123, Jakarta Pusat 10110</p>
-                <p class="alamat">Telp: (021) 1234567 | Email: info@gasnet.co.id | www.gasnet.co.id</p>
+                <h1>PT TELEMEDIA DINAMIKA SARANA</h1>
+                <h2>GASNET Internet Service Provider</h2>
+                <p class="alamat">Jl. Raya Industri No. 123, Jakarta Pusat 10110 | Telp: (021) 1234567</p>
             </div>
             <div class="kop-spacer"></div>
         </div>
 
-        <!-- Judul Form -->
-        <div class="form-title">
-            <h3>FORM ON SITE CUSTOMER</h3>
-        </div>
+        <!-- Nomor Surat -->
+         @php
+        $bulanRomawi = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV',
+            5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII',
+            9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
 
+        $bulan = $form->form_date
+            ? (int) $form->form_date->format('m')
+            : (int) now()->format('m');
+
+        $tahun = $form->form_date
+            ? $form->form_date->format('Y')
+            : now()->format('Y');
+        @endphp
+
+        <div style="text-align: right; margin-bottom: 10px; font-size: 10px;">
+            <table style="margin-right: auto;">
+                <tr>
+                    <td style="padding: 2px 5px;">Nomor</td>
+                    <td style="padding: 2px 5px;">:</td>
+                    <td style="padding: 2px 5px; font-weight: bold;">
+                        {{ sprintf('%03d', $form->id) }}/OSC-GASNET/{{ $bulanRomawi[$bulan] }}/{{ $tahun }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="padding: 2px 5px;">Tanggal</td>
+                    <td style="padding: 2px 5px;">:</td>
+                    <td style="padding: 2px 5px;">{{ $form->form_date ? $form->form_date->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 2px 5px;">Perihal</td>
+                    <td style="padding: 2px 5px;">:</td>
+                    <td style="padding: 2px 5px;">Form Onsite Customer</td>
+                </tr>
+            </table>
+        </div>
         <!-- Customer Detail -->
         <div class="section">
             <div class="section-title">CUSTOMER DETAIL</div>
@@ -424,8 +468,10 @@
                 <thead>
                     <tr>
                         <th style="width: 5%;">No</th>
-                        <th style="width: 47.5%;">Device Name</th>
-                        <th style="width: 47.5%;">Serial Number</th>
+                        <th style="width: 20%;">Device Name</th>
+                        <th style="width: 20%;">Serial Number</th>
+                        <th style="width: 25%;">Foto Produk</th>
+                        <th style="width: 30%;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -434,11 +480,34 @@
                         <td style="text-align: center;">{{ $index + 1 }}</td>
                         <td>{{ $device->device_name }}</td>
                         <td>{{ $device->serial_number }}</td>
+                        <td style="text-align: center;">
+                            @if($device->product_photo)
+                                @php
+                                    $photoPath = storage_path('app/public/' . $device->product_photo);
+                                    $photoData = '';
+                                    if (file_exists($photoPath)) {
+                                        $extension = pathinfo($photoPath, PATHINFO_EXTENSION);
+                                        $mimeType = $extension === 'png' ? 'image/png' : 'image/jpeg';
+                                        $photoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($photoPath));
+                                    }
+                                @endphp
+                                @if($photoData)
+                                    <img src="{{ $photoData }}" alt="Foto Produk" style="max-width: 80px; max-height: 60px;">
+                                @else
+                                    <span style="color: #999;">-</span>
+                                @endif
+                            @else
+                                <span style="color: #999;">-</span>
+                            @endif
+                        </td>
+                        <td>{{ $device->keterangan ?? '-' }}</td>
                     </tr>
                     @empty
                     <tr>
                         <td style="text-align: center;">1</td>
                         <td>-</td>
+                        <td>-</td>
+                        <td style="text-align: center;">-</td>
                         <td>-</td>
                     </tr>
                     @endforelse
@@ -569,8 +638,6 @@
 
         <!-- Footer -->
         <div class="footer">
-            <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo">
-            <p><strong>PT TELEMEDIA DINAMIKA SARANA - GASNET</strong></p>
             <p>Dokumen ini dicetak dari Sistem Rating Customer Gasnet | © {{ date('Y') }} All Rights Reserved</p>
         </div>
     </div>

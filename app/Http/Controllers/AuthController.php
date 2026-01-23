@@ -51,12 +51,19 @@ class AuthController extends Controller
     {
         $request->validate([
             'current_password' => 'required',
-            'password' => 'required|min:6|confirmed',
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/[A-Z]/',      // minimal satu huruf kapital
+                'regex:/[!@#$%^&*(),.?":{}|<>]/',  // minimal satu simbol
+            ],
         ], [
             'current_password.required' => 'Password saat ini wajib diisi.',
             'password.required' => 'Password baru wajib diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.regex' => 'Password harus mengandung minimal satu huruf kapital dan satu simbol.',
         ]);
 
         $user = Auth::user();

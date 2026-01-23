@@ -44,10 +44,11 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
                         <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
-                               placeholder="Minimal 6 karakter" required>
+                               placeholder="Minimal 8 karakter, huruf kapital & simbol" required>
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <small class="text-muted">Minimal 8 karakter, harus ada huruf kapital dan simbol (!@#$%^&* dll)</small>
                     </div>
 
                     <div class="mb-4">

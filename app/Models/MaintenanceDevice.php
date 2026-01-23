@@ -13,6 +13,8 @@ class MaintenanceDevice extends Model
         'on_site_form_id',
         'device_name',
         'serial_number',
+        'product_photo',
+        'keterangan',
     ];
 
     /**

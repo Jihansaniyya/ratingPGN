@@ -54,60 +54,44 @@
     </div>
 </div>
 
-<!-- Statistics Cards -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #1a5276 !important;">
-            <div class="card-body text-center py-4">
-                <div class="d-flex align-items-center justify-content-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(26, 82, 118, 0.1);">
-                        <i class="fas fa-file-alt fa-lg" style="color: #1a5276;"></i>
-                    </div>
+<!-- Diagram Penilaian -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center border-end">
+                <div style="max-width: 180px; margin: 0 auto;">
+                    <canvas id="assessmentChart"></canvas>
                 </div>
-                <h2 class="mb-1 fw-bold" style="color: #1a5276;">{{ $stats['total'] }}</h2>
-                <p class="mb-0 text-muted">Total Formulir</p>
+                <p class="mb-0 mt-2"><strong>Total: {{ $stats['total'] }}</strong></p>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #27ae60 !important;">
-            <div class="card-body text-center py-4">
-                <div class="d-flex align-items-center justify-content-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(39, 174, 96, 0.1);">
-                        <i class="fas fa-smile-beam fa-lg text-success"></i>
-                    </div>
-                </div>
-                <h2 class="mb-1 fw-bold text-success">{{ $stats['sangat_puas'] }}</h2>
-                <p class="mb-0 text-muted">Kategori Sangat Puas</p>
-                <small class="text-success">{{ $stats['total'] > 0 ? number_format($stats['sangat_puas']/$stats['total']*100, 1) : 0 }}%</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #f39c12 !important;">
-            <div class="card-body text-center py-4">
-                <div class="d-flex align-items-center justify-content-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(243, 156, 18, 0.1);">
-                        <i class="fas fa-meh fa-lg text-warning"></i>
-                    </div>
-                </div>
-                <h2 class="mb-1 fw-bold text-warning">{{ $stats['puas'] }}</h2>
-                <p class="mb-0 text-muted">Kategori Puas</p>
-                <small class="text-warning">{{ $stats['total'] > 0 ? number_format($stats['puas']/$stats['total']*100, 1) : 0 }}%</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #e74c3c !important;">
-            <div class="card-body text-center py-4">
-                <div class="d-flex align-items-center justify-content-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(231, 76, 60, 0.1);">
-                        <i class="fas fa-frown fa-lg text-danger"></i>
-                    </div>
-                </div>
-                <h2 class="mb-1 fw-bold text-danger">{{ $stats['tidak_puas'] }}</h2>
-                <p class="mb-0 text-muted">Kategori Tidak Puas</p>
-                <small class="text-danger">{{ $stats['total'] > 0 ? number_format($stats['tidak_puas']/$stats['total']*100, 1) : 0 }}%</small>
+            <div class="col-md-8">
+                <h6 class="mb-3">Ringkasan Penilaian</h6>
+                <table class="table table-bordered table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Kategori</th>
+                            <th class="text-center">Jumlah</th>
+                            <th class="text-center">Persentase</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="display:inline-block;width:12px;height:12px;background:#27ae60;border-radius:2px;margin-right:8px;"></span>Sangat Puas</td>
+                            <td class="text-center"><strong>{{ $stats['sangat_puas'] }}</strong></td>
+                            <td class="text-center">{{ $stats['total'] > 0 ? number_format($stats['sangat_puas']/$stats['total']*100, 1) : 0 }}%</td>
+                        </tr>
+                        <tr>
+                            <td><span style="display:inline-block;width:12px;height:12px;background:#f39c12;border-radius:2px;margin-right:8px;"></span>Puas</td>
+                            <td class="text-center"><strong>{{ $stats['puas'] }}</strong></td>
+                            <td class="text-center">{{ $stats['total'] > 0 ? number_format($stats['puas']/$stats['total']*100, 1) : 0 }}%</td>
+                        </tr>
+                        <tr>
+                            <td><span style="display:inline-block;width:12px;height:12px;background:#e74c3c;border-radius:2px;margin-right:8px;"></span>Tidak Puas</td>
+                            <td class="text-center"><strong>{{ $stats['tidak_puas'] }}</strong></td>
+                            <td class="text-center">{{ $stats['total'] > 0 ? number_format($stats['tidak_puas']/$stats['total']*100, 1) : 0 }}%</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -115,8 +99,8 @@
 
 <!-- Data Table -->
 <div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center" style="background: #f8f9fa; border-left: 4px solid #1a5276;">
-        <h5 class="mb-0"><i class="fas fa-table me-2 text-primary"></i> Tabel Data Penilaian Pelanggan</h5>
+    <div class="card-header d-flex justify-content-between align-items-center bg-light">
+        <h6 class="mb-0">Data Penilaian Pelanggan</h6>
         <div class="d-flex gap-2">
             <a href="{{ route('reports.print', request()->query()) }}" target="_blank" class="btn btn-danger btn-sm">
                 <i class="fas fa-file-pdf me-1"></i> Unduh Berkas PDF
@@ -218,4 +202,58 @@
         @endif
     </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statsData = {
+        total: {{ $stats['total'] }},
+        sangat_puas: {{ $stats['sangat_puas'] }},
+        puas: {{ $stats['puas'] }},
+        tidak_puas: {{ $stats['tidak_puas'] }}
+    };
+    
+    const colors = {
+        sangat_puas: '#27ae60',
+        puas: '#f39c12',
+        tidak_puas: '#e74c3c'
+    };
+    
+    const ctx = document.getElementById('assessmentChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sangat Puas', 'Puas', 'Tidak Puas'],
+            datasets: [{
+                data: [statsData.sangat_puas, statsData.puas, statsData.tidak_puas],
+                backgroundColor: [colors.sangat_puas, colors.puas, colors.tidak_puas],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const total = statsData.total;
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return context.label + ': ' + value + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            },
+            cutout: '50%'
+        }
+    });
+});
+</script>
 @endsection
