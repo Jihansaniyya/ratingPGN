@@ -1,35 +1,35 @@
-@extends('layouts.app')
 
-@section('title', 'Detail Form On Site Customer')
 
-@section('content')
+<?php $__env->startSection('title', 'Detail Form On Site Customer'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="page-header no-print">
     <h1 class="page-title">
         <i class="fas fa-file-alt"></i>
         Detail Form On Site Customer
     </h1>
     <div>
-        <a href="{{ route('forms.pdf', $form) }}" class="btn btn-danger" target="_blank">
+        <a href="<?php echo e(route('forms.pdf', $form)); ?>" class="btn btn-danger" target="_blank">
             <i class="fas fa-file-pdf me-2"></i> PDF
         </a>
         <button class="btn btn-primary" onclick="window.print()">
             <i class="fas fa-print me-2"></i> Cetak
         </button>
-        @if($form->user_id == auth()->id())
-        <a href="{{ route('forms.edit', $form) }}" class="btn btn-warning">
+        <?php if($form->user_id == auth()->id()): ?>
+        <a href="<?php echo e(route('forms.edit', $form)); ?>" class="btn btn-warning">
             <i class="fas fa-edit me-2"></i> Edit
         </a>
-        @endif
-        @if(auth()->user()->isAdmin())
+        <?php endif; ?>
+        <?php if(auth()->user()->isAdmin()): ?>
         <button type="button" class="btn btn-dark" onclick="confirmDelete()">
             <i class="fas fa-trash me-2"></i> Hapus
         </button>
-        <form id="delete-form" action="{{ route('forms.destroy', $form) }}" method="POST" style="display: none;">
-            @csrf
-            @method('DELETE')
+        <form id="delete-form" action="<?php echo e(route('forms.destroy', $form)); ?>" method="POST" style="display: none;">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('DELETE'); ?>
         </form>
-        @endif
-        <a href="{{ route('forms.index') }}" class="btn btn-secondary">
+        <?php endif; ?>
+        <a href="<?php echo e(route('forms.index')); ?>" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i> Kembali
         </a>
     </div>
@@ -50,19 +50,19 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="40%"><strong>Customer Name</strong></td>
-                            <td>: {{ $form->customer?->customer_name ?? '-' }}</td>
+                            <td>: <?php echo e($form->customer?->customer_name ?? '-'); ?></td>
                         </tr>
                         <tr>
                             <td><strong>CID</strong></td>
-                            <td>: {{ $form->customer?->cid ?? '-' }}</td>
+                            <td>: <?php echo e($form->customer?->cid ?? '-'); ?></td>
                         </tr>
                         <tr>
                             <td><strong>Layanan / Service</strong></td>
-                            <td>: {{ $form->customer?->layanan_service ?? '-' }}</td>
+                            <td>: <?php echo e($form->customer?->layanan_service ?? '-'); ?></td>
                         </tr>
                         <tr>
                             <td><strong>Kapasitas / Capacity</strong></td>
-                            <td>: {{ $form->customer?->kapasitas_capacity ?? '-' }}</td>
+                            <td>: <?php echo e($form->customer?->kapasitas_capacity ?? '-'); ?></td>
                         </tr>
                     </table>
                 </div>
@@ -70,11 +70,11 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="40%"><strong>No. Telp (PIC)</strong></td>
-                            <td>: {{ $form->customer?->no_telp_pic ?? '-' }}</td>
+                            <td>: <?php echo e($form->customer?->no_telp_pic ?? '-'); ?></td>
                         </tr>
                         <tr>
                             <td><strong>E-mail</strong></td>
-                            <td>: {{ $form->customer?->email ?? '-' }}</td>
+                            <td>: <?php echo e($form->customer?->email ?? '-'); ?></td>
                         </tr>
                     </table>
                 </div>
@@ -89,23 +89,23 @@
                             <table class="table table-sm table-borderless mb-0">
                                 <tr>
                                     <td width="20%"><strong>Provinsi</strong></td>
-                                    <td>: {{ $form->customer?->provinsi ?? '-' }}</td>
+                                    <td>: <?php echo e($form->customer?->provinsi ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Kota/Kabupaten</strong></td>
-                                    <td>: {{ $form->customer?->kota_kabupaten ?? '-' }}</td>
+                                    <td>: <?php echo e($form->customer?->kota_kabupaten ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Kecamatan</strong></td>
-                                    <td>: {{ $form->customer?->kecamatan ?? '-' }}</td>
+                                    <td>: <?php echo e($form->customer?->kecamatan ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Kelurahan</strong></td>
-                                    <td>: {{ $form->customer?->kelurahan ?? '-' }}</td>
+                                    <td>: <?php echo e($form->customer?->kelurahan ?? '-'); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Alamat Lengkap</strong></td>
-                                    <td>: {{ $form->customer?->alamat_lengkap ?? '-' }}</td>
+                                    <td>: <?php echo e($form->customer?->alamat_lengkap ?? '-'); ?></td>
                                 </tr>
                             </table>
                         </div>
@@ -129,26 +129,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($form->maintenanceDevices as $device)
+                    <?php $__empty_1 = true; $__currentLoopData = $form->maintenanceDevices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $device): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <tr>
-                        <td>{{ $device->device_name }}</td>
-                        <td>{{ $device->serial_number }}</td>
+                        <td><?php echo e($device->device_name); ?></td>
+                        <td><?php echo e($device->serial_number); ?></td>
                         <td class="text-center">
-                            @if($device->product_photo)
-                                <a href="{{ asset('storage/' . $device->product_photo) }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $device->product_photo) }}" alt="Foto Produk" class="img-thumbnail" style="max-height: 80px;">
+                            <?php if($device->product_photo): ?>
+                                <a href="<?php echo e(asset('storage/' . $device->product_photo)); ?>" target="_blank">
+                                    <img src="<?php echo e(asset('storage/' . $device->product_photo)); ?>" alt="Foto Produk" class="img-thumbnail" style="max-height: 80px;">
                                 </a>
-                            @else
+                            <?php else: ?>
                                 <span class="text-muted">-</span>
-                            @endif
+                            <?php endif; ?>
                         </td>
-                        <td>{{ $device->keterangan ?? '-' }}</td>
+                        <td><?php echo e($device->keterangan ?? '-'); ?></td>
                     </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="4" class="text-center text-muted">Tidak ada device</td>
                     </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -162,27 +162,27 @@
             <div class="mb-3">
                 <strong>Activity:</strong>
                 <div class="mt-2">
-                    @if($form->activity_survey)
+                    <?php if($form->activity_survey): ?>
                         <span class="badge bg-primary me-1"><i class="fas fa-check me-1"></i> Survey</span>
-                    @endif
-                    @if($form->activity_activation)
+                    <?php endif; ?>
+                    <?php if($form->activity_activation): ?>
                         <span class="badge bg-primary me-1"><i class="fas fa-check me-1"></i> Activation</span>
-                    @endif
-                    @if($form->activity_upgrade)
+                    <?php endif; ?>
+                    <?php if($form->activity_upgrade): ?>
                         <span class="badge bg-primary me-1"><i class="fas fa-check me-1"></i> Upgrade</span>
-                    @endif
-                    @if($form->activity_downgrade)
+                    <?php endif; ?>
+                    <?php if($form->activity_downgrade): ?>
                         <span class="badge bg-primary me-1"><i class="fas fa-check me-1"></i> Downgrade</span>
-                    @endif
-                    @if($form->activity_troubleshoot)
+                    <?php endif; ?>
+                    <?php if($form->activity_troubleshoot): ?>
                         <span class="badge bg-primary me-1"><i class="fas fa-check me-1"></i> Troubleshoot</span>
-                    @endif
-                    @if($form->activity_preventive_maintenance)
+                    <?php endif; ?>
+                    <?php if($form->activity_preventive_maintenance): ?>
                         <span class="badge bg-primary me-1"><i class="fas fa-check me-1"></i> Preventive Maintenance</span>
-                    @endif
-                    @if(empty($form->activities))
+                    <?php endif; ?>
+                    <?php if(empty($form->activities)): ?>
                         <span class="text-muted">Tidak ada activity yang dipilih</span>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -190,13 +190,15 @@
                 <div class="col-md-12 mb-3">
                     <strong>Complaint:</strong>
                     <div class="border rounded p-3 bg-light mt-2">
-                        {{ $form->complaint ?: '-' }}
+                        <?php echo e($form->complaint ?: '-'); ?>
+
                     </div>
                 </div>
                 <div class="col-md-12 mb-3">
                     <strong>Action:</strong>
                     <div class="border rounded p-3 bg-light mt-2">
-                        {{ $form->action ?: '-' }}
+                        <?php echo e($form->action ?: '-'); ?>
+
                     </div>
                 </div>
             </div>
@@ -208,16 +210,16 @@
                 <i class="fas fa-star me-2"></i> Assessment
             </h5>
             <div class="text-center py-4">
-                @if($form->assessment == 'sangat_puas')
+                <?php if($form->assessment == 'sangat_puas'): ?>
                     <i class="fas fa-smile-beam fa-5x text-success mb-3"></i>
                     <h3 class="text-success">Sangat Puas</h3>
-                @elseif($form->assessment == 'puas')
+                <?php elseif($form->assessment == 'puas'): ?>
                     <i class="fas fa-meh fa-5x text-warning mb-3"></i>
                     <h3 class="text-warning">Puas</h3>
-                @else
+                <?php else: ?>
                     <i class="fas fa-frown fa-5x text-danger mb-3"></i>
                     <h3 class="text-danger">Tidak Puas</h3>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
 
@@ -227,42 +229,42 @@
                 <i class="fas fa-signature me-2"></i> Tanda Tangan
             </h5>
             <div class="text-center mb-3">
-                <strong>{{ $form->location }}, {{ $form->form_date ? $form->form_date->format('d F Y') : '-' }}</strong>
+                <strong><?php echo e($form->location); ?>, <?php echo e($form->form_date ? $form->form_date->format('d F Y') : '-'); ?></strong>
             </div>
             <div class="row">
                 <div class="col-md-6 text-center">
                     <div class="border rounded p-3">
                         <p class="mb-2"><strong>Pihak Pertama,</strong></p>
                         <p class="text-primary mb-3"><strong>PT TELEMEDIA DINAMIKA SARANA</strong></p>
-                        @if($form->signature_first_party)
-                            <img src="{{ $form->signature_first_party }}" alt="Signature" style="max-height: 100px;">
-                        @else
+                        <?php if($form->signature_first_party): ?>
+                            <img src="<?php echo e($form->signature_first_party); ?>" alt="Signature" style="max-height: 100px;">
+                        <?php else: ?>
                             <div style="height: 100px;"></div>
-                        @endif
+                        <?php endif; ?>
                         <hr>
-                        <p class="mb-0">( {{ $form->first_party_name ?: '________________' }} )</p>
+                        <p class="mb-0">( <?php echo e($form->first_party_name ?: '________________'); ?> )</p>
                     </div>
                 </div>
                 <div class="col-md-6 text-center">
                     <div class="border rounded p-3">
                         <p class="mb-2"><strong>Pihak Kedua,</strong></p>
                         <p class="mb-3">&nbsp;</p>
-                        @if($form->signature_second_party)
-                            <img src="{{ $form->signature_second_party }}" alt="Signature" style="max-height: 100px;">
-                        @else
+                        <?php if($form->signature_second_party): ?>
+                            <img src="<?php echo e($form->signature_second_party); ?>" alt="Signature" style="max-height: 100px;">
+                        <?php else: ?>
                             <div style="height: 100px;"></div>
-                        @endif
+                        <?php endif; ?>
                         <hr>
-                        <p class="mb-0">( {{ $form->second_party_name ?: '________________' }} )</p>
+                        <p class="mb-0">( <?php echo e($form->second_party_name ?: '________________'); ?> )</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     @media print {
         .sidebar, .top-navbar, .page-header, .no-print {
@@ -280,9 +282,9 @@
         }
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     function confirmDelete() {
         if (confirm('Apakah Anda yakin ingin menghapus form ini?')) {
@@ -290,10 +292,12 @@
         }
     }
     
-    @if(request('print'))
+    <?php if(request('print')): ?>
         window.onload = function() {
             window.print();
         }
-    @endif
+    <?php endif; ?>
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Jihan Saniyya\ratingPGN-app\resources\views/forms/show.blade.php ENDPATH**/ ?>

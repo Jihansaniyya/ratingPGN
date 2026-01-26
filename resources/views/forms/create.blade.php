@@ -43,9 +43,58 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Layanan / Service <span class="text-danger">*</span></label>
-                <input type="text" name="layanan_service" class="form-control @error('layanan_service') is-invalid @enderror" 
-                       value="{{ old('layanan_service') }}" required>
+                <select name="layanan_service" class="form-select @error('layanan_service') is-invalid @enderror" required>
+                    <option value="">-- Pilih Produk --</option>
+                    <optgroup label="GASNET PRIMECODE PRODUCT">
+                        <option value="DEDICATED INTERNATIONAL" {{ old('layanan_service') == 'DEDICATED INTERNATIONAL' ? 'selected' : '' }}>DEDICATED INTERNATIONAL</option>
+                        <option value="DEDICATED LOCAL" {{ old('layanan_service') == 'DEDICATED LOCAL' ? 'selected' : '' }}>DEDICATED LOCAL</option>
+                        <option value="DEDICATED MIX" {{ old('layanan_service') == 'DEDICATED MIX' ? 'selected' : '' }}>DEDICATED MIX</option>
+                        <option value="INTERNET ON DEMAND" {{ old('layanan_service') == 'INTERNET ON DEMAND' ? 'selected' : '' }}>INTERNET ON DEMAND</option>
+                    </optgroup>
+                    <optgroup label="GASNET MAXX CODE PRODUCT">
+                        <option value="GET MAXX 3" {{ old('layanan_service') == 'GET MAXX 3' ? 'selected' : '' }}>GET MAXX 3 (Broadband Ratio 1:8)</option>
+                        <option value="GET MAXX 2" {{ old('layanan_service') == 'GET MAXX 2' ? 'selected' : '' }}>GET MAXX 2 (Broadband Ratio 1:4)</option>
+                        <option value="GET MAXX 1" {{ old('layanan_service') == 'GET MAXX 1' ? 'selected' : '' }}>GET MAXX 1 (Broadband Ratio 1:2)</option>
+                    </optgroup>
+                    <optgroup label="GASNET SIMPLE CODE PRODUCT">
+                        <option value="GASNET SIMPLE ON NETWORK" {{ old('layanan_service') == 'GASNET SIMPLE ON NETWORK' ? 'selected' : '' }}>GASNET SIMPLE ON NETWORK</option>
+                        <option value="GASNET SIMPLE ON SECURITY" {{ old('layanan_service') == 'GASNET SIMPLE ON SECURITY' ? 'selected' : '' }}>GASNET SIMPLE ON SECURITY</option>
+                    </optgroup>
+                    <optgroup label="GASNET PLUS+ CODE PRODUCT">
+                        <option value="MANAGED MAIL" {{ old('layanan_service') == 'MANAGED MAIL' ? 'selected' : '' }}>MANAGED MAIL</option>
+                        <option value="HOSTING" {{ old('layanan_service') == 'HOSTING' ? 'selected' : '' }}>HOSTING</option>
+                        <option value="DOMAIN" {{ old('layanan_service') == 'DOMAIN' ? 'selected' : '' }}>DOMAIN</option>
+                        <option value="IP PUBLIC" {{ old('layanan_service') == 'IP PUBLIC' ? 'selected' : '' }}>IP PUBLIC</option>
+                    </optgroup>
+                    <optgroup label="Cloud Service">
+                        <option value="HARDWARE" {{ old('layanan_service') == 'HARDWARE' ? 'selected' : '' }}>HARDWARE</option>
+                        <option value="SOFTWARE" {{ old('layanan_service') == 'SOFTWARE' ? 'selected' : '' }}>SOFTWARE</option>
+                        <option value="PROFESIONAL SERVICE" {{ old('layanan_service') == 'PROFESIONAL SERVICE' ? 'selected' : '' }}>PROFESIONAL SERVICE</option>
+                    </optgroup>
+                    <optgroup label="GASNET ONAIR CODE PRODUCT">
+                        <option value="CO-LOCATION" {{ old('layanan_service') == 'CO-LOCATION' ? 'selected' : '' }}>CO-LOCATION</option>
+                        <option value="VIRTUAL PRIVATE SERVER" {{ old('layanan_service') == 'VIRTUAL PRIVATE SERVER' ? 'selected' : '' }}>VIRTUAL PRIVATE SERVER</option>
+                        <option value="PRIVATE LINK TO CLOUD" {{ old('layanan_service') == 'PRIVATE LINK TO CLOUD' ? 'selected' : '' }}>PRIVATE LINK TO CLOUD</option>
+                    </optgroup>
+                    <optgroup label="Synergy Product">
+                        <option value="METRO ETHERNET" {{ old('layanan_service') == 'METRO ETHERNET' ? 'selected' : '' }}>METRO ETHERNET</option>
+                        <option value="IP TRANSIT" {{ old('layanan_service') == 'IP TRANSIT' ? 'selected' : '' }}>IP TRANSIT</option>
+                        <option value="PGAS IX" {{ old('layanan_service') == 'PGAS IX' ? 'selected' : '' }}>PGAS IX</option>
+                        <option value="LOCAL IX" {{ old('layanan_service') == 'LOCAL IX' ? 'selected' : '' }}>LOCAL IX</option>
+                        <option value="MIX (IPTR + PGAS IX + LOCAL IX)" {{ old('layanan_service') == 'MIX (IPTR + PGAS IX + LOCAL IX)' ? 'selected' : '' }}>MIX (IPTR + PGAS IX + LOCAL IX)</option>
+                        <option value="GOOGLE CACHE" {{ old('layanan_service') == 'GOOGLE CACHE' ? 'selected' : '' }}>GOOGLE CACHE</option>
+                        <option value="MANAGED VIDEO CONFERENCE" {{ old('layanan_service') == 'MANAGED VIDEO CONFERENCE' ? 'selected' : '' }}>MANAGED VIDEO CONFERENCE</option>
+                    </optgroup>
+                </select>
                 @error('layanan_service')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">CID <span class="text-danger">*</span></label>
+                <input type="text" name="cid" class="form-control @error('cid') is-invalid @enderror" 
+                       value="{{ old('cid') }}" placeholder="Masukkan CID" required>
+                @error('cid')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>

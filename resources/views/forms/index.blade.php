@@ -144,12 +144,12 @@
                     <tr>
                         <td class="text-center text-muted">{{ $forms->firstItem() + $index }}</td>
                         <td>
-                            <div class="fw-semibold">{{ $form->customer->customer_name }}</div>
-                            <small class="text-muted">{{ $form->customer->email }}</small>
+                            <div class="fw-semibold">{{ $form->customer?->customer_name ?? '-' }}</div>
+                            <small class="text-muted">{{ $form->customer?->cid ?? '-' }}</small>
                         </td>
                         <td>
-                            <div>{{ $form->customer->layanan_service }}</div>
-                            <small class="text-muted">{{ $form->customer->kapasitas_capacity }}</small>
+                            <div>{{ $form->customer?->layanan_service ?? '-' }}</div>
+                            <small class="text-muted">{{ $form->customer?->kapasitas_capacity ?? '-' }}</small>
                         </td>
                         <td class="text-center">
                             @if($form->assessment == 'sangat_puas')

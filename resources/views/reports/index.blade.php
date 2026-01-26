@@ -152,13 +152,14 @@
                                 <span class="text-nowrap">{{ $form->form_date ? $form->form_date->format('d/m/Y') : '-' }}</span>
                             </td>
                             <td>
-                                <strong>{{ $form->customer->customer_name ?? '-' }}</strong>
+                                <strong>{{ $form->customer?->customer_name ?? '-' }}</strong>
+                                <br><small class="text-muted">{{ $form->customer?->cid ?? '-' }}</small>
                             </td>
                             <td>
-                                <small>{{ $form->customer->email ?? '-' }}</small>
+                                <small>{{ $form->customer?->email ?? '-' }}</small>
                             </td>
-                            <td>{{ $form->customer->layanan_service ?? '-' }}</td>
-                            <td>{{ $form->customer->kapasitas_capacity ?? '-' }}</td>
+                            <td>{{ $form->customer?->layanan_service ?? '-' }}</td>
+                            <td>{{ $form->customer?->kapasitas_capacity ?? '-' }}</td>
                             <td class="text-center">
                                 @if($form->assessment == 'sangat_puas')
                                     <span class="badge bg-success px-3 py-2">

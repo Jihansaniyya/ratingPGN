@@ -71,6 +71,7 @@ class OnSiteFormController extends Controller
         $validated = $request->validate([
             // Customer data
             'customer_name' => 'required|string|max:255',
+            'cid' => 'required|string|max:255|unique:customers,cid',
             'provinsi' => 'required|string|max:255',
             'kota_kabupaten' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
@@ -130,6 +131,7 @@ class OnSiteFormController extends Controller
         try {
             // Create or find customer
             $customer = Customer::create([
+                'cid' => $validated['cid'],
                 'customer_name' => $validated['customer_name'],
                 'provinsi' => $validated['provinsi'],
                 'kota_kabupaten' => $validated['kota_kabupaten'],
@@ -144,7 +146,7 @@ class OnSiteFormController extends Controller
 
             // Create the on-site form
             $form = OnSiteForm::create([
-                'customer_id' => $customer->id,
+                'customer_cid' => $validated['cid'],
                 'user_id' => auth()->id(), // If using authentication
                 'activity_survey' => $request->boolean('activity_survey'),
                 'activity_activation' => $request->boolean('activity_activation'),
@@ -235,6 +237,7 @@ class OnSiteFormController extends Controller
         
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
+            'cid' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
             'kota_kabupaten' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
@@ -279,19 +282,27 @@ class OnSiteFormController extends Controller
         DB::beginTransaction();
 
         try {
-            // Update customer
-            $form->customer->update([
-                'customer_name' => $validated['customer_name'],
-                'provinsi' => $validated['provinsi'],
-                'kota_kabupaten' => $validated['kota_kabupaten'],
-                'kecamatan' => $validated['kecamatan'],
-                'kelurahan' => $validated['kelurahan'],
-                'alamat_lengkap' => $validated['alamat_lengkap'],
-                'layanan_service' => $validated['layanan_service'],
-                'kapasitas_capacity' => $validated['kapasitas_capacity'],
-                'no_telp_pic' => $validated['no_telp_pic'],
-                'email' => $validated['email'],
-            ]);
+            // Update customer jika ada
+            if ($form->customer) {
+                $form->customer->update([
+                    'cid' => $validated['cid'],
+                    'customer_name' => $validated['customer_name'],
+                    'provinsi' => $validated['provinsi'],
+                    'kota_kabupaten' => $validated['kota_kabupaten'],
+                    'kecamatan' => $validated['kecamatan'],
+                    'kelurahan' => $validated['kelurahan'],
+                    'alamat_lengkap' => $validated['alamat_lengkap'],
+                    'layanan_service' => $validated['layanan_service'],
+                    'kapasitas_capacity' => $validated['kapasitas_capacity'],
+                    'no_telp_pic' => $validated['no_telp_pic'],
+                    'email' => $validated['email'],
+                ]);
+
+                // Update customer_cid pada form jika CID berubah
+                if ($form->customer_cid !== $validated['cid']) {
+                    $form->customer_cid = $validated['cid'];
+                }
+            }
 
             // Update form
             $form->update([

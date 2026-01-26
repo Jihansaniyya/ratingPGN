@@ -9,7 +9,12 @@ class Customer extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'cid';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
+        'cid',
         'customer_name',
         'provinsi',
         'kota_kabupaten',
@@ -42,6 +47,6 @@ class Customer extends Model
      */
     public function onSiteForms()
     {
-        return $this->hasMany(OnSiteForm::class);
+        return $this->hasMany(OnSiteForm::class, 'customer_cid', 'cid');
     }
 }

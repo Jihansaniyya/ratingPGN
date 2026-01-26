@@ -10,7 +10,7 @@ class OnSiteForm extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_id',
+        'customer_cid',
         'user_id',
         'activity_survey',
         'activity_activation',
@@ -44,7 +44,7 @@ class OnSiteForm extends Model
      */
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_cid', 'cid');
     }
 
     /**

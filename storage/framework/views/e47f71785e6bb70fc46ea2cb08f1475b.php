@@ -161,8 +161,8 @@
                     <tbody>
                         <?php $__empty_1 = true; $__currentLoopData = $recentForms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
-                            <td class="ps-4"><?php echo e($form->customer->customer_name); ?></td>
-                            <td class="text-secondary"><?php echo e($form->customer->layanan_service); ?></td>
+                            <td class="ps-4"><?php echo e($form->customer?->customer_name ?? '-'); ?></td>
+                            <td class="text-secondary"><?php echo e($form->customer?->layanan_service ?? '-'); ?></td>
                             <td>
                                 <?php if($form->assessment == 'sangat_puas'): ?>
                                     <span class="badge bg-success">Sangat Puas</span>

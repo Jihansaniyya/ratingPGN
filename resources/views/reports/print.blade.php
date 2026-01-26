@@ -477,9 +477,9 @@
                     <tr>
                         <td class="center">{{ $index + 1 }}</td>
                         <td class="center">{{ $form->form_date ? $form->form_date->format('d/m/Y') : '-' }}</td>
-                        <td>{{ $form->customer->customer_name ?? '-' }}</td>
-                        <td>{{ $form->customer->layanan_service ?? '-' }}</td>
-                        <td class="center">{{ $form->customer->kapasitas_capacity ?? '-' }}</td>
+                        <td>{{ $form->customer?->customer_name ?? '-' }} ({{ $form->customer?->cid ?? '-' }})</td>
+                        <td>{{ $form->customer?->layanan_service ?? '-' }}</td>
+                        <td class="center">{{ $form->customer?->kapasitas_capacity ?? '-' }}</td>
                         <td>{{ $form->user->name ?? '-' }}</td>
                         <td class="center">
                             @if($form->assessment == 'sangat_puas')

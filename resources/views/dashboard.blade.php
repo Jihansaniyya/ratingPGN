@@ -161,8 +161,8 @@
                     <tbody>
                         @forelse($recentForms as $form)
                         <tr>
-                            <td class="ps-4">{{ $form->customer->customer_name }}</td>
-                            <td class="text-secondary">{{ $form->customer->layanan_service }}</td>
+                            <td class="ps-4">{{ $form->customer?->customer_name ?? '-' }}</td>
+                            <td class="text-secondary">{{ $form->customer?->layanan_service ?? '-' }}</td>
                             <td>
                                 @if($form->assessment == 'sangat_puas')
                                     <span class="badge bg-success">Sangat Puas</span>

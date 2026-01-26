@@ -26,15 +26,65 @@
             <div class="col-md-6 mb-3">
                 <label class="form-label">Customer Name <span class="text-danger">*</span></label>
                 <input type="text" name="customer_name" class="form-control @error('customer_name') is-invalid @enderror" 
-                       value="{{ old('customer_name', $form->customer->customer_name) }}" required>
+                       value="{{ old('customer_name', $form->customer?->customer_name) }}" required>
                 @error('customer_name')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col-md-6 mb-3">
+                <label class="form-label">CID <span class="text-danger">*</span></label>
+                <input type="text" name="cid" class="form-control @error('cid') is-invalid @enderror" 
+                       value="{{ old('cid', $form->customer?->cid) }}" placeholder="Masukkan CID" required>
+                @error('cid')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            @php $currentLayanan = old('layanan_service', $form->customer?->layanan_service); @endphp
+            <div class="col-md-6 mb-3">
                 <label class="form-label">Layanan / Service <span class="text-danger">*</span></label>
-                <input type="text" name="layanan_service" class="form-control @error('layanan_service') is-invalid @enderror" 
-                       value="{{ old('layanan_service', $form->customer->layanan_service) }}" required>
+                <select name="layanan_service" class="form-select @error('layanan_service') is-invalid @enderror" required>
+                    <option value="">-- Pilih Produk --</option>
+                    <optgroup label="GASNET PRIMECODE PRODUCT">
+                        <option value="DEDICATED INTERNATIONAL" {{ $currentLayanan == 'DEDICATED INTERNATIONAL' ? 'selected' : '' }}>DEDICATED INTERNATIONAL</option>
+                        <option value="DEDICATED LOCAL" {{ $currentLayanan == 'DEDICATED LOCAL' ? 'selected' : '' }}>DEDICATED LOCAL</option>
+                        <option value="DEDICATED MIX" {{ $currentLayanan == 'DEDICATED MIX' ? 'selected' : '' }}>DEDICATED MIX</option>
+                        <option value="INTERNET ON DEMAND" {{ $currentLayanan == 'INTERNET ON DEMAND' ? 'selected' : '' }}>INTERNET ON DEMAND</option>
+                    </optgroup>
+                    <optgroup label="GASNET MAXX CODE PRODUCT">
+                        <option value="GET MAXX 3" {{ $currentLayanan == 'GET MAXX 3' ? 'selected' : '' }}>GET MAXX 3 (Broadband Ratio 1:8)</option>
+                        <option value="GET MAXX 2" {{ $currentLayanan == 'GET MAXX 2' ? 'selected' : '' }}>GET MAXX 2 (Broadband Ratio 1:4)</option>
+                        <option value="GET MAXX 1" {{ $currentLayanan == 'GET MAXX 1' ? 'selected' : '' }}>GET MAXX 1 (Broadband Ratio 1:2)</option>
+                    </optgroup>
+                    <optgroup label="GASNET SIMPLE CODE PRODUCT">
+                        <option value="GASNET SIMPLE ON NETWORK" {{ $currentLayanan == 'GASNET SIMPLE ON NETWORK' ? 'selected' : '' }}>GASNET SIMPLE ON NETWORK</option>
+                        <option value="GASNET SIMPLE ON SECURITY" {{ $currentLayanan == 'GASNET SIMPLE ON SECURITY' ? 'selected' : '' }}>GASNET SIMPLE ON SECURITY</option>
+                    </optgroup>
+                    <optgroup label="GASNET PLUS+ CODE PRODUCT">
+                        <option value="MANAGED MAIL" {{ $currentLayanan == 'MANAGED MAIL' ? 'selected' : '' }}>MANAGED MAIL</option>
+                        <option value="HOSTING" {{ $currentLayanan == 'HOSTING' ? 'selected' : '' }}>HOSTING</option>
+                        <option value="DOMAIN" {{ $currentLayanan == 'DOMAIN' ? 'selected' : '' }}>DOMAIN</option>
+                        <option value="IP PUBLIC" {{ $currentLayanan == 'IP PUBLIC' ? 'selected' : '' }}>IP PUBLIC</option>
+                    </optgroup>
+                    <optgroup label="Cloud Service">
+                        <option value="HARDWARE" {{ $currentLayanan == 'HARDWARE' ? 'selected' : '' }}>HARDWARE</option>
+                        <option value="SOFTWARE" {{ $currentLayanan == 'SOFTWARE' ? 'selected' : '' }}>SOFTWARE</option>
+                        <option value="PROFESIONAL SERVICE" {{ $currentLayanan == 'PROFESIONAL SERVICE' ? 'selected' : '' }}>PROFESIONAL SERVICE</option>
+                    </optgroup>
+                    <optgroup label="GASNET ONAIR CODE PRODUCT">
+                        <option value="CO-LOCATION" {{ $currentLayanan == 'CO-LOCATION' ? 'selected' : '' }}>CO-LOCATION</option>
+                        <option value="VIRTUAL PRIVATE SERVER" {{ $currentLayanan == 'VIRTUAL PRIVATE SERVER' ? 'selected' : '' }}>VIRTUAL PRIVATE SERVER</option>
+                        <option value="PRIVATE LINK TO CLOUD" {{ $currentLayanan == 'PRIVATE LINK TO CLOUD' ? 'selected' : '' }}>PRIVATE LINK TO CLOUD</option>
+                    </optgroup>
+                    <optgroup label="Synergy Product">
+                        <option value="METRO ETHERNET" {{ $currentLayanan == 'METRO ETHERNET' ? 'selected' : '' }}>METRO ETHERNET</option>
+                        <option value="IP TRANSIT" {{ $currentLayanan == 'IP TRANSIT' ? 'selected' : '' }}>IP TRANSIT</option>
+                        <option value="PGAS IX" {{ $currentLayanan == 'PGAS IX' ? 'selected' : '' }}>PGAS IX</option>
+                        <option value="LOCAL IX" {{ $currentLayanan == 'LOCAL IX' ? 'selected' : '' }}>LOCAL IX</option>
+                        <option value="MIX (IPTR + PGAS IX + LOCAL IX)" {{ $currentLayanan == 'MIX (IPTR + PGAS IX + LOCAL IX)' ? 'selected' : '' }}>MIX (IPTR + PGAS IX + LOCAL IX)</option>
+                        <option value="GOOGLE CACHE" {{ $currentLayanan == 'GOOGLE CACHE' ? 'selected' : '' }}>GOOGLE CACHE</option>
+                        <option value="MANAGED VIDEO CONFERENCE" {{ $currentLayanan == 'MANAGED VIDEO CONFERENCE' ? 'selected' : '' }}>MANAGED VIDEO CONFERENCE</option>
+                    </optgroup>
+                </select>
                 @error('layanan_service')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -48,7 +98,7 @@
                 <label class="form-label">Provinsi <span class="text-danger">*</span></label>
                 <select name="provinsi" id="provinsi" class="form-select @error('provinsi') is-invalid @enderror" required>
                     <option value="">-- Pilih Provinsi --</option>
-                    <option value="{{ $form->customer->provinsi }}" selected>{{ $form->customer->provinsi }}</option>
+                    <option value="{{ $form->customer?->provinsi }}" selected>{{ $form->customer?->provinsi }}</option>
                 </select>
                 @error('provinsi')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -58,7 +108,7 @@
                 <label class="form-label">Kota / Kabupaten <span class="text-danger">*</span></label>
                 <select name="kota_kabupaten" id="kota_kabupaten" class="form-select @error('kota_kabupaten') is-invalid @enderror" required>
                     <option value="">-- Pilih Kota/Kabupaten --</option>
-                    <option value="{{ $form->customer->kota_kabupaten }}" selected>{{ $form->customer->kota_kabupaten }}</option>
+                    <option value="{{ $form->customer?->kota_kabupaten }}" selected>{{ $form->customer?->kota_kabupaten }}</option>
                 </select>
                 @error('kota_kabupaten')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -68,7 +118,7 @@
                 <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
                 <select name="kecamatan" id="kecamatan" class="form-select @error('kecamatan') is-invalid @enderror" required>
                     <option value="">-- Pilih Kecamatan --</option>
-                    <option value="{{ $form->customer->kecamatan }}" selected>{{ $form->customer->kecamatan }}</option>
+                    <option value="{{ $form->customer?->kecamatan }}" selected>{{ $form->customer?->kecamatan }}</option>
                 </select>
                 @error('kecamatan')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -78,7 +128,7 @@
                 <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
                 <select name="kelurahan" id="kelurahan" class="form-select @error('kelurahan') is-invalid @enderror" required>
                     <option value="">-- Pilih Kelurahan --</option>
-                    <option value="{{ $form->customer->kelurahan }}" selected>{{ $form->customer->kelurahan }}</option>
+                    <option value="{{ $form->customer?->kelurahan }}" selected>{{ $form->customer?->kelurahan }}</option>
                 </select>
                 @error('kelurahan')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +137,7 @@
             <div class="col-md-12 mb-3">
                 <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
                 <textarea name="alamat_lengkap" class="form-control @error('alamat_lengkap') is-invalid @enderror" 
-                          rows="2" placeholder="Nama jalan, nomor rumah, RT/RW, dll..." required>{{ old('alamat_lengkap', $form->customer->alamat_lengkap) }}</textarea>
+                          rows="2" placeholder="Nama jalan, nomor rumah, RT/RW, dll..." required>{{ old('alamat_lengkap', $form->customer?->alamat_lengkap) }}</textarea>
                 @error('alamat_lengkap')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -96,7 +146,7 @@
             <div class="col-md-6 mb-3">
                 <label class="form-label">Kapasitas / Capacity <span class="text-danger">*</span></label>
                 <input type="text" name="kapasitas_capacity" class="form-control @error('kapasitas_capacity') is-invalid @enderror" 
-                       value="{{ old('kapasitas_capacity', $form->customer->kapasitas_capacity) }}" required>
+                       value="{{ old('kapasitas_capacity', $form->customer?->kapasitas_capacity) }}" required>
                 @error('kapasitas_capacity')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -104,7 +154,7 @@
             <div class="col-md-6 mb-3">
                 <label class="form-label">No. Telp (PIC) <span class="text-danger">*</span></label>
                 <input type="text" name="no_telp_pic" class="form-control @error('no_telp_pic') is-invalid @enderror" 
-                       value="{{ old('no_telp_pic', $form->customer->no_telp_pic) }}" required>
+                       value="{{ old('no_telp_pic', $form->customer?->no_telp_pic) }}" required>
                 @error('no_telp_pic')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -112,7 +162,7 @@
             <div class="col-md-6 mb-3">
                 <label class="form-label">E-mail <span class="text-danger">*</span></label>
                 <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" 
-                       value="{{ old('email', $form->customer->email) }}" required>
+                       value="{{ old('email', $form->customer?->email) }}" required>
                 @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

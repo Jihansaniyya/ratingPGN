@@ -57,7 +57,70 @@ unset($__errorArgs, $__bag); ?>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Layanan / Service <span class="text-danger">*</span></label>
-                <input type="text" name="layanan_service" class="form-control <?php $__errorArgs = ['layanan_service'];
+                <select name="layanan_service" class="form-select <?php $__errorArgs = ['layanan_service'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" required>
+                    <option value="">-- Pilih Produk --</option>
+                    <optgroup label="GASNET PRIMECODE PRODUCT">
+                        <option value="DEDICATED INTERNATIONAL" <?php echo e(old('layanan_service') == 'DEDICATED INTERNATIONAL' ? 'selected' : ''); ?>>DEDICATED INTERNATIONAL</option>
+                        <option value="DEDICATED LOCAL" <?php echo e(old('layanan_service') == 'DEDICATED LOCAL' ? 'selected' : ''); ?>>DEDICATED LOCAL</option>
+                        <option value="DEDICATED MIX" <?php echo e(old('layanan_service') == 'DEDICATED MIX' ? 'selected' : ''); ?>>DEDICATED MIX</option>
+                        <option value="INTERNET ON DEMAND" <?php echo e(old('layanan_service') == 'INTERNET ON DEMAND' ? 'selected' : ''); ?>>INTERNET ON DEMAND</option>
+                    </optgroup>
+                    <optgroup label="GASNET MAXX CODE PRODUCT">
+                        <option value="GET MAXX 3" <?php echo e(old('layanan_service') == 'GET MAXX 3' ? 'selected' : ''); ?>>GET MAXX 3 (Broadband Ratio 1:8)</option>
+                        <option value="GET MAXX 2" <?php echo e(old('layanan_service') == 'GET MAXX 2' ? 'selected' : ''); ?>>GET MAXX 2 (Broadband Ratio 1:4)</option>
+                        <option value="GET MAXX 1" <?php echo e(old('layanan_service') == 'GET MAXX 1' ? 'selected' : ''); ?>>GET MAXX 1 (Broadband Ratio 1:2)</option>
+                    </optgroup>
+                    <optgroup label="GASNET SIMPLE CODE PRODUCT">
+                        <option value="GASNET SIMPLE ON NETWORK" <?php echo e(old('layanan_service') == 'GASNET SIMPLE ON NETWORK' ? 'selected' : ''); ?>>GASNET SIMPLE ON NETWORK</option>
+                        <option value="GASNET SIMPLE ON SECURITY" <?php echo e(old('layanan_service') == 'GASNET SIMPLE ON SECURITY' ? 'selected' : ''); ?>>GASNET SIMPLE ON SECURITY</option>
+                    </optgroup>
+                    <optgroup label="GASNET PLUS+ CODE PRODUCT">
+                        <option value="MANAGED MAIL" <?php echo e(old('layanan_service') == 'MANAGED MAIL' ? 'selected' : ''); ?>>MANAGED MAIL</option>
+                        <option value="HOSTING" <?php echo e(old('layanan_service') == 'HOSTING' ? 'selected' : ''); ?>>HOSTING</option>
+                        <option value="DOMAIN" <?php echo e(old('layanan_service') == 'DOMAIN' ? 'selected' : ''); ?>>DOMAIN</option>
+                        <option value="IP PUBLIC" <?php echo e(old('layanan_service') == 'IP PUBLIC' ? 'selected' : ''); ?>>IP PUBLIC</option>
+                    </optgroup>
+                    <optgroup label="Cloud Service">
+                        <option value="HARDWARE" <?php echo e(old('layanan_service') == 'HARDWARE' ? 'selected' : ''); ?>>HARDWARE</option>
+                        <option value="SOFTWARE" <?php echo e(old('layanan_service') == 'SOFTWARE' ? 'selected' : ''); ?>>SOFTWARE</option>
+                        <option value="PROFESIONAL SERVICE" <?php echo e(old('layanan_service') == 'PROFESIONAL SERVICE' ? 'selected' : ''); ?>>PROFESIONAL SERVICE</option>
+                    </optgroup>
+                    <optgroup label="GASNET ONAIR CODE PRODUCT">
+                        <option value="CO-LOCATION" <?php echo e(old('layanan_service') == 'CO-LOCATION' ? 'selected' : ''); ?>>CO-LOCATION</option>
+                        <option value="VIRTUAL PRIVATE SERVER" <?php echo e(old('layanan_service') == 'VIRTUAL PRIVATE SERVER' ? 'selected' : ''); ?>>VIRTUAL PRIVATE SERVER</option>
+                        <option value="PRIVATE LINK TO CLOUD" <?php echo e(old('layanan_service') == 'PRIVATE LINK TO CLOUD' ? 'selected' : ''); ?>>PRIVATE LINK TO CLOUD</option>
+                    </optgroup>
+                    <optgroup label="Synergy Product">
+                        <option value="METRO ETHERNET" <?php echo e(old('layanan_service') == 'METRO ETHERNET' ? 'selected' : ''); ?>>METRO ETHERNET</option>
+                        <option value="IP TRANSIT" <?php echo e(old('layanan_service') == 'IP TRANSIT' ? 'selected' : ''); ?>>IP TRANSIT</option>
+                        <option value="PGAS IX" <?php echo e(old('layanan_service') == 'PGAS IX' ? 'selected' : ''); ?>>PGAS IX</option>
+                        <option value="LOCAL IX" <?php echo e(old('layanan_service') == 'LOCAL IX' ? 'selected' : ''); ?>>LOCAL IX</option>
+                        <option value="MIX (IPTR + PGAS IX + LOCAL IX)" <?php echo e(old('layanan_service') == 'MIX (IPTR + PGAS IX + LOCAL IX)' ? 'selected' : ''); ?>>MIX (IPTR + PGAS IX + LOCAL IX)</option>
+                        <option value="GOOGLE CACHE" <?php echo e(old('layanan_service') == 'GOOGLE CACHE' ? 'selected' : ''); ?>>GOOGLE CACHE</option>
+                        <option value="MANAGED VIDEO CONFERENCE" <?php echo e(old('layanan_service') == 'MANAGED VIDEO CONFERENCE' ? 'selected' : ''); ?>>MANAGED VIDEO CONFERENCE</option>
+                    </optgroup>
+                </select>
+                <?php $__errorArgs = ['layanan_service'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">CID <span class="text-danger">*</span></label>
+                <input type="text" name="cid" class="form-control <?php $__errorArgs = ['cid'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -65,8 +128,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                       value="<?php echo e(old('layanan_service')); ?>" required>
-                <?php $__errorArgs = ['layanan_service'];
+                       value="<?php echo e(old('cid')); ?>" placeholder="Masukkan CID" required>
+                <?php $__errorArgs = ['cid'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }

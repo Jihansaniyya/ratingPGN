@@ -477,9 +477,9 @@
                     <tr>
                         <td class="center"><?php echo e($index + 1); ?></td>
                         <td class="center"><?php echo e($form->form_date ? $form->form_date->format('d/m/Y') : '-'); ?></td>
-                        <td><?php echo e($form->customer->customer_name ?? '-'); ?></td>
-                        <td><?php echo e($form->customer->layanan_service ?? '-'); ?></td>
-                        <td class="center"><?php echo e($form->customer->kapasitas_capacity ?? '-'); ?></td>
+                        <td><?php echo e($form->customer?->customer_name ?? '-'); ?> (<?php echo e($form->customer?->cid ?? '-'); ?>)</td>
+                        <td><?php echo e($form->customer?->layanan_service ?? '-'); ?></td>
+                        <td class="center"><?php echo e($form->customer?->kapasitas_capacity ?? '-'); ?></td>
                         <td><?php echo e($form->user->name ?? '-'); ?></td>
                         <td class="center">
                             <?php if($form->assessment == 'sangat_puas'): ?>
