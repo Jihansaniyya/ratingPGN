@@ -37,21 +37,9 @@ class OnSiteFormController extends Controller
             });
         }
         
-        // Clone query untuk stats sebelum paginate
-        $statsQuery = clone $query;
-        $allFilteredData = $statsQuery->get();
-        
         $forms = $query->orderBy('created_at', 'desc')->paginate(10);
-        
-        // Get statistics berdasarkan data yang terfilter
-        $stats = [
-            'total' => $allFilteredData->count(),
-            'sangat_puas' => $allFilteredData->where('assessment', 'sangat_puas')->count(),
-            'puas' => $allFilteredData->where('assessment', 'puas')->count(),
-            'tidak_puas' => $allFilteredData->where('assessment', 'tidak_puas')->count(),
-        ];
 
-        return view('forms.index', compact('forms', 'stats'));
+        return view('forms.index', compact('forms'));
     }
 
     /**
@@ -71,7 +59,6 @@ class OnSiteFormController extends Controller
         $validated = $request->validate([
             // Customer data
             'customer_name' => 'required|string|max:255',
-            'cid' => 'required|string|max:255|unique:customers,cid',
             'provinsi' => 'required|string|max:255',
             'kota_kabupaten' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
@@ -83,13 +70,11 @@ class OnSiteFormController extends Controller
             'email' => 'required|email|max:255',
             
             // Maintenance devices
-            'devices' => 'required|array|min:1',
-            'devices.*.device_name' => 'required|string|max:255',
-            'devices.*.serial_number' => 'required|string|max:255',
-            'devices.*.product_photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'devices.*.keterangan' => 'required|string|max:1000',
+            'devices' => 'nullable|array',
+            'devices.*.device_name' => 'required_with:devices|string|max:255',
+            'devices.*.serial_number' => 'required_with:devices|string|max:255',
             
-            // Activities (at least one required - validated below)
+            // Activities
             'activity_survey' => 'nullable|boolean',
             'activity_activation' => 'nullable|boolean',
             'activity_upgrade' => 'nullable|boolean',
@@ -98,8 +83,8 @@ class OnSiteFormController extends Controller
             'activity_preventive_maintenance' => 'nullable|boolean',
             
             // Technical details
-            'complaint' => 'required|string',
-            'action' => 'required|string',
+            'complaint' => 'nullable|string',
+            'action' => 'nullable|string',
             'assessment' => 'required|in:tidak_puas,puas,sangat_puas',
             
             // Signatures (required)
@@ -111,27 +96,11 @@ class OnSiteFormController extends Controller
             'form_date' => 'required|date',
         ]);
 
-        // Validate at least one activity is selected
-        $activities = [
-            $request->boolean('activity_survey'),
-            $request->boolean('activity_activation'),
-            $request->boolean('activity_upgrade'),
-            $request->boolean('activity_downgrade'),
-            $request->boolean('activity_troubleshoot'),
-            $request->boolean('activity_preventive_maintenance'),
-        ];
-        
-        if (!in_array(true, $activities)) {
-            return back()->withInput()
-                ->withErrors(['activity' => 'Pilih minimal satu aktivitas.']);
-        }
-
         DB::beginTransaction();
 
         try {
             // Create or find customer
             $customer = Customer::create([
-                'cid' => $validated['cid'],
                 'customer_name' => $validated['customer_name'],
                 'provinsi' => $validated['provinsi'],
                 'kota_kabupaten' => $validated['kota_kabupaten'],
@@ -146,7 +115,7 @@ class OnSiteFormController extends Controller
 
             // Create the on-site form
             $form = OnSiteForm::create([
-                'customer_cid' => $validated['cid'],
+                'customer_id' => $customer->id,
                 'user_id' => auth()->id(), // If using authentication
                 'activity_survey' => $request->boolean('activity_survey'),
                 'activity_activation' => $request->boolean('activity_activation'),
@@ -167,22 +136,12 @@ class OnSiteFormController extends Controller
 
             // Create maintenance devices
             if (!empty($validated['devices'])) {
-                foreach ($validated['devices'] as $index => $device) {
+                foreach ($validated['devices'] as $device) {
                     if (!empty($device['device_name']) && !empty($device['serial_number'])) {
-                        $productPhotoPath = null;
-                        
-                        // Handle product photo upload
-                        if ($request->hasFile("devices.{$index}.product_photo")) {
-                            $productPhotoPath = $request->file("devices.{$index}.product_photo")
-                                ->store('devices/product_photos', 'public');
-                        }
-                        
                         MaintenanceDevice::create([
                             'on_site_form_id' => $form->id,
                             'device_name' => $device['device_name'],
                             'serial_number' => $device['serial_number'],
-                            'product_photo' => $productPhotoPath,
-                            'keterangan' => $device['keterangan'] ?? null,
                         ]);
                     }
                 }
@@ -237,7 +196,6 @@ class OnSiteFormController extends Controller
         
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
-            'cid' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
             'kota_kabupaten' => 'required|string|max:255',
             'kecamatan' => 'required|string|max:255',
@@ -247,14 +205,9 @@ class OnSiteFormController extends Controller
             'kapasitas_capacity' => 'required|string|max:255',
             'no_telp_pic' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'devices' => 'required|array|min:1',
-            'devices.*.device_name' => 'required|string|max:255',
-            'devices.*.serial_number' => 'required|string|max:255',
-            'devices.*.product_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'devices.*.keterangan' => 'required|string|max:1000',
-            'devices.*.existing_product_photo' => 'nullable|string',
-            'complaint' => 'required|string',
-            'action' => 'required|string',
+            'devices' => 'nullable|array',
+            'complaint' => 'nullable|string',
+            'action' => 'nullable|string',
             'assessment' => 'required|in:tidak_puas,puas,sangat_puas',
             'signature_first_party' => 'required|string',
             'signature_second_party' => 'required|string',
@@ -264,45 +217,22 @@ class OnSiteFormController extends Controller
             'form_date' => 'required|date',
         ]);
 
-        // Validate at least one activity is selected
-        $activities = [
-            $request->boolean('activity_survey'),
-            $request->boolean('activity_activation'),
-            $request->boolean('activity_upgrade'),
-            $request->boolean('activity_downgrade'),
-            $request->boolean('activity_troubleshoot'),
-            $request->boolean('activity_preventive_maintenance'),
-        ];
-        
-        if (!in_array(true, $activities)) {
-            return back()->withInput()
-                ->withErrors(['activity' => 'Pilih minimal satu aktivitas.']);
-        }
-
         DB::beginTransaction();
 
         try {
-            // Update customer jika ada
-            if ($form->customer) {
-                $form->customer->update([
-                    'cid' => $validated['cid'],
-                    'customer_name' => $validated['customer_name'],
-                    'provinsi' => $validated['provinsi'],
-                    'kota_kabupaten' => $validated['kota_kabupaten'],
-                    'kecamatan' => $validated['kecamatan'],
-                    'kelurahan' => $validated['kelurahan'],
-                    'alamat_lengkap' => $validated['alamat_lengkap'],
-                    'layanan_service' => $validated['layanan_service'],
-                    'kapasitas_capacity' => $validated['kapasitas_capacity'],
-                    'no_telp_pic' => $validated['no_telp_pic'],
-                    'email' => $validated['email'],
-                ]);
-
-                // Update customer_cid pada form jika CID berubah
-                if ($form->customer_cid !== $validated['cid']) {
-                    $form->customer_cid = $validated['cid'];
-                }
-            }
+            // Update customer
+            $form->customer->update([
+                'customer_name' => $validated['customer_name'],
+                'provinsi' => $validated['provinsi'],
+                'kota_kabupaten' => $validated['kota_kabupaten'],
+                'kecamatan' => $validated['kecamatan'],
+                'kelurahan' => $validated['kelurahan'],
+                'alamat_lengkap' => $validated['alamat_lengkap'],
+                'layanan_service' => $validated['layanan_service'],
+                'kapasitas_capacity' => $validated['kapasitas_capacity'],
+                'no_telp_pic' => $validated['no_telp_pic'],
+                'email' => $validated['email'],
+            ]);
 
             // Update form
             $form->update([
@@ -312,33 +242,23 @@ class OnSiteFormController extends Controller
                 'activity_downgrade' => $request->boolean('activity_downgrade'),
                 'activity_troubleshoot' => $request->boolean('activity_troubleshoot'),
                 'activity_preventive_maintenance' => $request->boolean('activity_preventive_maintenance'),
-                'complaint' => $validated['complaint'],
-                'action' => $validated['action'],
+                'complaint' => $validated['complaint'] ?? null,
+                'action' => $validated['action'] ?? null,
                 'assessment' => $validated['assessment'],
-                'second_party_name' => $validated['second_party_name'],
-                'location' => $validated['location'],
-                'form_date' => $validated['form_date'],
+                'second_party_name' => $validated['second_party_name'] ?? null,
+                'location' => $validated['location'] ?? null,
+                'form_date' => $validated['form_date'] ?? now(),
             ]);
 
             // Update devices
             $form->maintenanceDevices()->delete();
             if (!empty($validated['devices'])) {
-                foreach ($validated['devices'] as $index => $device) {
+                foreach ($validated['devices'] as $device) {
                     if (!empty($device['device_name']) && !empty($device['serial_number'])) {
-                        $productPhotoPath = $device['existing_product_photo'] ?? null;
-                        
-                        // Handle product photo upload
-                        if ($request->hasFile("devices.{$index}.product_photo")) {
-                            $productPhotoPath = $request->file("devices.{$index}.product_photo")
-                                ->store('devices/product_photos', 'public');
-                        }
-                        
                         MaintenanceDevice::create([
                             'on_site_form_id' => $form->id,
                             'device_name' => $device['device_name'],
                             'serial_number' => $device['serial_number'],
-                            'product_photo' => $productPhotoPath,
-                            'keterangan' => $device['keterangan'] ?? null,
                         ]);
                     }
                 }
