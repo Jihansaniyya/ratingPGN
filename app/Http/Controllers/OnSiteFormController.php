@@ -39,7 +39,33 @@ class OnSiteFormController extends Controller
         
         $forms = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        return view('forms.index', compact('forms'));
+        // Calculate statistics for the chart
+        $statsQuery = OnSiteForm::query();
+        
+        // Apply same filters to stats
+        if ($request->has('filter') && $request->filter) {
+            $statsQuery->where('assessment', $request->filter);
+        }
+        if ($request->filled('start_date')) {
+            $statsQuery->whereDate('form_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $statsQuery->whereDate('form_date', '<=', $request->end_date);
+        }
+        if ($request->has('search') && $request->search) {
+            $statsQuery->whereHas('customer', function($q) use ($request) {
+                $q->where('customer_name', 'like', '%' . $request->search . '%');
+            });
+        }
+        
+        $stats = [
+            'total' => $statsQuery->count(),
+            'sangat_puas' => (clone $statsQuery)->where('assessment', 'sangat_puas')->count(),
+            'puas' => (clone $statsQuery)->where('assessment', 'puas')->count(),
+            'tidak_puas' => (clone $statsQuery)->where('assessment', 'tidak_puas')->count(),
+        ];
+
+        return view('forms.index', compact('forms', 'stats'));
     }
 
     /**
@@ -58,6 +84,7 @@ class OnSiteFormController extends Controller
     {
         $validated = $request->validate([
             // Customer data
+            'cid' => 'required|string|max:255',
             'customer_name' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
             'kota_kabupaten' => 'required|string|max:255',
@@ -73,6 +100,8 @@ class OnSiteFormController extends Controller
             'devices' => 'nullable|array',
             'devices.*.device_name' => 'required_with:devices|string|max:255',
             'devices.*.serial_number' => 'required_with:devices|string|max:255',
+            'devices.*.product_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'devices.*.keterangan' => 'nullable|string',
             
             // Activities
             'activity_survey' => 'nullable|boolean',
@@ -94,6 +123,40 @@ class OnSiteFormController extends Controller
             'second_party_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'form_date' => 'required|date',
+        ], [
+            // Customer data
+            'cid.required' => 'CID wajib diisi.',
+            'customer_name.required' => 'Nama pelanggan wajib diisi.',,
+            'provinsi.required' => 'Provinsi wajib dipilih.',
+            'kota_kabupaten.required' => 'Kota/Kabupaten wajib dipilih.',
+            'kecamatan.required' => 'Kecamatan wajib dipilih.',
+            'kelurahan.required' => 'Kelurahan wajib dipilih.',
+            'alamat_lengkap.required' => 'Alamat lengkap wajib diisi.',
+            'layanan_service.required' => 'Layanan/Service wajib dipilih.',
+            'kapasitas_capacity.required' => 'Kapasitas wajib diisi.',
+            'no_telp_pic.required' => 'No. Telepon PIC wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid. Contoh: nama@email.com',
+            
+            // Maintenance devices
+            'devices.*.device_name.required_with' => 'Nama device wajib diisi untuk setiap device.',
+            'devices.*.serial_number.required_with' => 'Serial number wajib diisi untuk setiap device.',
+            'devices.*.product_photo.image' => 'File foto produk harus berupa gambar.',
+            'devices.*.product_photo.mimes' => 'Foto produk harus berformat JPG atau PNG.',
+            'devices.*.product_photo.max' => 'Ukuran foto produk maksimal 2MB.',
+            
+            // Assessment
+            'assessment.required' => 'Penilaian (Assessment) wajib dipilih.',
+            'assessment.in' => 'Penilaian harus salah satu dari: Tidak Puas, Puas, atau Sangat Puas.',
+            
+            // Signatures
+            'signature_first_party.required' => 'Tanda tangan Pihak Pertama wajib diisi.',
+            'signature_second_party.required' => 'Tanda tangan Pihak Kedua wajib diisi.',
+            'first_party_name.required' => 'Nama Pihak Pertama wajib diisi.',
+            'second_party_name.required' => 'Nama Pihak Kedua wajib diisi.',
+            'location.required' => 'Lokasi wajib diisi.',
+            'form_date.required' => 'Tanggal wajib diisi.',
+            'form_date.date' => 'Format tanggal tidak valid.',
         ]);
 
         DB::beginTransaction();
@@ -101,6 +164,7 @@ class OnSiteFormController extends Controller
         try {
             // Create or find customer
             $customer = Customer::create([
+                'cid' => $validated['cid'],
                 'customer_name' => $validated['customer_name'],
                 'provinsi' => $validated['provinsi'],
                 'kota_kabupaten' => $validated['kota_kabupaten'],
@@ -115,7 +179,7 @@ class OnSiteFormController extends Controller
 
             // Create the on-site form
             $form = OnSiteForm::create([
-                'customer_id' => $customer->id,
+                'customer_cid' => $customer->cid,
                 'user_id' => auth()->id(), // If using authentication
                 'activity_survey' => $request->boolean('activity_survey'),
                 'activity_activation' => $request->boolean('activity_activation'),
@@ -136,12 +200,21 @@ class OnSiteFormController extends Controller
 
             // Create maintenance devices
             if (!empty($validated['devices'])) {
-                foreach ($validated['devices'] as $device) {
+                foreach ($validated['devices'] as $index => $device) {
                     if (!empty($device['device_name']) && !empty($device['serial_number'])) {
+                        $productPhotoPath = null;
+                        
+                        // Handle product photo upload
+                        if ($request->hasFile("devices.{$index}.product_photo")) {
+                            $productPhotoPath = $request->file("devices.{$index}.product_photo")->store('device-photos', 'public');
+                        }
+                        
                         MaintenanceDevice::create([
                             'on_site_form_id' => $form->id,
                             'device_name' => $device['device_name'],
                             'serial_number' => $device['serial_number'],
+                            'product_photo' => $productPhotoPath,
+                            'keterangan' => $device['keterangan'] ?? null,
                         ]);
                     }
                 }
@@ -195,6 +268,7 @@ class OnSiteFormController extends Controller
         }
         
         $validated = $request->validate([
+            'cid' => 'required|string|max:255',
             'customer_name' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
             'kota_kabupaten' => 'required|string|max:255',
@@ -206,6 +280,11 @@ class OnSiteFormController extends Controller
             'no_telp_pic' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'devices' => 'nullable|array',
+            'devices.*.device_name' => 'required_with:devices|string|max:255',
+            'devices.*.serial_number' => 'required_with:devices|string|max:255',
+            'devices.*.product_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'devices.*.existing_product_photo' => 'nullable|string',
+            'devices.*.keterangan' => 'nullable|string',
             'complaint' => 'nullable|string',
             'action' => 'nullable|string',
             'assessment' => 'required|in:tidak_puas,puas,sangat_puas',
@@ -215,6 +294,40 @@ class OnSiteFormController extends Controller
             'second_party_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'form_date' => 'required|date',
+        ], [
+            // Customer data
+            'cid.required' => 'CID wajib diisi.',
+            'customer_name.required' => 'Nama pelanggan wajib diisi.',
+            'provinsi.required' => 'Provinsi wajib dipilih.',
+            'kota_kabupaten.required' => 'Kota/Kabupaten wajib dipilih.',
+            'kecamatan.required' => 'Kecamatan wajib dipilih.',
+            'kelurahan.required' => 'Kelurahan wajib dipilih.',
+            'alamat_lengkap.required' => 'Alamat lengkap wajib diisi.',
+            'layanan_service.required' => 'Layanan/Service wajib dipilih.',
+            'kapasitas_capacity.required' => 'Kapasitas wajib diisi.',
+            'no_telp_pic.required' => 'No. Telepon PIC wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid. Contoh: nama@email.com',
+            
+            // Maintenance devices
+            'devices.*.device_name.required_with' => 'Nama device wajib diisi untuk setiap device.',
+            'devices.*.serial_number.required_with' => 'Serial number wajib diisi untuk setiap device.',
+            'devices.*.product_photo.image' => 'File foto produk harus berupa gambar.',
+            'devices.*.product_photo.mimes' => 'Foto produk harus berformat JPG atau PNG.',
+            'devices.*.product_photo.max' => 'Ukuran foto produk maksimal 2MB.',
+            
+            // Assessment
+            'assessment.required' => 'Penilaian (Assessment) wajib dipilih.',
+            'assessment.in' => 'Penilaian harus salah satu dari: Tidak Puas, Puas, atau Sangat Puas.',
+            
+            // Signatures
+            'signature_first_party.required' => 'Tanda tangan Pihak Pertama wajib diisi.',
+            'signature_second_party.required' => 'Tanda tangan Pihak Kedua wajib diisi.',
+            'first_party_name.required' => 'Nama Pihak Pertama wajib diisi.',
+            'second_party_name.required' => 'Nama Pihak Kedua wajib diisi.',
+            'location.required' => 'Lokasi wajib diisi.',
+            'form_date.required' => 'Tanggal wajib diisi.',
+            'form_date.date' => 'Format tanggal tidak valid.',
         ]);
 
         DB::beginTransaction();
@@ -222,6 +335,7 @@ class OnSiteFormController extends Controller
         try {
             // Update customer
             $form->customer->update([
+                'cid' => $validated['cid'],
                 'customer_name' => $validated['customer_name'],
                 'provinsi' => $validated['provinsi'],
                 'kota_kabupaten' => $validated['kota_kabupaten'],
@@ -245,6 +359,9 @@ class OnSiteFormController extends Controller
                 'complaint' => $validated['complaint'] ?? null,
                 'action' => $validated['action'] ?? null,
                 'assessment' => $validated['assessment'],
+                'signature_first_party' => $validated['signature_first_party'],
+                'signature_second_party' => $validated['signature_second_party'],
+                'first_party_name' => $validated['first_party_name'],
                 'second_party_name' => $validated['second_party_name'] ?? null,
                 'location' => $validated['location'] ?? null,
                 'form_date' => $validated['form_date'] ?? now(),
@@ -253,12 +370,24 @@ class OnSiteFormController extends Controller
             // Update devices
             $form->maintenanceDevices()->delete();
             if (!empty($validated['devices'])) {
-                foreach ($validated['devices'] as $device) {
+                foreach ($validated['devices'] as $index => $device) {
                     if (!empty($device['device_name']) && !empty($device['serial_number'])) {
+                        $productPhotoPath = null;
+                        
+                        // Handle product photo upload
+                        if ($request->hasFile("devices.{$index}.product_photo")) {
+                            $productPhotoPath = $request->file("devices.{$index}.product_photo")->store('device-photos', 'public');
+                        } elseif (!empty($device['existing_product_photo'])) {
+                            // Keep existing photo if no new one uploaded
+                            $productPhotoPath = $device['existing_product_photo'];
+                        }
+                        
                         MaintenanceDevice::create([
                             'on_site_form_id' => $form->id,
                             'device_name' => $device['device_name'],
                             'serial_number' => $device['serial_number'],
+                            'product_photo' => $productPhotoPath,
+                            'keterangan' => $device['keterangan'] ?? null,
                         ]);
                     }
                 }
@@ -300,5 +429,47 @@ class OnSiteFormController extends Controller
     {
         $form->load(['customer', 'user', 'maintenanceDevices']);
         return view('forms.pdf', compact('form'));
+    }
+
+    /**
+     * Search customers for autocomplete
+     */
+    public function searchCustomers(Request $request)
+    {
+        $query = $request->get('query', '');
+        
+        if (strlen($query) < 1) {
+            return response()->json([]);
+        }
+
+        $customers = Customer::where('customer_name', 'like', '%' . $query . '%')
+            ->select('customer_name')
+            ->distinct()
+            ->limit(10)
+            ->get()
+            ->pluck('customer_name');
+
+        return response()->json($customers);
+    }
+
+    /**
+     * Search users for autocomplete
+     */
+    public function searchUsers(Request $request)
+    {
+        $query = $request->get('query', '');
+        
+        if (strlen($query) < 1) {
+            return response()->json([]);
+        }
+
+        $users = \App\Models\User::where('name', 'like', '%' . $query . '%')
+            ->select('name')
+            ->distinct()
+            ->limit(10)
+            ->get()
+            ->pluck('name');
+
+        return response()->json($users);
     }
 }

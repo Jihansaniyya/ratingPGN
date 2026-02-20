@@ -92,9 +92,22 @@
         .input-group .form-control {
             border-left: none;
         }
+        .password-group {
+            position: relative;
+        }
+        .password-group .form-control {
+            padding-right: 40px;
+            border-top-right-radius: 6px !important;
+            border-bottom-right-radius: 6px !important;
+        }
         .alert {
             border-radius: 6px;
             font-size: 0.9rem;
+        }
+        /* Hide browser default password reveal button */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            display: none;
         }
     </style>
 </head>
@@ -127,9 +140,12 @@
 
                 <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <div class="input-group">
+                    <div class="input-group password-group">
                         <span class="input-group-text"><i class="fas fa-lock text-muted"></i></span>
-                        <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
+                        <input type="password" name="password" id="passwordInput" class="form-control" placeholder="Masukkan password" required>
+                        <button type="button" id="togglePassword" class="input-group-text" style="cursor: pointer; border: none; background: transparent; display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10;">
+                            <i class="fas fa-eye text-muted" id="eyeIcon"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -146,6 +162,26 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const passwordInput = document.getElementById('passwordInput');
+        const togglePassword = document.getElementById('togglePassword');
+
+        passwordInput.addEventListener('input', function() {
+            togglePassword.style.display = this.value.length > 0 ? 'flex' : 'none';
+        });
+
+        togglePassword.addEventListener('click', function() {
+            const icon = document.getElementById('eyeIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>
 <?php /**PATH C:\Users\Jihan Saniyya\ratingPGN-app\resources\views/auth/login.blade.php ENDPATH**/ ?>

@@ -440,6 +440,10 @@
                     <td>: <?php echo e($form->customer->customer_name); ?></td>
                 </tr>
                 <tr>
+                    <td class="label">CID</td>
+                    <td>: <?php echo e($form->customer->cid ?? '-'); ?></td>
+                </tr>
+                <tr>
                     <td class="label">Address</td>
                     <td>: <?php echo e($form->customer->alamat_lengkap); ?>, <?php echo e($form->customer->kelurahan); ?>, <?php echo e($form->customer->kecamatan); ?>, <?php echo e($form->customer->kota_kabupaten); ?>, <?php echo e($form->customer->provinsi); ?></td>
                 </tr>

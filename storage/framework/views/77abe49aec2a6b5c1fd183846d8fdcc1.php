@@ -33,7 +33,7 @@
         </form>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="table-responsive" style="overflow: visible;">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -54,14 +54,23 @@
                         <td><?php echo e($user->email); ?></td>
                         <td><?php echo e($user->created_at->format('d/m/Y H:i')); ?></td>
                         <td class="text-center">
-                            <div class="btn-group">
-                                <a href="<?php echo e(route('users.edit', $user)); ?>" class="btn btn-outline-secondary" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button type="button" class="btn btn-outline-secondary" title="Hapus" 
-                                        onclick="confirmDelete(<?php echo e($user->id); ?>)">
-                                    <i class="fas fa-trash"></i>
+                            <div class="dropdown">
+                                <button class="btn btn-link text-secondary p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-lg"></i>
                                 </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="<?php echo e(route('users.edit', $user)); ?>">
+                                            <i class="fas fa-edit me-2 text-primary"></i> Edit
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <button class="dropdown-item text-danger" onclick="confirmDelete(<?php echo e($user->id); ?>)">
+                                            <i class="fas fa-trash me-2"></i> Hapus
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                             <form id="delete-form-<?php echo e($user->id); ?>" action="<?php echo e(route('users.destroy', $user)); ?>" 
                                   method="POST" style="display: none;">
@@ -102,9 +111,21 @@
 <?php $__env->startPush('scripts'); ?>
 <script>
     function confirmDelete(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus akun petugas ini?')) {
-            document.getElementById('delete-form-' + id).submit();
-        }
+        Swal.fire({
+            title: 'Hapus Petugas?',
+            text: 'Data petugas yang dihapus tidak dapat dikembalikan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-trash me-1"></i> Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
     }
 </script>
 <?php $__env->stopPush(); ?>

@@ -7,6 +7,13 @@ use App\Http\Controllers\OnSiteFormController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 
+// Redirect root: if logged in go to dashboard, otherwise go to login
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+});
+
 // Auth Routes (Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -22,16 +29,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/ubah-password', [AuthController::class, 'showChangePassword'])->name('password.change');
     Route::post('/ubah-password', [AuthController::class, 'changePassword'])->name('password.update');
 
-    // Redirect root to dashboard
-    Route::get('/', function () {
-        return redirect()->route('dashboard');
-    });
-
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // On-Site Form Routes
     Route::resource('forms', OnSiteFormController::class);
+
+    // API Routes for Autocomplete
+    Route::get('/api/search/customers', [OnSiteFormController::class, 'searchCustomers'])->name('api.search.customers');
+    Route::get('/api/search/users', [OnSiteFormController::class, 'searchUsers'])->name('api.search.users');
 
     // PDF Export Route
     Route::get('/forms/{form}/pdf', [OnSiteFormController::class, 'exportPdf'])->name('forms.pdf');

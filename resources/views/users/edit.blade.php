@@ -20,7 +20,17 @@
                 <i class="fas fa-user-cog me-2"></i> Informasi Data Petugas
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('users.update', $user) }}" method="POST">
+                @if($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Terdapat kesalahan, mohon perbaiki:</h6>
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form id="editUserForm" action="{{ route('users.update', $user) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -48,18 +58,30 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Kata Sandi Baru</label>
-                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
-                               placeholder="Masukkan kata sandi baru (opsional)">
+                        <div class="position-relative">
+                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
+                                   placeholder="Masukkan kata sandi baru (opsional)" style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3" 
+                                    onclick="togglePassword('password', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                         @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">Biarkan kosong apabila tidak ingin mengubah kata sandi. Jika diisi: minimal 8 karakter, harus ada huruf kapital dan simbol (!@#$%^&* dll)</small>
                     </div>
 
                     <div class="mb-4">
                         <label for="password_confirmation" class="form-label fw-semibold">Konfirmasi Kata Sandi Baru</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
-                               placeholder="Ketik ulang kata sandi baru">
+                        <div class="position-relative">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
+                                   placeholder="Ketik ulang kata sandi baru" style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3" 
+                                    onclick="togglePassword('password_confirmation', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <hr class="my-4">
@@ -78,3 +100,38 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    document.getElementById('editUserForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Simpan Perubahan?',
+            text: 'Apakah Anda yakin ingin mengubah data petugas ini?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2c5282',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-check me-1"></i> Ya, Simpan!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                e.target.submit();
+            }
+        });
+    });
+</script>
+@endpush

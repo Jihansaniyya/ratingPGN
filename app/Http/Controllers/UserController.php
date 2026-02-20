@@ -55,12 +55,14 @@ class UserController extends Controller
             ],
         ], [
             'name.required' => 'Nama wajib diisi.',
+            'name.max' => 'Nama maksimal 255 karakter.',
             'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar.',
+            'email.email' => 'Format email tidak valid. Contoh: nama@email.com',
+            'email.unique' => 'Email ini sudah terdaftar. Gunakan email lain.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 8 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok dengan password yang dimasukkan.',
+            'password.Illuminate\Validation\Rules\Password' => 'Password minimal 8 karakter, harus ada huruf kapital, huruf kecil, dan simbol (!@#$%^&* dll).',
         ]);
 
         User::create([
@@ -114,11 +116,13 @@ class UserController extends Controller
 
         $validated = $request->validate($rules, [
             'name.required' => 'Nama wajib diisi.',
+            'name.max' => 'Nama maksimal 255 karakter.',
             'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar.',
+            'email.email' => 'Format email tidak valid. Contoh: nama@email.com',
+            'email.unique' => 'Email ini sudah terdaftar. Gunakan email lain.',
             'password.min' => 'Password minimal 8 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok dengan password yang dimasukkan.',
+            'password.Illuminate\Validation\Rules\Password' => 'Password minimal 8 karakter, harus ada huruf kapital, huruf kecil, dan simbol (!@#$%^&* dll).',
         ]);
 
         $user->name = $validated['name'];

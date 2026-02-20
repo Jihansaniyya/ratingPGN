@@ -439,6 +439,10 @@
                     <td>: {{ $form->customer->customer_name }}</td>
                 </tr>
                 <tr>
+                    <td class="label">CID</td>
+                    <td>: {{ $form->customer->cid ?? '-' }}</td>
+                </tr>
+                <tr>
                     <td class="label">Address</td>
                     <td>: {{ $form->customer->alamat_lengkap }}, {{ $form->customer->kelurahan }}, {{ $form->customer->kecamatan }}, {{ $form->customer->kota_kabupaten }}, {{ $form->customer->provinsi }}</td>
                 </tr>

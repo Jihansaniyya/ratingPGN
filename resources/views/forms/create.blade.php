@@ -18,7 +18,7 @@
     
     @if($errors->any())
         <div class="alert alert-danger mb-4">
-            <h6><i class="fas fa-exclamation-triangle me-2"></i>Terdapat kesalahan:</h6>
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Terdapat kesalahan pada form, mohon perbaiki:</h6>
             <ul class="mb-0">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -181,6 +181,36 @@
             <i class="fas fa-tools me-2"></i> Maintenance Device <span class="text-danger">*</span>
         </h4>
         <div id="devices-container">
+            @if(old('devices'))
+                @foreach(old('devices') as $i => $device)
+                <div class="device-row mb-3 p-3 border rounded bg-light">
+                    <div class="row">
+                        <div class="col-md-5 mb-2">
+                            <label class="form-label">Device Name <span class="text-danger">*</span></label>
+                            <input type="text" name="devices[{{ $i }}][device_name]" class="form-control" placeholder="Masukkan nama device" value="{{ $device['device_name'] ?? '' }}" required>
+                        </div>
+                        <div class="col-md-5 mb-2">
+                            <label class="form-label">Serial Number <span class="text-danger">*</span></label>
+                            <input type="text" name="devices[{{ $i }}][serial_number]" class="form-control" placeholder="Masukkan serial number" value="{{ $device['serial_number'] ?? '' }}" required>
+                        </div>
+                        <div class="col-md-2 mb-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove-device w-100" onclick="removeDevice(this)" {{ $loop->count == 1 ? 'disabled' : '' }}>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label"><i class="fas fa-box me-1"></i> Foto Produk <span class="text-danger">*</span></label>
+                            <input type="file" name="devices[{{ $i }}][product_photo]" class="form-control" accept="image/jpeg,image/png,image/jpg" required>
+                            <small class="text-muted">Format: JPG, PNG. Maks: 2MB</small>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label"><i class="fas fa-sticky-note me-1"></i> Keterangan <span class="text-danger">*</span></label>
+                            <textarea name="devices[{{ $i }}][keterangan]" class="form-control" rows="2" placeholder="Masukkan keterangan device..." required>{{ $device['keterangan'] ?? '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            @else
             <div class="device-row mb-3 p-3 border rounded bg-light">
                 <div class="row">
                     <div class="col-md-5 mb-2">
@@ -207,6 +237,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
         <button type="button" class="btn btn-outline-primary mt-2" onclick="addDevice()">
             <i class="fas fa-plus me-2"></i> Tambah Device
@@ -225,37 +256,37 @@
             <div class="row" id="activity-group">
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_survey" value="1" id="survey">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_survey" value="1" id="survey" {{ old('activity_survey') ? 'checked' : '' }}>
                         <label class="form-check-label" for="survey">Survey</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_activation" value="1" id="activation">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_activation" value="1" id="activation" {{ old('activity_activation') ? 'checked' : '' }}>
                         <label class="form-check-label" for="activation">Activation</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_upgrade" value="1" id="upgrade">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_upgrade" value="1" id="upgrade" {{ old('activity_upgrade') ? 'checked' : '' }}>
                         <label class="form-check-label" for="upgrade">Upgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_downgrade" value="1" id="downgrade">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_downgrade" value="1" id="downgrade" {{ old('activity_downgrade') ? 'checked' : '' }}>
                         <label class="form-check-label" for="downgrade">Downgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot" {{ old('activity_troubleshoot') ? 'checked' : '' }}>
                         <label class="form-check-label" for="troubleshoot">Troubleshoot</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
-                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive">
+                        <input class="form-check-input activity-checkbox" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive" {{ old('activity_preventive_maintenance') ? 'checked' : '' }}>
                         <label class="form-check-label" for="preventive">Preventive Maintenance</label>
                     </div>
                 </div>
@@ -287,22 +318,22 @@
         </h4>
         <div class="row justify-content-center">
             <div class="col-md-4 mb-3">
-                <label class="assessment-option tidak-puas w-100" onclick="selectAssessment(this, 'tidak_puas')">
-                    <input type="radio" name="assessment" value="tidak_puas" required>
+                <label class="assessment-option tidak-puas w-100 {{ old('assessment') == 'tidak_puas' ? 'selected' : '' }}" onclick="selectAssessment(this, 'tidak_puas')">
+                    <input type="radio" name="assessment" value="tidak_puas" required {{ old('assessment') == 'tidak_puas' ? 'checked' : '' }}>
                     <i class="fas fa-frown d-block"></i>
                     <span class="fw-bold">Tidak Puas</span>
                 </label>
             </div>
             <div class="col-md-4 mb-3">
-                <label class="assessment-option puas w-100" onclick="selectAssessment(this, 'puas')">
-                    <input type="radio" name="assessment" value="puas">
+                <label class="assessment-option puas w-100 {{ old('assessment') == 'puas' ? 'selected' : '' }}" onclick="selectAssessment(this, 'puas')">
+                    <input type="radio" name="assessment" value="puas" {{ old('assessment') == 'puas' ? 'checked' : '' }}>
                     <i class="fas fa-meh d-block"></i>
                     <span class="fw-bold">Puas</span>
                 </label>
             </div>
             <div class="col-md-4 mb-3">
-                <label class="assessment-option sangat-puas w-100" onclick="selectAssessment(this, 'sangat_puas')">
-                    <input type="radio" name="assessment" value="sangat_puas">
+                <label class="assessment-option sangat-puas w-100 {{ old('assessment') == 'sangat_puas' ? 'selected' : '' }}" onclick="selectAssessment(this, 'sangat_puas')">
+                    <input type="radio" name="assessment" value="sangat_puas" {{ old('assessment') == 'sangat_puas' ? 'checked' : '' }}>
                     <i class="fas fa-smile-beam d-block"></i>
                     <span class="fw-bold">Sangat Puas</span>
                 </label>
@@ -343,7 +374,7 @@
                     </div>
                     <div class="card-body d-flex flex-column">
                         <div class="mb-2">
-                            <input type="text" name="first_party_name" class="form-control @error('first_party_name') is-invalid @enderror" placeholder="Nama Pihak Pertama *" required>
+                            <input type="text" name="first_party_name" class="form-control @error('first_party_name') is-invalid @enderror" placeholder="Nama Pihak Pertama *" value="{{ old('first_party_name') }}" required>
                             @error('first_party_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -369,7 +400,7 @@
                     </div>
                     <div class="card-body d-flex flex-column">
                         <div class="mb-2">
-                            <input type="text" name="second_party_name" class="form-control @error('second_party_name') is-invalid @enderror" placeholder="Nama Pihak Kedua *" required>
+                            <input type="text" name="second_party_name" class="form-control @error('second_party_name') is-invalid @enderror" placeholder="Nama Pihak Kedua *" value="{{ old('second_party_name') }}" required>
                             @error('second_party_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -415,11 +446,18 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
-    let deviceIndex = 1;
+    let deviceIndex = {{ old('devices') ? count(old('devices')) : 1 }};
     let signaturePad1, signaturePad2;
+    let _formSubmitted = false;
 
     // API Base URL for Indonesia regions
     const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+    // Old values for re-populating after validation error
+    let oldProvinsi = @json(old('provinsi', ''));
+    let oldKota = @json(old('kota_kabupaten', ''));
+    let oldKecamatan = @json(old('kecamatan', ''));
+    let oldKelurahan = @json(old('kelurahan', ''));
 
     // Initialize signature pads and load provinces
     document.addEventListener('DOMContentLoaded', function() {
@@ -452,6 +490,13 @@
             }
         });
 
+        // Restore draft if available (auto-save on refresh)
+        restoreDraft(signaturePad1, signaturePad2);
+
+        // Auto-save on signature strokes
+        signaturePad1.addEventListener('endStroke', function() { saveDraft(); });
+        signaturePad2.addEventListener('endStroke', function() { saveDraft(); });
+
         // Load provinces
         loadProvinces();
     });
@@ -464,8 +509,13 @@
             const select = document.getElementById('provinsi');
             select.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
             provinces.forEach(prov => {
-                select.innerHTML += `<option value="${prov.name}" data-id="${prov.id}">${prov.name}</option>`;
+                const selected = (oldProvinsi && prov.name === oldProvinsi) ? 'selected' : '';
+                select.innerHTML += `<option value="${prov.name}" data-id="${prov.id}" ${selected}>${prov.name}</option>`;
             });
+            // If old province exists, trigger loading cities
+            if (oldProvinsi) {
+                select.dispatchEvent(new Event('change'));
+            }
         } catch (error) {
             console.error('Error loading provinces:', error);
         }
@@ -487,17 +537,24 @@
         kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
         kelSelect.disabled = true;
 
-        // Reset lokasi field when province changes
-        document.querySelector('input[name="location"]').value = '';
+        // Reset lokasi field when province changes (only if not re-populating)
+        if (!oldKota) {
+            document.querySelector('input[name="location"]').value = '';
+        }
 
         if (provId) {
             try {
                 const response = await fetch(`${API_BASE}/regencies/${provId}.json`);
                 const cities = await response.json();
                 cities.forEach(city => {
-                    kotaSelect.innerHTML += `<option value="${city.name}" data-id="${city.id}">${city.name}</option>`;
+                    const selected = (oldKota && city.name === oldKota) ? 'selected' : '';
+                    kotaSelect.innerHTML += `<option value="${city.name}" data-id="${city.id}" ${selected}>${city.name}</option>`;
                 });
                 kotaSelect.disabled = false;
+                // If old city exists, trigger loading districts
+                if (oldKota) {
+                    kotaSelect.dispatchEvent(new Event('change'));
+                }
             } catch (error) {
                 console.error('Error loading cities:', error);
             }
@@ -518,14 +575,15 @@
         kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
         kelSelect.disabled = true;
 
-        // Auto-fill lokasi berdasarkan kota yang dipilih
+        // Auto-fill lokasi berdasarkan kota yang dipilih (only if not re-populating)
         const locationInput = document.querySelector('input[name="location"]');
-        if (cityName) {
-            // Hapus prefix KOTA/KABUPATEN jika ada
-            let cleanCityName = cityName.replace(/^(KOTA |KABUPATEN |KAB\. )/i, '');
-            locationInput.value = cleanCityName;
-        } else {
-            locationInput.value = '';
+        if (!oldKota || locationInput.value === '') {
+            if (cityName) {
+                let cleanCityName = cityName.replace(/^(KOTA |KABUPATEN |KAB\. )/i, '');
+                locationInput.value = cleanCityName;
+            } else {
+                locationInput.value = '';
+            }
         }
 
         if (cityId) {
@@ -533,9 +591,14 @@
                 const response = await fetch(`${API_BASE}/districts/${cityId}.json`);
                 const districts = await response.json();
                 districts.forEach(dist => {
-                    kecSelect.innerHTML += `<option value="${dist.name}" data-id="${dist.id}">${dist.name}</option>`;
+                    const selected = (oldKecamatan && dist.name === oldKecamatan) ? 'selected' : '';
+                    kecSelect.innerHTML += `<option value="${dist.name}" data-id="${dist.id}" ${selected}>${dist.name}</option>`;
                 });
                 kecSelect.disabled = false;
+                // If old district exists, trigger loading villages
+                if (oldKecamatan) {
+                    kecSelect.dispatchEvent(new Event('change'));
+                }
             } catch (error) {
                 console.error('Error loading districts:', error);
             }
@@ -557,7 +620,8 @@
                 const response = await fetch(`${API_BASE}/villages/${distId}.json`);
                 const villages = await response.json();
                 villages.forEach(vil => {
-                    kelSelect.innerHTML += `<option value="${vil.name}">${vil.name}</option>`;
+                    const selected = (oldKelurahan && vil.name === oldKelurahan) ? 'selected' : '';
+                    kelSelect.innerHTML += `<option value="${vil.name}" ${selected}>${vil.name}</option>`;
                 });
                 kelSelect.disabled = false;
             } catch (error) {
@@ -632,12 +696,14 @@
 
     // Form validation before submit
     document.getElementById('onSiteForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+
         // Validate at least one activity is checked
         const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
         const isAnyActivityChecked = Array.from(activityCheckboxes).some(cb => cb.checked);
         
         if (!isAnyActivityChecked) {
-            e.preventDefault();
             document.getElementById('activity-error').style.display = 'block';
             document.getElementById('activity-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
@@ -647,15 +713,23 @@
 
         // Validate signatures
         if (signaturePad1.isEmpty()) {
-            e.preventDefault();
-            alert('Tanda tangan Pihak Pertama wajib diisi!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanda Tangan Kosong',
+                text: 'Tanda tangan Pihak Pertama wajib diisi!',
+                confirmButtonColor: '#2c5282',
+            });
             document.getElementById('signaturePad1').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         }
         
         if (signaturePad2.isEmpty()) {
-            e.preventDefault();
-            alert('Tanda tangan Pihak Kedua wajib diisi!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanda Tangan Kosong',
+                text: 'Tanda tangan Pihak Kedua wajib diisi!',
+                confirmButtonColor: '#2c5282',
+            });
             document.getElementById('signaturePad2').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         }
@@ -663,6 +737,26 @@
         // Save signature data
         document.getElementById('signature_first_party').value = signaturePad1.toDataURL();
         document.getElementById('signature_second_party').value = signaturePad2.toDataURL();
+
+        // Confirmation alert
+        Swal.fire({
+            title: 'Kirim Form?',
+            text: 'Apakah Anda yakin ingin mengirim form ini?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2c5282',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-check me-1"></i> Ya, Kirim!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                _formSubmitted = true;
+                clearTimeout(_draftTimer);
+                localStorage.removeItem('formDraft_create');
+                form.submit();
+            }
+        });
     });
 
     // Hide activity error when any checkbox is checked
@@ -671,6 +765,217 @@
             const isAnyChecked = Array.from(document.querySelectorAll('.activity-checkbox')).some(c => c.checked);
             document.getElementById('activity-error').style.display = isAnyChecked ? 'none' : 'block';
         });
+    });
+
+    // === Auto-Save Draft Functions ===
+    const DRAFT_KEY = 'formDraft_create';
+
+    function saveDraft() {
+        if (_formSubmitted) return;
+        try {
+            const draft = { _timestamp: Date.now() };
+
+            // Text inputs, textareas, selects
+            document.querySelectorAll('#onSiteForm input[type="text"], #onSiteForm input[type="email"], #onSiteForm input[type="date"], #onSiteForm textarea, #onSiteForm select').forEach(el => {
+                if (el.name && el.type !== 'hidden' && el.type !== 'file') {
+                    draft[el.name] = el.value;
+                }
+            });
+
+            // Activity checkboxes
+            document.querySelectorAll('.activity-checkbox').forEach(el => {
+                if (el.name) draft[el.name] = el.checked;
+            });
+
+            // Assessment radio
+            const assessment = document.querySelector('[name="assessment"]:checked');
+            if (assessment) draft.assessment = assessment.value;
+
+            // Devices
+            draft.devices = [];
+            document.querySelectorAll('.device-row').forEach(row => {
+                draft.devices.push({
+                    device_name: row.querySelector('[name*="[device_name]"]')?.value || '',
+                    serial_number: row.querySelector('[name*="[serial_number]"]')?.value || '',
+                    keterangan: row.querySelector('[name*="[keterangan]"]')?.value || ''
+                });
+            });
+
+            // Signatures (save separately to avoid quota issues)
+            try {
+                if (typeof signaturePad1 !== 'undefined' && !signaturePad1.isEmpty()) {
+                    draft.signature1 = signaturePad1.toDataURL();
+                }
+                if (typeof signaturePad2 !== 'undefined' && !signaturePad2.isEmpty()) {
+                    draft.signature2 = signaturePad2.toDataURL();
+                }
+            } catch(sigErr) {
+                console.warn('Could not save signatures to draft:', sigErr);
+            }
+
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        } catch (e) {
+            console.error('Error saving draft:', e);
+        }
+    }
+
+    function restoreDraft(pad1, pad2) {
+        const data = localStorage.getItem(DRAFT_KEY);
+        if (!data) return;
+
+        // Only restore on page refresh, NOT on fresh navigation
+        const navEntries = performance.getEntriesByType('navigation');
+        const isReload = navEntries.length > 0 && navEntries[0].type === 'reload';
+        const hasOldValues = !!@json(old('_token'));
+
+        // Restore only if page was refreshed or has validation errors (old values)
+        if (!isReload && !hasOldValues) {
+            // Fresh navigation (e.g. clicked "Buat Form" from menu) - clear draft
+            localStorage.removeItem(DRAFT_KEY);
+            return;
+        }
+
+        try {
+            const draft = JSON.parse(data);
+
+            // Check if draft is too old (older than 24 hours)
+            if (draft._timestamp && (Date.now() - draft._timestamp > 24 * 60 * 60 * 1000)) {
+                localStorage.removeItem(DRAFT_KEY);
+                return;
+            }
+
+            let hasData = false;
+
+            // Text inputs & textareas
+            ['customer_name', 'cid', 'alamat_lengkap', 'kapasitas_capacity',
+             'no_telp_pic', 'email', 'location', 'form_date',
+             'first_party_name', 'second_party_name', 'complaint', 'action'].forEach(name => {
+                if (draft[name] !== undefined && draft[name] !== '') {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el) {
+                        el.value = draft[name];
+                        hasData = true;
+                    }
+                }
+            });
+
+            // Layanan service select
+            if (draft.layanan_service) {
+                const el = document.querySelector('[name="layanan_service"]');
+                if (el) {
+                    el.value = draft.layanan_service;
+                    hasData = true;
+                }
+            }
+
+            // Address: override old* variables for cascade loading
+            if (draft.provinsi && !oldProvinsi) { oldProvinsi = draft.provinsi; hasData = true; }
+            if (draft.kota_kabupaten && !oldKota) { oldKota = draft.kota_kabupaten; }
+            if (draft.kecamatan && !oldKecamatan) { oldKecamatan = draft.kecamatan; }
+            if (draft.kelurahan && !oldKelurahan) { oldKelurahan = draft.kelurahan; }
+
+            // Activity checkboxes
+            ['activity_survey', 'activity_activation', 'activity_upgrade',
+             'activity_downgrade', 'activity_troubleshoot', 'activity_preventive_maintenance'].forEach(name => {
+                if (draft[name] !== undefined) {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el) {
+                        el.checked = draft[name];
+                        if (draft[name]) hasData = true;
+                    }
+                }
+            });
+
+            // Assessment
+            if (draft.assessment) {
+                document.querySelectorAll('.assessment-option').forEach(opt => opt.classList.remove('selected'));
+                const el = document.querySelector(`[name="assessment"][value="${draft.assessment}"]`);
+                if (el) {
+                    el.checked = true;
+                    hasData = true;
+                    const label = el.closest('.assessment-option');
+                    if (label) label.classList.add('selected');
+                }
+            }
+
+            // Devices
+            if (draft.devices && draft.devices.length > 0) {
+                let existingRows = document.querySelectorAll('.device-row');
+                for (let i = existingRows.length; i < draft.devices.length; i++) {
+                    addDevice();
+                }
+                const rows = document.querySelectorAll('.device-row');
+                draft.devices.forEach((device, i) => {
+                    if (rows[i]) {
+                        const dn = rows[i].querySelector('[name*="[device_name]"]');
+                        const sn = rows[i].querySelector('[name*="[serial_number]"]');
+                        const kt = rows[i].querySelector('[name*="[keterangan]"]');
+                        if (dn) { dn.value = device.device_name; if (device.device_name) hasData = true; }
+                        if (sn) sn.value = device.serial_number;
+                        if (kt) kt.value = device.keterangan;
+                    }
+                });
+            }
+
+            // Signatures
+            if (draft.signature1 && pad1) {
+                const img1 = new Image();
+                img1.onload = function() {
+                    pad1.canvas.getContext('2d').drawImage(img1, 0, 0, pad1.canvas.width, pad1.canvas.height);
+                    pad1._isEmpty = false;
+                };
+                img1.src = draft.signature1;
+                hasData = true;
+            }
+            if (draft.signature2 && pad2) {
+                const img2 = new Image();
+                img2.onload = function() {
+                    pad2.canvas.getContext('2d').drawImage(img2, 0, 0, pad2.canvas.width, pad2.canvas.height);
+                    pad2._isEmpty = false;
+                };
+                img2.src = draft.signature2;
+            }
+
+            // Show notification only if we actually restored data
+            if (hasData && typeof Swal !== 'undefined') {
+                Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                }).fire({ icon: 'info', title: 'Draft berhasil dipulihkan' });
+            }
+        } catch (e) {
+            console.error('Error restoring draft:', e);
+        }
+    }
+
+    // Auto-save: on input, change, and right before page unload
+    let _draftTimer;
+    function debouncedSaveDraft() {
+        clearTimeout(_draftTimer);
+        _draftTimer = setTimeout(saveDraft, 300);
+    }
+
+    document.getElementById('onSiteForm').addEventListener('input', debouncedSaveDraft);
+    document.getElementById('onSiteForm').addEventListener('change', debouncedSaveDraft);
+
+    // Force-save draft immediately when leaving/refreshing page (but not after submit)
+    window.addEventListener('beforeunload', function() {
+        if (_formSubmitted) {
+            // Double-ensure draft is removed after submit
+            localStorage.removeItem('formDraft_create');
+        } else {
+            saveDraft();
+        }
+    });
+
+    // Also save on visibility change (switching tabs)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden' && !_formSubmitted) {
+            saveDraft();
+        }
     });
 </script>
 @endpush

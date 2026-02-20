@@ -26,10 +26,10 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-3 text-center">
-                <canvas id="formAssessmentChart" style="max-width: 140px; margin: 0 auto;"></canvas>
+            <div class="col-md-4 text-center d-flex align-items-center justify-content-center">
+                <canvas id="formAssessmentChart" style="max-width: 200px; margin: 0 auto;"></canvas>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
@@ -67,9 +67,9 @@
         <form method="GET" action="{{ route('forms.index') }}" class="row g-2 align-items-center">
             <div class="col-md-4">
                 <div class="input-group input-group-sm">
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Cari nama pelanggan..." value="{{ request('search') }}">
-                    <button type="submit" class= "btn btn-sm btn-primary">
+                    <input type="text" name="search" id="search-input" class="form-control" 
+                           placeholder="Cari nama pelanggan..." value="{{ request('search') }}" autocomplete="off">
+                    <button type="submit" class="btn btn-sm btn-primary">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -127,7 +127,7 @@
         @endif
         
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table id="data-table" class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th class="text-center" style="width: 50px;">No.</th>
@@ -136,7 +136,7 @@
                         <th class="text-center">Penilaian</th>
                         <th>Petugas</th>
                         <th>Tanggal</th>
-                        <th class="text-center" style="width: 150px;">Tindakan</th>
+                        <th class="text-center" style="width: 80px;">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -153,11 +153,11 @@
                         </td>
                         <td class="text-center">
                             @if($form->assessment == 'sangat_puas')
-                                <span class="badge bg-success bg-opacity-75">Sangat Puas</span>
+                                <span class="badge" style="background-color: #27ae60;">Sangat Puas</span>
                             @elseif($form->assessment == 'puas')
-                                <span class="badge bg-warning bg-opacity-75 text-dark">Puas</span>
+                                <span class="badge" style="background-color: #f39c12;">Puas</span>
                             @else
-                                <span class="badge bg-danger bg-opacity-75">Tidak Puas</span>
+                                <span class="badge" style="background-color: #e74c3c;">Tidak Puas</span>
                             @endif
                         </td>
                         <td>
@@ -167,24 +167,38 @@
                             <small>{{ $form->form_date ? $form->form_date->format('d/m/Y') : $form->created_at->format('d/m/Y') }}</small>
                         </td>
                         <td class="text-center">
-                            <div class="btn-group btn-group-sm">
-                                <a href="{{ route('forms.show', $form) }}" class="btn btn-outline-secondary" title="Lihat">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('forms.pdf', $form) }}" class="btn btn-outline-secondary" title="PDF" target="_blank">
-                                    <i class="fas fa-file-pdf"></i>
-                                </a>
-                                @if($form->user_id == auth()->id())
-                                <a href="{{ route('forms.edit', $form) }}" class="btn btn-outline-secondary" title="Ubah">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                @endif
-                                @if(auth()->user()->isAdmin())
-                                <button type="button" class="btn btn-outline-secondary" title="Hapus" 
-                                        onclick="confirmDelete({{ $form->id }})">
-                                    <i class="fas fa-trash"></i>
+                            <div class="dropdown">
+                                <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; color: #6c757d;">
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </button>
-                                @endif
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('forms.show', $form) }}">
+                                            <i class="fas fa-eye me-2 text-primary"></i> Lihat Detail
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('forms.pdf', $form) }}" target="_blank">
+                                            <i class="fas fa-file-pdf me-2 text-danger"></i> Unduh PDF
+                                        </a>
+                                    </li>
+                                    @if($form->user_id == auth()->id())
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('forms.edit', $form) }}">
+                                            <i class="fas fa-edit me-2 text-warning"></i> Edit Form
+                                        </a>
+                                    </li>
+                                    @endif
+                                    @if(auth()->user()->isAdmin())
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); confirmDelete({{ $form->id }})">
+                                            <i class="fas fa-trash me-2"></i> Hapus
+                                        </a>
+                                    </li>
+                                    @endif
+                                </ul>
                             </div>
                             <form id="delete-form-{{ $form->id }}" action="{{ route('forms.destroy', $form) }}" 
                                   method="POST" style="display: none;">
@@ -264,12 +278,53 @@
                 cutout: '55%'
             }
         });
+
+        // ============================================
+        // LIVE TABLE FILTER - Filter saat mengetik
+        // ============================================
+        const searchInput = document.getElementById('search-input');
+        const dataTable = document.getElementById('data-table');
+        const tableBody = dataTable ? dataTable.querySelector('tbody') : null;
+        
+        if (searchInput && tableBody) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                const rows = tableBody.querySelectorAll('tr');
+                
+                rows.forEach(function(row) {
+                    // Ambil nama pelanggan dari kolom pertama (td kedua karena ada nomor)
+                    const pelangganCell = row.querySelector('td:nth-child(2)');
+                    if (pelangganCell) {
+                        const namaPelanggan = pelangganCell.textContent.toLowerCase();
+                        
+                        // Tampilkan row jika cocok, sembunyikan jika tidak
+                        if (query === '' || namaPelanggan.includes(query)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
     });
     
     function confirmDelete(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus formulir ini? Data yang dihapus tidak dapat dikembalikan.')) {
-            document.getElementById('delete-form-' + id).submit();
-        }
+        Swal.fire({
+            title: 'Hapus Formulir?',
+            text: 'Data formulir yang dihapus tidak dapat dikembalikan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-trash me-1"></i> Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
     }
 </script>
 @endpush

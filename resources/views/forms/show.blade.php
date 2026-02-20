@@ -9,19 +9,19 @@
         Detail Form On Site Customer
     </h1>
     <div>
-        <a href="{{ route('forms.pdf', $form) }}" class="btn btn-danger" target="_blank">
+        <a href="{{ route('forms.pdf', $form) }}" class="btn btn-outline-danger" target="_blank">
             <i class="fas fa-file-pdf me-2"></i> PDF
         </a>
-        <button class="btn btn-primary" onclick="window.print()">
+        <button class="btn btn-outline-primary" onclick="window.print()">
             <i class="fas fa-print me-2"></i> Cetak
         </button>
         @if($form->user_id == auth()->id())
-        <a href="{{ route('forms.edit', $form) }}" class="btn btn-warning">
+        <a href="{{ route('forms.edit', $form) }}" class="btn btn-outline-warning">
             <i class="fas fa-edit me-2"></i> Edit
         </a>
         @endif
         @if(auth()->user()->isAdmin())
-        <button type="button" class="btn btn-dark" onclick="confirmDelete()">
+        <button type="button" class="btn btn-outline-dark" onclick="confirmDelete()">
             <i class="fas fa-trash me-2"></i> Hapus
         </button>
         <form id="delete-form" action="{{ route('forms.destroy', $form) }}" method="POST" style="display: none;">
@@ -29,7 +29,7 @@
             @method('DELETE')
         </form>
         @endif
-        <a href="{{ route('forms.index') }}" class="btn btn-secondary">
+        <a href="{{ route('forms.index') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2"></i> Kembali
         </a>
     </div>

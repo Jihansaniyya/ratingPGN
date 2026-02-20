@@ -17,6 +17,17 @@
     @csrf
     @method('PUT')
     
+    @if($errors->any())
+        <div class="alert alert-danger mb-4">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Terdapat kesalahan pada form, mohon perbaiki:</h6>
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
     <!-- Customer Detail Section -->
     <div class="form-section">
         <h4 class="form-section-title">
@@ -376,39 +387,45 @@
                        value="{{ old('form_date', $form->form_date ? $form->form_date->format('Y-m-d') : '') }}">
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <div class="card">
+        <div class="row align-items-stretch">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card w-100">
                     <div class="card-header bg-primary text-white text-center">
-                        Pihak Pertama<br>
+                        Pihak Pertama <span class="text-warning">*</span><br>
                         <strong>PT TELEMEDIA DINAMIKA SARANA</strong>
                     </div>
-                    <div class="card-body text-center">
-                        @if($form->signature_first_party)
-                            <img src="{{ $form->signature_first_party }}" alt="Signature" class="img-fluid" style="max-height: 150px;">
-                        @else
-                            <p class="text-muted">Tidak ada tanda tangan</p>
-                        @endif
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-2">
+                            <input type="text" name="first_party_name" class="form-control" placeholder="Nama Pihak Pertama *" value="{{ old('first_party_name', $form->first_party_name) }}" required>
+                        </div>
+                        <div class="signature-pad flex-grow-1" id="signaturePad1">
+                            <canvas id="canvas1"></canvas>
+                        </div>
+                        <input type="hidden" name="signature_first_party" id="signature_first_party">
+                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="clearSignature(1)">
+                            <i class="fas fa-eraser me-1"></i> Hapus Tanda Tangan
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <div class="card">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card w-100">
                     <div class="card-header bg-secondary text-white text-center">
-                        Pihak Kedua
+                        Pihak Kedua <span class="text-warning">*</span><br>
+                        <strong>&nbsp;</strong>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <div class="mb-2">
                             <input type="text" name="second_party_name" class="form-control" 
-                                   placeholder="Nama Pihak Kedua" value="{{ old('second_party_name', $form->second_party_name) }}">
+                                   placeholder="Nama Pihak Kedua *" value="{{ old('second_party_name', $form->second_party_name) }}" required>
                         </div>
-                        @if($form->signature_second_party)
-                            <div class="text-center">
-                                <img src="{{ $form->signature_second_party }}" alt="Signature" class="img-fluid" style="max-height: 150px;">
-                            </div>
-                        @else
-                            <p class="text-muted text-center">Tidak ada tanda tangan</p>
-                        @endif
+                        <div class="signature-pad flex-grow-1" id="signaturePad2">
+                            <canvas id="canvas2"></canvas>
+                        </div>
+                        <input type="hidden" name="signature_second_party" id="signature_second_party">
+                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="clearSignature(2)">
+                            <i class="fas fa-eraser me-1"></i> Hapus Tanda Tangan
+                        </button>
                     </div>
                 </div>
             </div>
@@ -427,23 +444,79 @@
 </form>
 @endsection
 
+@push('styles')
+<style>
+    .signature-pad canvas {
+        border: 1px solid #e3e6f0;
+        border-radius: 5px;
+        cursor: crosshair;
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
     let deviceIndex = {{ $form->maintenanceDevices->count() ?: 1 }};
-    
+    let _formSubmitted = false;
+
     // API Base URL for Indonesia regions
     const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
     // Store current values for pre-selection
-    const currentProvinsi = "{{ $form->customer->provinsi }}";
-    const currentKota = "{{ $form->customer->kota_kabupaten }}";
-    const currentKecamatan = "{{ $form->customer->kecamatan }}";
-    const currentKelurahan = "{{ $form->customer->kelurahan }}";
+    let currentProvinsi = "{{ $form->customer->provinsi }}";
+    let currentKota = "{{ $form->customer->kota_kabupaten }}";
+    let currentKecamatan = "{{ $form->customer->kecamatan }}";
+    let currentKelurahan = "{{ $form->customer->kelurahan }}";
 
-    // Load provinces on page load
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize signature pads
+        const canvas1 = document.getElementById('canvas1');
+        const canvas2 = document.getElementById('canvas2');
+        canvas1.width = canvas1.parentElement.offsetWidth - 4;
+        canvas1.height = 150;
+        canvas2.width = canvas2.parentElement.offsetWidth - 4;
+        canvas2.height = 150;
+
+        signaturePad1 = new SignaturePad(canvas1);
+        signaturePad2 = new SignaturePad(canvas2);
+
+        // Load existing signatures into canvas
+        @if($form->signature_first_party)
+            loadSignatureToCanvas(signaturePad1, @json($form->signature_first_party));
+        @endif
+        @if($form->signature_second_party)
+            loadSignatureToCanvas(signaturePad2, @json($form->signature_second_party));
+        @endif
+
+        // Restore draft if available (preserves changes on refresh)
+        restoreDraft(signaturePad1, signaturePad2);
+
+        // Auto-save on signature strokes
+        signaturePad1.addEventListener('endStroke', function() { saveDraft(); });
+        signaturePad2.addEventListener('endStroke', function() { saveDraft(); });
+
+        // Load provinces (uses current* vars, possibly overridden by draft)
         loadProvinces();
     });
+
+    let signaturePad1, signaturePad2;
+
+    function loadSignatureToCanvas(pad, dataUrl) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = pad.canvas;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            pad._isEmpty = false;
+        };
+        img.src = dataUrl;
+    }
+
+    function clearSignature(num) {
+        if (num === 1) signaturePad1.clear();
+        else signaturePad2.clear();
+    }
 
     // Load Provinces
     async function loadProvinces() {
@@ -606,12 +679,14 @@
 
     // Form validation before submit
     document.getElementById('onSiteForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+
         // Validate at least one activity is checked
         const activityCheckboxes = document.querySelectorAll('.activity-checkbox');
         const isAnyActivityChecked = Array.from(activityCheckboxes).some(cb => cb.checked);
         
         if (!isAnyActivityChecked) {
-            e.preventDefault();
             document.getElementById('activity-error').style.display = 'block';
             document.getElementById('activity-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
@@ -621,15 +696,23 @@
 
         // Validate signatures
         if (signaturePad1.isEmpty()) {
-            e.preventDefault();
-            alert('Tanda tangan Pihak Pertama wajib diisi!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanda Tangan Kosong',
+                text: 'Tanda tangan Pihak Pertama wajib diisi!',
+                confirmButtonColor: '#2c5282',
+            });
             document.getElementById('signaturePad1').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         }
         
         if (signaturePad2.isEmpty()) {
-            e.preventDefault();
-            alert('Tanda tangan Pihak Kedua wajib diisi!');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tanda Tangan Kosong',
+                text: 'Tanda tangan Pihak Kedua wajib diisi!',
+                confirmButtonColor: '#2c5282',
+            });
             document.getElementById('signaturePad2').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return false;
         }
@@ -637,6 +720,26 @@
         // Save signature data
         document.getElementById('signature_first_party').value = signaturePad1.toDataURL();
         document.getElementById('signature_second_party').value = signaturePad2.toDataURL();
+
+        // Confirmation alert
+        Swal.fire({
+            title: 'Update Form?',
+            text: 'Apakah Anda yakin ingin menyimpan perubahan pada form ini?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2c5282',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-check me-1"></i> Ya, Update!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                _formSubmitted = true;
+                clearTimeout(_draftTimer);
+                localStorage.removeItem('formDraft_edit_{{ $form->id }}');
+                form.submit();
+            }
+        });
     });
 
     // Hide activity error when any checkbox is checked
@@ -649,5 +752,202 @@
 
     // Initialize remove buttons state
     updateRemoveButtons();
+
+    // === Auto-Save Draft Functions ===
+    const DRAFT_KEY_EDIT = 'formDraft_edit_{{ $form->id }}';
+
+    function saveDraft() {
+        if (_formSubmitted) return;
+        try {
+            const draft = { _timestamp: Date.now() };
+
+            // All text/email/date inputs, textareas, selects in the form
+            document.querySelectorAll('#onSiteForm input[type="text"], #onSiteForm input[type="email"], #onSiteForm input[type="date"], #onSiteForm textarea, #onSiteForm select').forEach(el => {
+                if (el.name && el.type !== 'hidden' && el.type !== 'file') {
+                    draft[el.name] = el.value;
+                }
+            });
+
+            // Activity checkboxes
+            document.querySelectorAll('.activity-checkbox').forEach(el => {
+                if (el.name) draft[el.name] = el.checked;
+            });
+
+            // Assessment radio
+            const assessment = document.querySelector('[name="assessment"]:checked');
+            if (assessment) draft.assessment = assessment.value;
+
+            // Devices
+            draft.devices = [];
+            document.querySelectorAll('.device-row').forEach(row => {
+                draft.devices.push({
+                    device_name: row.querySelector('[name*="[device_name]"]')?.value || '',
+                    serial_number: row.querySelector('[name*="[serial_number]"]')?.value || '',
+                    keterangan: row.querySelector('[name*="[keterangan]"]')?.value || ''
+                });
+            });
+
+            // Signatures
+            try {
+                if (typeof signaturePad1 !== 'undefined' && !signaturePad1.isEmpty()) {
+                    draft.signature1 = signaturePad1.toDataURL();
+                }
+                if (typeof signaturePad2 !== 'undefined' && !signaturePad2.isEmpty()) {
+                    draft.signature2 = signaturePad2.toDataURL();
+                }
+            } catch(sigErr) {
+                console.warn('Could not save signatures to draft:', sigErr);
+            }
+
+            localStorage.setItem(DRAFT_KEY_EDIT, JSON.stringify(draft));
+        } catch (e) {
+            console.error('Error saving draft:', e);
+        }
+    }
+
+    function restoreDraft(pad1, pad2) {
+        const data = localStorage.getItem(DRAFT_KEY_EDIT);
+        if (!data) return;
+
+        try {
+            const draft = JSON.parse(data);
+
+            // Check if draft is too old (older than 24 hours)
+            if (draft._timestamp && (Date.now() - draft._timestamp > 24 * 60 * 60 * 1000)) {
+                localStorage.removeItem(DRAFT_KEY_EDIT);
+                return;
+            }
+
+            let hasData = false;
+
+            // Text inputs & textareas - override with draft values
+            ['customer_name', 'cid', 'alamat_lengkap', 'kapasitas_capacity',
+             'no_telp_pic', 'email', 'location', 'form_date',
+             'first_party_name', 'second_party_name', 'complaint', 'action'].forEach(name => {
+                if (draft[name] !== undefined) {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el) {
+                        el.value = draft[name];
+                        hasData = true;
+                    }
+                }
+            });
+
+            // Layanan service select
+            if (draft.layanan_service) {
+                const el = document.querySelector('[name="layanan_service"]');
+                if (el) {
+                    el.value = draft.layanan_service;
+                    hasData = true;
+                }
+            }
+
+            // Address: override current* variables for cascade loading
+            if (draft.provinsi) { currentProvinsi = draft.provinsi; hasData = true; }
+            if (draft.kota_kabupaten) currentKota = draft.kota_kabupaten;
+            if (draft.kecamatan) currentKecamatan = draft.kecamatan;
+            if (draft.kelurahan) currentKelurahan = draft.kelurahan;
+
+            // Activity checkboxes
+            ['activity_survey', 'activity_activation', 'activity_upgrade',
+             'activity_downgrade', 'activity_troubleshoot', 'activity_preventive_maintenance'].forEach(name => {
+                if (draft[name] !== undefined) {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el) el.checked = draft[name];
+                }
+            });
+
+            // Assessment
+            if (draft.assessment) {
+                document.querySelectorAll('.assessment-option').forEach(opt => opt.classList.remove('selected'));
+                const el = document.querySelector(`[name="assessment"][value="${draft.assessment}"]`);
+                if (el) {
+                    el.checked = true;
+                    const label = el.closest('.assessment-option');
+                    if (label) label.classList.add('selected');
+                }
+            }
+
+            // Devices
+            if (draft.devices && draft.devices.length > 0) {
+                let existingRows = document.querySelectorAll('.device-row');
+                for (let i = existingRows.length; i < draft.devices.length; i++) {
+                    addDevice();
+                }
+                const rows = document.querySelectorAll('.device-row');
+                draft.devices.forEach((device, i) => {
+                    if (rows[i]) {
+                        const dn = rows[i].querySelector('[name*="[device_name]"]');
+                        const sn = rows[i].querySelector('[name*="[serial_number]"]');
+                        const kt = rows[i].querySelector('[name*="[keterangan]"]');
+                        if (dn) dn.value = device.device_name;
+                        if (sn) sn.value = device.serial_number;
+                        if (kt) kt.value = device.keterangan;
+                    }
+                });
+            }
+
+            // Signatures
+            if (draft.signature1 && pad1) {
+                const img1 = new Image();
+                img1.onload = function() {
+                    pad1.canvas.getContext('2d').clearRect(0, 0, pad1.canvas.width, pad1.canvas.height);
+                    pad1.canvas.getContext('2d').drawImage(img1, 0, 0, pad1.canvas.width, pad1.canvas.height);
+                    pad1._isEmpty = false;
+                };
+                img1.src = draft.signature1;
+                hasData = true;
+            }
+            if (draft.signature2 && pad2) {
+                const img2 = new Image();
+                img2.onload = function() {
+                    pad2.canvas.getContext('2d').clearRect(0, 0, pad2.canvas.width, pad2.canvas.height);
+                    pad2.canvas.getContext('2d').drawImage(img2, 0, 0, pad2.canvas.width, pad2.canvas.height);
+                    pad2._isEmpty = false;
+                };
+                img2.src = draft.signature2;
+            }
+
+            // Show notification only if we actually restored data
+            if (hasData && typeof Swal !== 'undefined') {
+                Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                }).fire({ icon: 'info', title: 'Draft berhasil dipulihkan' });
+            }
+        } catch (e) {
+            console.error('Error restoring draft:', e);
+        }
+    }
+
+    // Auto-save: on input, change, and right before page unload
+    let _draftTimer;
+    function debouncedSaveDraft() {
+        clearTimeout(_draftTimer);
+        _draftTimer = setTimeout(saveDraft, 300);
+    }
+
+    document.getElementById('onSiteForm').addEventListener('input', debouncedSaveDraft);
+    document.getElementById('onSiteForm').addEventListener('change', debouncedSaveDraft);
+
+    // Force-save draft immediately when leaving/refreshing page (but not after submit)
+    window.addEventListener('beforeunload', function() {
+        if (_formSubmitted) {
+            // Double-ensure draft is removed after submit
+            localStorage.removeItem('formDraft_edit_{{ $form->id }}');
+        } else {
+            saveDraft();
+        }
+    });
+
+    // Also save on visibility change (switching tabs)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden' && !_formSubmitted) {
+            saveDraft();
+        }
+    });
 </script>
 @endpush

@@ -29,18 +29,36 @@
                     <?php echo csrf_field(); ?>
                     <div class="mb-3">
                         <label class="form-label">Password Saat Ini <span class="text-danger">*</span></label>
-                        <input type="password" name="current_password" class="form-control" required>
+                        <div class="position-relative">
+                            <input type="password" name="current_password" id="current_password" class="form-control" required style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3"
+                                    onclick="togglePassword('current_password', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Password Baru <span class="text-danger">*</span></label>
-                        <input type="password" name="password" class="form-control" required>
+                        <div class="position-relative">
+                            <input type="password" name="password" id="password" class="form-control" required style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3"
+                                    onclick="togglePassword('password', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                         <small class="text-muted">Minimal 8 karakter, harus ada huruf kapital dan simbol (!@#$%^&* dll)</small>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">Konfirmasi Password Baru <span class="text-danger">*</span></label>
-                        <input type="password" name="password_confirmation" class="form-control" required>
+                        <div class="position-relative">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3"
+                                    onclick="togglePassword('password_confirmation', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="d-flex gap-2">
@@ -57,5 +75,21 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+</script>
+<?php $__env->stopPush(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Jihan Saniyya\ratingPGN-app\resources\views/auth/change-password.blade.php ENDPATH**/ ?>

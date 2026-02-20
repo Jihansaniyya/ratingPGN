@@ -10,8 +10,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <style>
+        /* Hide browser default password reveal button */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            display: none;
+        }
+        .custom-toast-success {
+            border-radius: 8px !important;
+            box-shadow: 0 4px 20px rgba(44, 82, 130, 0.3) !important;
+            border-left: 4px solid #2c5282 !important;
+        }
+        .custom-toast-success .swal2-timer-progress-bar {
+            background: #2c5282 !important;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -272,10 +289,11 @@
 
         /* Badge */
         .badge {
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.8rem;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.3px;
         }
 
         /* Assessment Options */
@@ -443,67 +461,6 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="content-wrapper">
-            <!-- Alert Notifications -->
-            <?php if(session('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show alert-notification" role="alert">
-                    <div class="d-flex align-items-center">
-                        <div class="alert-icon me-3">
-                            <i class="fas fa-check-circle fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="alert-heading mb-1 fw-bold">Berhasil!</h6>
-                            <p class="mb-0"><?php echo e(session('success')); ?></p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
-            <?php if(session('error')): ?>
-                <div class="alert alert-danger alert-dismissible fade show alert-notification" role="alert">
-                    <div class="d-flex align-items-center">
-                        <div class="alert-icon me-3">
-                            <i class="fas fa-exclamation-circle fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="alert-heading mb-1 fw-bold">Terjadi Kesalahan!</h6>
-                            <p class="mb-0"><?php echo e(session('error')); ?></p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
-            <?php if(session('warning')): ?>
-                <div class="alert alert-warning alert-dismissible fade show alert-notification" role="alert">
-                    <div class="d-flex align-items-center">
-                        <div class="alert-icon me-3">
-                            <i class="fas fa-exclamation-triangle fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="alert-heading mb-1 fw-bold">Perhatian!</h6>
-                            <p class="mb-0"><?php echo e(session('warning')); ?></p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
-            <?php if(session('info')): ?>
-                <div class="alert alert-info alert-dismissible fade show alert-notification" role="alert">
-                    <div class="d-flex align-items-center">
-                        <div class="alert-icon me-3">
-                            <i class="fas fa-info-circle fa-2x"></i>
-                        </div>
-                        <div>
-                            <h6 class="alert-heading mb-1 fw-bold">Informasi</h6>
-                            <p class="mb-0"><?php echo e(session('info')); ?></p>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
             <?php echo $__env->yieldContent('content'); ?>
         </div>
         
@@ -514,17 +471,65 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Auto-hide alerts after 5 seconds -->
+    <!-- SweetAlert2 Session Alerts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const alerts = document.querySelectorAll('.alert-notification');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                }, 5000);
-            });
+            <?php if(session('success')): ?>
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: <?php echo json_encode(session('success'), 15, 512) ?>,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    background: '#ffffff',
+                    color: '#2c5282',
+                    iconColor: '#28a745',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown animate__faster'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp animate__faster'
+                    },
+                    customClass: {
+                        popup: 'custom-toast-success'
+                    }
+                });
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: <?php echo json_encode(session('error'), 15, 512) ?>,
+                    confirmButtonText: 'Tutup',
+                    confirmButtonColor: '#dc3545',
+                });
+            <?php endif; ?>
+
+            <?php if(session('warning')): ?>
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian!',
+                    text: <?php echo json_encode(session('warning'), 15, 512) ?>,
+                    confirmButtonText: 'Mengerti',
+                    confirmButtonColor: '#ffc107',
+                });
+            <?php endif; ?>
+
+            <?php if(session('info')): ?>
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Informasi',
+                    text: <?php echo json_encode(session('info'), 15, 512) ?>,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0dcaf0',
+                });
+            <?php endif; ?>
         });
     </script>
     

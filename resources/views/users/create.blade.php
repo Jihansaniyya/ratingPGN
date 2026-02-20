@@ -20,6 +20,16 @@
                 <i class="fas fa-user-cog me-2"></i> Form Tambah Petugas
             </div>
             <div class="card-body">
+                @if($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Terdapat kesalahan, mohon perbaiki:</h6>
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form action="{{ route('users.store') }}" method="POST">
                     @csrf
 
@@ -43,18 +53,30 @@
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
-                               placeholder="Minimal 8 karakter, huruf kapital & simbol" required>
+                        <div class="position-relative">
+                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
+                                   placeholder="Minimal 8 karakter, huruf kapital & simbol" required style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3" 
+                                    onclick="togglePassword('password', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                         @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                         <small class="text-muted">Minimal 8 karakter, harus ada huruf kapital dan simbol (!@#$%^&* dll)</small>
                     </div>
 
                     <div class="mb-4">
                         <label for="password_confirmation" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
-                               placeholder="Ulangi password" required>
+                        <div class="position-relative">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
+                                   placeholder="Ulangi password" required style="padding-right: 40px;">
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted pe-3" 
+                                    onclick="togglePassword('password_confirmation', this)" style="z-index: 5; text-decoration: none;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="d-grid gap-2">
@@ -68,3 +90,19 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+</script>
+@endpush

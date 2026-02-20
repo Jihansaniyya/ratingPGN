@@ -26,16 +26,6 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        // Assessment distribution for chart
-        $assessmentData = [
-            'labels' => ['Tidak Puas', 'Puas', 'Sangat Puas'],
-            'data' => [
-                $stats['total_tidak_puas'],
-                $stats['total_puas'],
-                $stats['total_sangat_puas'],
-            ],
-        ];
-
-        return view('dashboard', compact('stats', 'recentForms', 'assessmentData'));
+        return view('dashboard', compact('stats', 'recentForms'));
     }
 }

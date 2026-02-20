@@ -130,12 +130,21 @@
 <div class="row">
     <!-- Chart -->
     <div class="col-lg-4 mb-4">
-        <div class="card h-100">
+        <div class="card">
             <div class="card-header bg-white py-3">
                 <span class="fw-semibold text-dark">Distribusi Kepuasan</span>
             </div>
             <div class="card-body">
-                <canvas id="assessmentChart" height="220"></canvas>
+                <div class="text-center">
+                    <canvas id="assessmentChart" style="max-width: 200px; margin: 0 auto;"></canvas>
+                </div>
+                <div class="text-center mt-3">
+                    <small>
+                        <span style="display:inline-block;width:10px;height:10px;background:#27ae60;margin:0 5px;"></span> Sangat Puas
+                        <span style="display:inline-block;width:10px;height:10px;background:#f39c12;margin:0 5px 0 15px;"></span> Puas
+                        <span style="display:inline-block;width:10px;height:10px;background:#e74c3c;margin:0 5px 0 15px;"></span> Tidak Puas
+                    </small>
+                </div>
             </div>
         </div>
     </div>
@@ -165,11 +174,11 @@
                             <td class="text-secondary">{{ $form->customer?->layanan_service ?? '-' }}</td>
                             <td>
                                 @if($form->assessment == 'sangat_puas')
-                                    <span class="badge bg-success">Sangat Puas</span>
+                                    <span class="badge" style="background-color: #27ae60;">Sangat Puas</span>
                                 @elseif($form->assessment == 'puas')
-                                    <span class="badge bg-warning text-dark">Puas</span>
+                                    <span class="badge" style="background-color: #f39c12;">Puas</span>
                                 @else
-                                    <span class="badge bg-danger">Tidak Puas</span>
+                                    <span class="badge" style="background-color: #e74c3c;">Tidak Puas</span>
                                 @endif
                             </td>
                             <td class="text-secondary">{{ $form->created_at->format('d/m/Y') }}</td>
@@ -193,45 +202,49 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-    // Chart dengan animasi
-    new Chart(document.getElementById('assessmentChart'), {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode($assessmentData['labels']) !!},
-            datasets: [{ 
-                data: {!! json_encode($assessmentData['data']) !!},
-                backgroundColor: ['#e74c3c', '#f39c12', '#27ae60'],
-                hoverOffset: 8,
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            cutout: '70%',
-            animation: {
-                animateRotate: true,
-                animateScale: true,
-                duration: 800,
-                easing: 'easeOutQuart'
+    document.addEventListener('DOMContentLoaded', function() {
+        // Statistics data - same order as forms/index
+        const statsData = {
+            total: {{ $stats['total_forms'] }},
+            sangat_puas: {{ $stats['total_sangat_puas'] }},
+            puas: {{ $stats['total_puas'] }},
+            tidak_puas: {{ $stats['total_tidak_puas'] }}
+        };
+        
+        // Create chart with same style as forms/index
+        const ctx = document.getElementById('assessmentChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sangat Puas', 'Puas', 'Tidak Puas'],
+                datasets: [{
+                    data: [statsData.sangat_puas, statsData.puas, statsData.tidak_puas],
+                    backgroundColor: ['#27ae60', '#f39c12', '#e74c3c'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
             },
-            plugins: {
-                legend: { 
-                    position: 'bottom',
-                    labels: {
-                        padding: 15,
-                        usePointStyle: true
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const total = statsData.total;
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return context.label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
                     }
                 },
-                tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    padding: 12,
-                    cornerRadius: 8
-                }
+                cutout: '55%'
             }
-        }
+        });
     });
 
     // Animasi angka statistik
