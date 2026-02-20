@@ -126,7 +126,7 @@ class OnSiteFormController extends Controller
         ], [
             // Customer data
             'cid.required' => 'CID wajib diisi.',
-            'customer_name.required' => 'Nama pelanggan wajib diisi.',,
+            'customer_name.required' => 'Nama pelanggan wajib diisi.',
             'provinsi.required' => 'Provinsi wajib dipilih.',
             'kota_kabupaten.required' => 'Kota/Kabupaten wajib dipilih.',
             'kecamatan.required' => 'Kecamatan wajib dipilih.',

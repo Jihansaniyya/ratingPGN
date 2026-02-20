@@ -223,14 +223,16 @@
         </div>
     </div>
     
-    <?php if($forms->hasPages()): ?>
+    <?php if($forms->count() > 0): ?>
     <div class="card-footer bg-white border-top">
         <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">
                 Menampilkan <?php echo e($forms->firstItem() ?? 0); ?> - <?php echo e($forms->lastItem() ?? 0); ?> dari <?php echo e($forms->total()); ?> data
             </small>
-            <?php echo e($forms->withQueryString()->links()); ?>
+            <?php if($forms->hasPages()): ?>
+                <?php echo e($forms->withQueryString()->links()); ?>
 
+            <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>

@@ -223,13 +223,15 @@
         </div>
     </div>
     
-    @if($forms->hasPages())
+    @if($forms->count() > 0)
     <div class="card-footer bg-white border-top">
         <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">
                 Menampilkan {{ $forms->firstItem() ?? 0 }} - {{ $forms->lastItem() ?? 0 }} dari {{ $forms->total() }} data
             </small>
-            {{ $forms->withQueryString()->links() }}
+            @if($forms->hasPages())
+                {{ $forms->withQueryString()->links() }}
+            @endif
         </div>
     </div>
     @endif

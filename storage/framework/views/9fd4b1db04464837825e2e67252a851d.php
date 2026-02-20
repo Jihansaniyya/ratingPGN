@@ -25,7 +25,7 @@
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="<?php echo e(route('password.update')); ?>">
+                <form method="POST" action="<?php echo e(route('password.update')); ?>" id="changePasswordForm">
                     <?php echo csrf_field(); ?>
                     <div class="mb-3">
                         <label class="form-label">Password Saat Ini <span class="text-danger">*</span></label>
@@ -89,6 +89,27 @@
             icon.classList.replace('fa-eye-slash', 'fa-eye');
         }
     }
+
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+
+        Swal.fire({
+            title: 'Ubah Password?',
+            text: 'Apakah Anda yakin ingin mengubah password?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2c5282',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-check me-1"></i> Ya, Ubah!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
 </script>
 <?php $__env->stopPush(); ?>
 
