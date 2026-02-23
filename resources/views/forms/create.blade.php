@@ -423,7 +423,7 @@
 
     <!-- Submit Button -->
     <div class="form-section text-center">
-        <button type="submit" class="btn btn-primary btn-lg px-5">
+        <button type="submit" id="submitBtn" class="btn btn-primary btn-lg px-5">
             <i class="fas fa-save me-2"></i> Simpan Form
         </button>
         <a href="{{ route('forms.index') }}" class="btn btn-secondary btn-lg px-5 ms-2">
@@ -754,6 +754,12 @@
                 _formSubmitted = true;
                 clearTimeout(_draftTimer);
                 localStorage.removeItem('formDraft_create');
+                
+                // Disable button to prevent double submit
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengirim...';
+                
                 form.submit();
             }
         });

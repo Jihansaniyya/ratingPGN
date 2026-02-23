@@ -8,34 +8,46 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     /**
-     * Display report page with filters
+     * Apply common filters to query
      */
-    public function index(Request $request)
+    private function applyFilters($query, Request $request)
     {
-        $query = OnSiteForm::with('customer');
-        
-        // Filter by assessment
         if ($request->filled('assessment') && $request->assessment !== 'semua') {
             $query->where('assessment', $request->assessment);
         }
-        
-        // Filter by date range
         if ($request->filled('start_date')) {
             $query->whereDate('form_date', '>=', $request->start_date);
         }
         if ($request->filled('end_date')) {
             $query->whereDate('form_date', '<=', $request->end_date);
         }
-        
-        $forms = $query->orderBy('form_date', 'desc')->get();
-        
-        // Calculate statistics
-        $stats = [
-            'total' => $forms->count(),
-            'sangat_puas' => $forms->where('assessment', 'sangat_puas')->count(),
-            'puas' => $forms->where('assessment', 'puas')->count(),
-            'tidak_puas' => $forms->where('assessment', 'tidak_puas')->count(),
+        return $query;
+    }
+
+    /**
+     * Calculate statistics from query
+     */
+    private function getStats($query)
+    {
+        $statsQuery = clone $query;
+        return [
+            'total' => $statsQuery->count(),
+            'sangat_puas' => (clone $statsQuery)->where('assessment', 'sangat_puas')->count(),
+            'puas' => (clone $statsQuery)->where('assessment', 'puas')->count(),
+            'tidak_puas' => (clone $statsQuery)->where('assessment', 'tidak_puas')->count(),
         ];
+    }
+
+    /**
+     * Display report page with filters
+     */
+    public function index(Request $request)
+    {
+        $query = OnSiteForm::with('customer');
+        $this->applyFilters($query, $request);
+        
+        $stats = $this->getStats($query);
+        $forms = $query->orderBy('form_date', 'desc')->paginate(20);
         
         return view('reports.index', compact('forms', 'stats'));
     }
@@ -46,30 +58,10 @@ class ReportController extends Controller
     public function print(Request $request)
     {
         $query = OnSiteForm::with('customer');
+        $this->applyFilters($query, $request);
         
-        // Filter by assessment
-        if ($request->filled('assessment') && $request->assessment !== 'semua') {
-            $query->where('assessment', $request->assessment);
-        }
-        
-        // Filter by date range
-        if ($request->filled('start_date')) {
-            $query->whereDate('form_date', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $query->whereDate('form_date', '<=', $request->end_date);
-        }
-        
+        $stats = $this->getStats($query);
         $forms = $query->orderBy('form_date', 'desc')->get();
-        
-        // Calculate statistics
-        $stats = [
-            'total' => $forms->count(),
-            'sangat_puas' => $forms->where('assessment', 'sangat_puas')->count(),
-            'puas' => $forms->where('assessment', 'puas')->count(),
-            'tidak_puas' => $forms->where('assessment', 'tidak_puas')->count(),
-        ];
-        
         $filterInfo = $this->getFilterInfo($request);
         
         return view('reports.print', compact('forms', 'stats', 'filterInfo'));
@@ -81,17 +73,7 @@ class ReportController extends Controller
     public function export(Request $request)
     {
         $query = OnSiteForm::with('customer');
-        
-        if ($request->filled('assessment') && $request->assessment !== 'semua') {
-            $query->where('assessment', $request->assessment);
-        }
-        
-        if ($request->filled('start_date')) {
-            $query->whereDate('form_date', '>=', $request->start_date);
-        }
-        if ($request->filled('end_date')) {
-            $query->whereDate('form_date', '<=', $request->end_date);
-        }
+        $this->applyFilters($query, $request);
         
         $forms = $query->orderBy('form_date', 'desc')->get();
         

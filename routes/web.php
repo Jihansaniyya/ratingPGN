@@ -17,7 +17,7 @@ Route::get('/', function () {
 // Auth Routes (Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 });
 
 // Protected Routes (Auth)
@@ -35,9 +35,11 @@ Route::middleware('auth')->group(function () {
     // On-Site Form Routes
     Route::resource('forms', OnSiteFormController::class);
 
-    // API Routes for Autocomplete
-    Route::get('/api/search/customers', [OnSiteFormController::class, 'searchCustomers'])->name('api.search.customers');
-    Route::get('/api/search/users', [OnSiteFormController::class, 'searchUsers'])->name('api.search.users');
+    // API Routes for Autocomplete (rate limited)
+    Route::middleware('throttle:30,1')->group(function () {
+        Route::get('/api/search/customers', [OnSiteFormController::class, 'searchCustomers'])->name('api.search.customers');
+        Route::get('/api/search/users', [OnSiteFormController::class, 'searchUsers'])->name('api.search.users');
+    });
 
     // PDF Export Route
     Route::get('/forms/{form}/pdf', [OnSiteFormController::class, 'exportPdf'])->name('forms.pdf');

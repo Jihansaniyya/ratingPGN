@@ -269,42 +269,42 @@
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_survey" value="1" id="survey"
-                               {{ $form->activity_survey ? 'checked' : '' }}>
+                               {{ old('activity_survey', $form->activity_survey) ? 'checked' : '' }}>
                         <label class="form-check-label" for="survey">Survey</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_activation" value="1" id="activation"
-                               {{ $form->activity_activation ? 'checked' : '' }}>
+                               {{ old('activity_activation', $form->activity_activation) ? 'checked' : '' }}>
                         <label class="form-check-label" for="activation">Activation</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_upgrade" value="1" id="upgrade"
-                               {{ $form->activity_upgrade ? 'checked' : '' }}>
+                               {{ old('activity_upgrade', $form->activity_upgrade) ? 'checked' : '' }}>
                         <label class="form-check-label" for="upgrade">Upgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_downgrade" value="1" id="downgrade"
-                               {{ $form->activity_downgrade ? 'checked' : '' }}>
+                               {{ old('activity_downgrade', $form->activity_downgrade) ? 'checked' : '' }}>
                         <label class="form-check-label" for="downgrade">Downgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot"
-                               {{ $form->activity_troubleshoot ? 'checked' : '' }}>
+                               {{ old('activity_troubleshoot', $form->activity_troubleshoot) ? 'checked' : '' }}>
                         <label class="form-check-label" for="troubleshoot">Troubleshoot</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive"
-                               {{ $form->activity_preventive_maintenance ? 'checked' : '' }}>
+                               {{ old('activity_preventive_maintenance', $form->activity_preventive_maintenance) ? 'checked' : '' }}>
                         <label class="form-check-label" for="preventive">Preventive Maintenance</label>
                     </div>
                 </div>
@@ -434,7 +434,7 @@
 
     <!-- Submit Button -->
     <div class="form-section text-center">
-        <button type="submit" class="btn btn-primary btn-lg px-5">
+        <button type="submit" id="submitBtn" class="btn btn-primary btn-lg px-5">
             <i class="fas fa-save me-2"></i> Update Form
         </button>
         <a href="{{ route('forms.show', $form) }}" class="btn btn-secondary btn-lg px-5 ms-2">
@@ -737,6 +737,12 @@
                 _formSubmitted = true;
                 clearTimeout(_draftTimer);
                 localStorage.removeItem('formDraft_edit_{{ $form->id }}');
+                
+                // Disable button to prevent double submit
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...';
+                
                 form.submit();
             }
         });

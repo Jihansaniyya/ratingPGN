@@ -287,9 +287,21 @@
 <?php $__env->startPush('scripts'); ?>
 <script>
     function confirmDelete() {
-        if (confirm('Apakah Anda yakin ingin menghapus form ini?')) {
-            document.getElementById('delete-form').submit();
-        }
+        Swal.fire({
+            title: 'Hapus Formulir?',
+            text: 'Data formulir yang dihapus tidak dapat dikembalikan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-trash me-1"></i> Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form').submit();
+            }
+        });
     }
     
     <?php if(request('print')): ?>

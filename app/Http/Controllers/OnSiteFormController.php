@@ -7,6 +7,7 @@ use App\Models\OnSiteForm;
 use App\Models\MaintenanceDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class OnSiteFormController extends Controller
 {
@@ -112,13 +113,13 @@ class OnSiteFormController extends Controller
             'activity_preventive_maintenance' => 'nullable|boolean',
             
             // Technical details
-            'complaint' => 'nullable|string',
-            'action' => 'nullable|string',
+            'complaint' => 'required|string',
+            'action' => 'required|string',
             'assessment' => 'required|in:tidak_puas,puas,sangat_puas',
             
-            // Signatures (required)
-            'signature_first_party' => 'required|string',
-            'signature_second_party' => 'required|string',
+            // Signatures (required - must be base64 data URI)
+            'signature_first_party' => ['required', 'string', 'regex:/^data:image\/png;base64,/'],
+            'signature_second_party' => ['required', 'string', 'regex:/^data:image\/png;base64,/'],
             'first_party_name' => 'required|string|max:255',
             'second_party_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -145,13 +146,19 @@ class OnSiteFormController extends Controller
             'devices.*.product_photo.mimes' => 'Foto produk harus berformat JPG atau PNG.',
             'devices.*.product_photo.max' => 'Ukuran foto produk maksimal 2MB.',
             
+            // Complaint & Action
+            'complaint.required' => 'Complaint wajib diisi.',
+            'action.required' => 'Action wajib diisi.',
+            
             // Assessment
             'assessment.required' => 'Penilaian (Assessment) wajib dipilih.',
             'assessment.in' => 'Penilaian harus salah satu dari: Tidak Puas, Puas, atau Sangat Puas.',
             
             // Signatures
             'signature_first_party.required' => 'Tanda tangan Pihak Pertama wajib diisi.',
+            'signature_first_party.regex' => 'Format tanda tangan Pihak Pertama tidak valid.',
             'signature_second_party.required' => 'Tanda tangan Pihak Kedua wajib diisi.',
+            'signature_second_party.regex' => 'Format tanda tangan Pihak Kedua tidak valid.',
             'first_party_name.required' => 'Nama Pihak Pertama wajib diisi.',
             'second_party_name.required' => 'Nama Pihak Kedua wajib diisi.',
             'location.required' => 'Lokasi wajib diisi.',
@@ -162,20 +169,22 @@ class OnSiteFormController extends Controller
         DB::beginTransaction();
 
         try {
-            // Create or find customer
-            $customer = Customer::create([
-                'cid' => $validated['cid'],
-                'customer_name' => $validated['customer_name'],
-                'provinsi' => $validated['provinsi'],
-                'kota_kabupaten' => $validated['kota_kabupaten'],
-                'kecamatan' => $validated['kecamatan'],
-                'kelurahan' => $validated['kelurahan'],
-                'alamat_lengkap' => $validated['alamat_lengkap'],
-                'layanan_service' => $validated['layanan_service'],
-                'kapasitas_capacity' => $validated['kapasitas_capacity'],
-                'no_telp_pic' => $validated['no_telp_pic'],
-                'email' => $validated['email'],
-            ]);
+            // Create or update customer
+            $customer = Customer::updateOrCreate(
+                ['cid' => $validated['cid']],
+                [
+                    'customer_name' => $validated['customer_name'],
+                    'provinsi' => $validated['provinsi'],
+                    'kota_kabupaten' => $validated['kota_kabupaten'],
+                    'kecamatan' => $validated['kecamatan'],
+                    'kelurahan' => $validated['kelurahan'],
+                    'alamat_lengkap' => $validated['alamat_lengkap'],
+                    'layanan_service' => $validated['layanan_service'],
+                    'kapasitas_capacity' => $validated['kapasitas_capacity'],
+                    'no_telp_pic' => $validated['no_telp_pic'],
+                    'email' => $validated['email'],
+                ]
+            );
 
             // Create the on-site form
             $form = OnSiteForm::create([
@@ -227,8 +236,9 @@ class OnSiteFormController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Gagal menyimpan form: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }
     }
 
@@ -283,13 +293,13 @@ class OnSiteFormController extends Controller
             'devices.*.device_name' => 'required_with:devices|string|max:255',
             'devices.*.serial_number' => 'required_with:devices|string|max:255',
             'devices.*.product_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'devices.*.existing_product_photo' => 'nullable|string',
+            'devices.*.existing_product_photo' => 'nullable|string|regex:/^device-photos\\//',
             'devices.*.keterangan' => 'nullable|string',
-            'complaint' => 'nullable|string',
-            'action' => 'nullable|string',
+            'complaint' => 'required|string',
+            'action' => 'required|string',
             'assessment' => 'required|in:tidak_puas,puas,sangat_puas',
-            'signature_first_party' => 'required|string',
-            'signature_second_party' => 'required|string',
+            'signature_first_party' => ['required', 'string', 'regex:/^data:image\\/png;base64,/'],
+            'signature_second_party' => ['required', 'string', 'regex:/^data:image\\/png;base64,/'],
             'first_party_name' => 'required|string|max:255',
             'second_party_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
@@ -316,13 +326,19 @@ class OnSiteFormController extends Controller
             'devices.*.product_photo.mimes' => 'Foto produk harus berformat JPG atau PNG.',
             'devices.*.product_photo.max' => 'Ukuran foto produk maksimal 2MB.',
             
+            // Complaint & Action
+            'complaint.required' => 'Complaint wajib diisi.',
+            'action.required' => 'Action wajib diisi.',
+            
             // Assessment
             'assessment.required' => 'Penilaian (Assessment) wajib dipilih.',
             'assessment.in' => 'Penilaian harus salah satu dari: Tidak Puas, Puas, atau Sangat Puas.',
             
             // Signatures
             'signature_first_party.required' => 'Tanda tangan Pihak Pertama wajib diisi.',
+            'signature_first_party.regex' => 'Format tanda tangan Pihak Pertama tidak valid.',
             'signature_second_party.required' => 'Tanda tangan Pihak Kedua wajib diisi.',
+            'signature_second_party.regex' => 'Format tanda tangan Pihak Kedua tidak valid.',
             'first_party_name.required' => 'Nama Pihak Pertama wajib diisi.',
             'second_party_name.required' => 'Nama Pihak Kedua wajib diisi.',
             'location.required' => 'Lokasi wajib diisi.',
@@ -367,7 +383,9 @@ class OnSiteFormController extends Controller
                 'form_date' => $validated['form_date'] ?? now(),
             ]);
 
-            // Update devices
+            // Update devices — collect old photos, then compare
+            $oldPhotos = $form->maintenanceDevices->pluck('product_photo')->filter()->toArray();
+            $keptPhotos = [];
             $form->maintenanceDevices()->delete();
             if (!empty($validated['devices'])) {
                 foreach ($validated['devices'] as $index => $device) {
@@ -380,6 +398,7 @@ class OnSiteFormController extends Controller
                         } elseif (!empty($device['existing_product_photo'])) {
                             // Keep existing photo if no new one uploaded
                             $productPhotoPath = $device['existing_product_photo'];
+                            $keptPhotos[] = $productPhotoPath;
                         }
                         
                         MaintenanceDevice::create([
@@ -393,6 +412,13 @@ class OnSiteFormController extends Controller
                 }
             }
 
+            // Delete old photos that were not kept
+            foreach ($oldPhotos as $oldPhoto) {
+                if (!in_array($oldPhoto, $keptPhotos) && Storage::disk('public')->exists($oldPhoto)) {
+                    Storage::disk('public')->delete($oldPhoto);
+                }
+            }
+
             DB::commit();
 
             return redirect()->route('forms.show', $form)
@@ -400,8 +426,9 @@ class OnSiteFormController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Gagal memperbarui form: ' . $e->getMessage());
             return back()->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.');
         }
     }
 
@@ -417,6 +444,14 @@ class OnSiteFormController extends Controller
                 ->with('error', 'Hanya Admin yang dapat menghapus form.');
         }
         
+        // Delete device photos from disk
+        foreach ($form->maintenanceDevices as $device) {
+            if ($device->product_photo && Storage::disk('public')->exists($device->product_photo)) {
+                Storage::disk('public')->delete($device->product_photo);
+            }
+        }
+        
+        $form->maintenanceDevices()->delete();
         $form->delete();
         return redirect()->route('forms.index')
             ->with('success', 'Form berhasil dihapus!');

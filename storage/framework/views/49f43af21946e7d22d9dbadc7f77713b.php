@@ -423,42 +423,42 @@ unset($__errorArgs, $__bag); ?>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_survey" value="1" id="survey"
-                               <?php echo e($form->activity_survey ? 'checked' : ''); ?>>
+                               <?php echo e(old('activity_survey', $form->activity_survey) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="survey">Survey</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_activation" value="1" id="activation"
-                               <?php echo e($form->activity_activation ? 'checked' : ''); ?>>
+                               <?php echo e(old('activity_activation', $form->activity_activation) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="activation">Activation</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_upgrade" value="1" id="upgrade"
-                               <?php echo e($form->activity_upgrade ? 'checked' : ''); ?>>
+                               <?php echo e(old('activity_upgrade', $form->activity_upgrade) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="upgrade">Upgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_downgrade" value="1" id="downgrade"
-                               <?php echo e($form->activity_downgrade ? 'checked' : ''); ?>>
+                               <?php echo e(old('activity_downgrade', $form->activity_downgrade) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="downgrade">Downgrade</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_troubleshoot" value="1" id="troubleshoot"
-                               <?php echo e($form->activity_troubleshoot ? 'checked' : ''); ?>>
+                               <?php echo e(old('activity_troubleshoot', $form->activity_troubleshoot) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="troubleshoot">Troubleshoot</label>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="form-check">
                         <input class="form-check-input activity-checkbox" type="checkbox" name="activity_preventive_maintenance" value="1" id="preventive"
-                               <?php echo e($form->activity_preventive_maintenance ? 'checked' : ''); ?>>
+                               <?php echo e(old('activity_preventive_maintenance', $form->activity_preventive_maintenance) ? 'checked' : ''); ?>>
                         <label class="form-check-label" for="preventive">Preventive Maintenance</label>
                     </div>
                 </div>
@@ -623,7 +623,7 @@ unset($__errorArgs, $__bag); ?>
 
     <!-- Submit Button -->
     <div class="form-section text-center">
-        <button type="submit" class="btn btn-primary btn-lg px-5">
+        <button type="submit" id="submitBtn" class="btn btn-primary btn-lg px-5">
             <i class="fas fa-save me-2"></i> Update Form
         </button>
         <a href="<?php echo e(route('forms.show', $form)); ?>" class="btn btn-secondary btn-lg px-5 ms-2">
@@ -647,19 +647,18 @@ unset($__errorArgs, $__bag); ?>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
     let deviceIndex = <?php echo e($form->maintenanceDevices->count() ?: 1); ?>;
-    
+    let _formSubmitted = false;
+
     // API Base URL for Indonesia regions
     const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
     // Store current values for pre-selection
-    const currentProvinsi = "<?php echo e($form->customer->provinsi); ?>";
-    const currentKota = "<?php echo e($form->customer->kota_kabupaten); ?>";
-    const currentKecamatan = "<?php echo e($form->customer->kecamatan); ?>";
-    const currentKelurahan = "<?php echo e($form->customer->kelurahan); ?>";
+    let currentProvinsi = "<?php echo e($form->customer->provinsi); ?>";
+    let currentKota = "<?php echo e($form->customer->kota_kabupaten); ?>";
+    let currentKecamatan = "<?php echo e($form->customer->kecamatan); ?>";
+    let currentKelurahan = "<?php echo e($form->customer->kelurahan); ?>";
 
     document.addEventListener('DOMContentLoaded', function() {
-        loadProvinces();
-
         // Initialize signature pads
         const canvas1 = document.getElementById('canvas1');
         const canvas2 = document.getElementById('canvas2');
@@ -678,6 +677,16 @@ unset($__errorArgs, $__bag); ?>
         <?php if($form->signature_second_party): ?>
             loadSignatureToCanvas(signaturePad2, <?php echo json_encode($form->signature_second_party, 15, 512) ?>);
         <?php endif; ?>
+
+        // Restore draft if available (preserves changes on refresh)
+        restoreDraft(signaturePad1, signaturePad2);
+
+        // Auto-save on signature strokes
+        signaturePad1.addEventListener('endStroke', function() { saveDraft(); });
+        signaturePad2.addEventListener('endStroke', function() { saveDraft(); });
+
+        // Load provinces (uses current* vars, possibly overridden by draft)
+        loadProvinces();
     });
 
     let signaturePad1, signaturePad2;
@@ -914,6 +923,15 @@ unset($__errorArgs, $__bag); ?>
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
+                _formSubmitted = true;
+                clearTimeout(_draftTimer);
+                localStorage.removeItem('formDraft_edit_<?php echo e($form->id); ?>');
+                
+                // Disable button to prevent double submit
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...';
+                
                 form.submit();
             }
         });
@@ -929,6 +947,203 @@ unset($__errorArgs, $__bag); ?>
 
     // Initialize remove buttons state
     updateRemoveButtons();
+
+    // === Auto-Save Draft Functions ===
+    const DRAFT_KEY_EDIT = 'formDraft_edit_<?php echo e($form->id); ?>';
+
+    function saveDraft() {
+        if (_formSubmitted) return;
+        try {
+            const draft = { _timestamp: Date.now() };
+
+            // All text/email/date inputs, textareas, selects in the form
+            document.querySelectorAll('#onSiteForm input[type="text"], #onSiteForm input[type="email"], #onSiteForm input[type="date"], #onSiteForm textarea, #onSiteForm select').forEach(el => {
+                if (el.name && el.type !== 'hidden' && el.type !== 'file') {
+                    draft[el.name] = el.value;
+                }
+            });
+
+            // Activity checkboxes
+            document.querySelectorAll('.activity-checkbox').forEach(el => {
+                if (el.name) draft[el.name] = el.checked;
+            });
+
+            // Assessment radio
+            const assessment = document.querySelector('[name="assessment"]:checked');
+            if (assessment) draft.assessment = assessment.value;
+
+            // Devices
+            draft.devices = [];
+            document.querySelectorAll('.device-row').forEach(row => {
+                draft.devices.push({
+                    device_name: row.querySelector('[name*="[device_name]"]')?.value || '',
+                    serial_number: row.querySelector('[name*="[serial_number]"]')?.value || '',
+                    keterangan: row.querySelector('[name*="[keterangan]"]')?.value || ''
+                });
+            });
+
+            // Signatures
+            try {
+                if (typeof signaturePad1 !== 'undefined' && !signaturePad1.isEmpty()) {
+                    draft.signature1 = signaturePad1.toDataURL();
+                }
+                if (typeof signaturePad2 !== 'undefined' && !signaturePad2.isEmpty()) {
+                    draft.signature2 = signaturePad2.toDataURL();
+                }
+            } catch(sigErr) {
+                console.warn('Could not save signatures to draft:', sigErr);
+            }
+
+            localStorage.setItem(DRAFT_KEY_EDIT, JSON.stringify(draft));
+        } catch (e) {
+            console.error('Error saving draft:', e);
+        }
+    }
+
+    function restoreDraft(pad1, pad2) {
+        const data = localStorage.getItem(DRAFT_KEY_EDIT);
+        if (!data) return;
+
+        try {
+            const draft = JSON.parse(data);
+
+            // Check if draft is too old (older than 24 hours)
+            if (draft._timestamp && (Date.now() - draft._timestamp > 24 * 60 * 60 * 1000)) {
+                localStorage.removeItem(DRAFT_KEY_EDIT);
+                return;
+            }
+
+            let hasData = false;
+
+            // Text inputs & textareas - override with draft values
+            ['customer_name', 'cid', 'alamat_lengkap', 'kapasitas_capacity',
+             'no_telp_pic', 'email', 'location', 'form_date',
+             'first_party_name', 'second_party_name', 'complaint', 'action'].forEach(name => {
+                if (draft[name] !== undefined) {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el) {
+                        el.value = draft[name];
+                        hasData = true;
+                    }
+                }
+            });
+
+            // Layanan service select
+            if (draft.layanan_service) {
+                const el = document.querySelector('[name="layanan_service"]');
+                if (el) {
+                    el.value = draft.layanan_service;
+                    hasData = true;
+                }
+            }
+
+            // Address: override current* variables for cascade loading
+            if (draft.provinsi) { currentProvinsi = draft.provinsi; hasData = true; }
+            if (draft.kota_kabupaten) currentKota = draft.kota_kabupaten;
+            if (draft.kecamatan) currentKecamatan = draft.kecamatan;
+            if (draft.kelurahan) currentKelurahan = draft.kelurahan;
+
+            // Activity checkboxes
+            ['activity_survey', 'activity_activation', 'activity_upgrade',
+             'activity_downgrade', 'activity_troubleshoot', 'activity_preventive_maintenance'].forEach(name => {
+                if (draft[name] !== undefined) {
+                    const el = document.querySelector(`[name="${name}"]`);
+                    if (el) el.checked = draft[name];
+                }
+            });
+
+            // Assessment
+            if (draft.assessment) {
+                document.querySelectorAll('.assessment-option').forEach(opt => opt.classList.remove('selected'));
+                const el = document.querySelector(`[name="assessment"][value="${draft.assessment}"]`);
+                if (el) {
+                    el.checked = true;
+                    const label = el.closest('.assessment-option');
+                    if (label) label.classList.add('selected');
+                }
+            }
+
+            // Devices
+            if (draft.devices && draft.devices.length > 0) {
+                let existingRows = document.querySelectorAll('.device-row');
+                for (let i = existingRows.length; i < draft.devices.length; i++) {
+                    addDevice();
+                }
+                const rows = document.querySelectorAll('.device-row');
+                draft.devices.forEach((device, i) => {
+                    if (rows[i]) {
+                        const dn = rows[i].querySelector('[name*="[device_name]"]');
+                        const sn = rows[i].querySelector('[name*="[serial_number]"]');
+                        const kt = rows[i].querySelector('[name*="[keterangan]"]');
+                        if (dn) dn.value = device.device_name;
+                        if (sn) sn.value = device.serial_number;
+                        if (kt) kt.value = device.keterangan;
+                    }
+                });
+            }
+
+            // Signatures
+            if (draft.signature1 && pad1) {
+                const img1 = new Image();
+                img1.onload = function() {
+                    pad1.canvas.getContext('2d').clearRect(0, 0, pad1.canvas.width, pad1.canvas.height);
+                    pad1.canvas.getContext('2d').drawImage(img1, 0, 0, pad1.canvas.width, pad1.canvas.height);
+                    pad1._isEmpty = false;
+                };
+                img1.src = draft.signature1;
+                hasData = true;
+            }
+            if (draft.signature2 && pad2) {
+                const img2 = new Image();
+                img2.onload = function() {
+                    pad2.canvas.getContext('2d').clearRect(0, 0, pad2.canvas.width, pad2.canvas.height);
+                    pad2.canvas.getContext('2d').drawImage(img2, 0, 0, pad2.canvas.width, pad2.canvas.height);
+                    pad2._isEmpty = false;
+                };
+                img2.src = draft.signature2;
+            }
+
+            // Show notification only if we actually restored data
+            if (hasData && typeof Swal !== 'undefined') {
+                Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                }).fire({ icon: 'info', title: 'Draft berhasil dipulihkan' });
+            }
+        } catch (e) {
+            console.error('Error restoring draft:', e);
+        }
+    }
+
+    // Auto-save: on input, change, and right before page unload
+    let _draftTimer;
+    function debouncedSaveDraft() {
+        clearTimeout(_draftTimer);
+        _draftTimer = setTimeout(saveDraft, 300);
+    }
+
+    document.getElementById('onSiteForm').addEventListener('input', debouncedSaveDraft);
+    document.getElementById('onSiteForm').addEventListener('change', debouncedSaveDraft);
+
+    // Force-save draft immediately when leaving/refreshing page (but not after submit)
+    window.addEventListener('beforeunload', function() {
+        if (_formSubmitted) {
+            // Double-ensure draft is removed after submit
+            localStorage.removeItem('formDraft_edit_<?php echo e($form->id); ?>');
+        } else {
+            saveDraft();
+        }
+    });
+
+    // Also save on visibility change (switching tabs)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden' && !_formSubmitted) {
+            saveDraft();
+        }
+    });
 </script>
 <?php $__env->stopPush(); ?>
 

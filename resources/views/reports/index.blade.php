@@ -147,7 +147,7 @@
                 <tbody>
                     @forelse($forms as $index => $form)
                         <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td class="text-center">{{ $forms->firstItem() + $index }}</td>
                             <td>
                                 <span class="text-nowrap">{{ $form->form_date ? $form->form_date->format('d/m/Y') : '-' }}</span>
                             </td>
@@ -194,11 +194,14 @@
             </table>
         </div>
 
-        @if(count($forms) > 0)
+        @if($forms->count() > 0)
         <div class="mt-3 pt-3 border-top d-flex justify-content-between align-items-center">
             <div class="text-muted">
-                <i class="fas fa-database me-1"></i> Jumlah Data: <strong>{{ count($forms) }}</strong> entri
+                <i class="fas fa-database me-1"></i> Menampilkan {{ $forms->firstItem() }} - {{ $forms->lastItem() }} dari <strong>{{ $forms->total() }}</strong> data
             </div>
+            @if($forms->hasPages())
+                {{ $forms->withQueryString()->links() }}
+            @endif
         </div>
         @endif
     </div>

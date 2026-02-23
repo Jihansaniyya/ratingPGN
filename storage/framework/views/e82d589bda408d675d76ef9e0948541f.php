@@ -448,7 +448,7 @@
                 <i class="fas fa-key"></i>
                 Ubah Password
             </a>
-            <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a href="#" onclick="event.preventDefault(); confirmLogout();">
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </a>
@@ -534,6 +534,26 @@
     </script>
     
     <?php echo $__env->yieldPushContent('scripts'); ?>
+
+    <script>
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Logout?',
+                text: 'Apakah Anda yakin ingin keluar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-sign-out-alt me-1"></i> Ya, Logout!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 <?php /**PATH C:\Users\Jihan Saniyya\ratingPGN-app\resources\views/layouts/app.blade.php ENDPATH**/ ?>
