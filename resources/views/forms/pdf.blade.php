@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $form->customer->customer_name }} - Formulir Kunjungan {{ $form->form_date ? $form->form_date->format('d-m-Y') : now()->format('d-m-Y') }}</title>
+    <title>{{ $form->customer->customer_name }} - Formulir Kunjungan
+        {{ $form->form_date ? $form->form_date->format('d-m-Y') : now()->format('d-m-Y') }}</title>
+    <link rel="icon" href="{{ asset('images/logoGASNET.png') }}" type="image/png">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             font-size: 11px;
@@ -18,13 +21,13 @@
             color: #333;
             background: #fff;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         /* Kop Surat dengan Logo */
         .kop-surat {
             display: flex;
@@ -33,22 +36,22 @@
             margin-bottom: 15px;
             border-bottom: 3px solid #1a5276;
         }
-        
+
         .kop-logo {
             width: 130px;
             margin-right: 20px;
         }
-        
+
         .kop-logo img {
             width: 100%;
             height: auto;
         }
-        
+
         .kop-text {
             flex: 1;
             text-align: center;
         }
-        
+
         .kop-text h1 {
             font-size: 22px;
             font-weight: bold;
@@ -56,24 +59,24 @@
             margin-bottom: 2px;
             letter-spacing: 3px;
         }
-        
+
         .kop-text h2 {
             font-size: 14px;
             font-weight: bold;
             color: #2874a6;
             margin-bottom: 5px;
         }
-        
+
         .kop-text .alamat {
             font-size: 9px;
             color: #555;
             margin-bottom: 2px;
         }
-        
+
         .kop-spacer {
             width: 130px;
         }
-        
+
         /* Judul Form */
         .form-title {
             text-align: center;
@@ -83,17 +86,17 @@
             color: #fff;
             border-radius: 5px;
         }
-        
+
         .form-title h3 {
             font-size: 14px;
             font-weight: bold;
             letter-spacing: 1px;
         }
-        
+
         .section {
             margin-bottom: 12px;
         }
-        
+
         .section-title {
             font-size: 11px;
             font-weight: bold;
@@ -103,34 +106,34 @@
             margin-bottom: 8px;
             border-radius: 3px;
         }
-        
+
         .section-title.olive {
             background: #27ae60;
         }
-        
+
         table.info-table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         table.info-table td {
             padding: 3px 8px;
             vertical-align: top;
             font-size: 10px;
         }
-        
+
         table.info-table td.label {
             width: 130px;
             font-weight: bold;
             color: #1a5276;
         }
-        
+
         table.data-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 5px;
         }
-        
+
         table.data-table th,
         table.data-table td {
             border: 1px solid #1a5276;
@@ -138,26 +141,26 @@
             text-align: left;
             font-size: 10px;
         }
-        
+
         table.data-table th {
             background: #1a5276;
             color: #fff;
             font-weight: bold;
         }
-        
+
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             padding: 8px;
         }
-        
+
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 4px;
         }
-        
+
         .checkbox {
             width: 12px;
             height: 12px;
@@ -168,12 +171,12 @@
             font-size: 9px;
             border-radius: 2px;
         }
-        
+
         .checkbox.checked {
             background: #1a5276;
             color: #fff;
         }
-        
+
         .text-area {
             border: 1px solid #bdc3c7;
             min-height: 50px;
@@ -183,21 +186,21 @@
             background: #f9f9f9;
             font-size: 10px;
         }
-        
+
         .assessment-section {
             padding: 8px;
             background: #f8f9fa;
             border-radius: 5px;
             border: 1px solid #dee2e6;
         }
-        
+
         .assessment-options {
             display: flex;
             gap: 25px;
             justify-content: center;
             margin-top: 8px;
         }
-        
+
         .assessment-item {
             display: flex;
             align-items: center;
@@ -205,44 +208,44 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
-        
+
         .assessment-item.active-tidak-puas {
             background: #fadbd8;
         }
-        
+
         .assessment-item.active-puas {
             background: #fcf3cf;
         }
-        
+
         .assessment-item.active-sangat-puas {
             background: #d5f5e3;
         }
-        
+
         .signature-table {
             page-break-inside: avoid;
         }
-        
+
         .signature-box {
             border: 1px solid #1a5276;
             padding: 10px;
             text-align: center;
             border-radius: 5px;
         }
-        
+
         .signature-box .title {
             font-weight: bold;
             margin-bottom: 3px;
             color: #333;
             font-size: 10px;
         }
-        
+
         .signature-box .company {
             color: #1a5276;
             font-weight: bold;
             margin-bottom: 8px;
             font-size: 10px;
         }
-        
+
         .footer {
             margin-top: 15px;
             padding-top: 10px;
@@ -251,12 +254,12 @@
             font-size: 8px;
             color: #666;
         }
-        
+
         .footer img {
             height: 20px;
             margin-bottom: 3px;
         }
-        
+
         .print-buttons {
             text-align: center;
             margin-bottom: 20px;
@@ -264,7 +267,7 @@
             background: linear-gradient(135deg, #1a5276 0%, #2874a6 100%);
             border-radius: 8px;
         }
-        
+
         .print-buttons button {
             padding: 10px 25px;
             margin: 0 5px;
@@ -274,28 +277,28 @@
             border-radius: 5px;
             font-weight: bold;
         }
-        
+
         .btn-print {
             background: #fff;
             color: #1a5276;
         }
-        
+
         .btn-back {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             color: #fff;
             border: 2px solid #fff !important;
         }
-        
+
         @media print {
             @page {
                 margin: 10mm;
                 size: A4;
             }
-            
+
             .print-buttons {
                 display: none !important;
             }
-            
+
             body {
                 print-color-adjust: exact;
                 -webkit-print-color-adjust: exact;
@@ -303,51 +306,51 @@
                 margin: 0;
                 padding: 0;
             }
-            
+
             .container {
                 padding: 0;
                 margin: 0;
             }
-            
+
             .kop-logo {
                 width: 140px;
                 margin-right: 20px;
             }
-            
+
             .section {
                 page-break-inside: avoid;
                 margin-bottom: 8px;
             }
-            
+
             .kop-surat {
                 padding-bottom: 10px;
                 margin-bottom: 12px;
             }
-            
+
             .form-title {
                 margin-bottom: 10px;
                 padding: 8px;
             }
-            
+
             .section-title {
                 padding: 4px 8px;
                 margin-bottom: 5px;
             }
-            
+
             table.info-table td {
                 padding: 2px 5px;
             }
-            
+
             table.data-table th,
             table.data-table td {
                 padding: 4px;
             }
-            
+
             .text-area {
                 min-height: 35px;
                 padding: 4px;
             }
-            
+
             .footer {
                 margin-top: 10px;
                 padding-top: 8px;
@@ -355,6 +358,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Print Buttons -->
@@ -392,20 +396,29 @@
         </div>
 
         <!-- Nomor Surat -->
-         @php
-        $bulanRomawi = [
-            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV',
-            5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII',
-            9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
-        ];
+        @php
+            $bulanRomawi = [
+                1 => 'I',
+                2 => 'II',
+                3 => 'III',
+                4 => 'IV',
+                5 => 'V',
+                6 => 'VI',
+                7 => 'VII',
+                8 => 'VIII',
+                9 => 'IX',
+                10 => 'X',
+                11 => 'XI',
+                12 => 'XII'
+            ];
 
-        $bulan = $form->form_date
-            ? (int) $form->form_date->format('m')
-            : (int) now()->format('m');
+            $bulan = $form->form_date
+                ? (int) $form->form_date->format('m')
+                : (int) now()->format('m');
 
-        $tahun = $form->form_date
-            ? $form->form_date->format('Y')
-            : now()->format('Y');
+            $tahun = $form->form_date
+                ? $form->form_date->format('Y')
+                : now()->format('Y');
         @endphp
 
         <div style="text-align: right; margin-bottom: 10px; font-size: 10px;">
@@ -421,7 +434,9 @@
                 <tr>
                     <td style="padding: 2px 5px;">Tanggal</td>
                     <td style="padding: 2px 5px;">:</td>
-                    <td style="padding: 2px 5px;">{{ $form->form_date ? $form->form_date->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}</td>
+                    <td style="padding: 2px 5px;">
+                        {{ $form->form_date ? $form->form_date->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
+                    </td>
                 </tr>
                 <tr>
                     <td style="padding: 2px 5px;">Perihal</td>
@@ -444,7 +459,9 @@
                 </tr>
                 <tr>
                     <td class="label">Address</td>
-                    <td>: {{ $form->customer->alamat_lengkap }}, {{ $form->customer->kelurahan }}, {{ $form->customer->kecamatan }}, {{ $form->customer->kota_kabupaten }}, {{ $form->customer->provinsi }}</td>
+                    <td>: {{ $form->customer->alamat_lengkap }}, {{ $form->customer->kelurahan }},
+                        {{ $form->customer->kecamatan }}, {{ $form->customer->kota_kabupaten }},
+                        {{ $form->customer->provinsi }}</td>
                 </tr>
                 <tr>
                     <td class="label">Layanan / Service</td>
@@ -480,40 +497,40 @@
                 </thead>
                 <tbody>
                     @forelse($form->maintenanceDevices as $index => $device)
-                    <tr>
-                        <td style="text-align: center;">{{ $index + 1 }}</td>
-                        <td>{{ $device->device_name }}</td>
-                        <td>{{ $device->serial_number }}</td>
-                        <td style="text-align: center;">
-                            @if($device->product_photo)
-                                @php
-                                    $photoPath = storage_path('app/public/' . $device->product_photo);
-                                    $photoData = '';
-                                    if (file_exists($photoPath)) {
-                                        $extension = pathinfo($photoPath, PATHINFO_EXTENSION);
-                                        $mimeType = $extension === 'png' ? 'image/png' : 'image/jpeg';
-                                        $photoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($photoPath));
-                                    }
-                                @endphp
-                                @if($photoData)
-                                    <img src="{{ $photoData }}" alt="Foto Produk" style="max-width: 80px; max-height: 60px;">
+                        <tr>
+                            <td style="text-align: center;">{{ $index + 1 }}</td>
+                            <td>{{ $device->device_name }}</td>
+                            <td>{{ $device->serial_number }}</td>
+                            <td style="text-align: center;">
+                                @if($device->product_photo)
+                                    @php
+                                        $photoPath = storage_path('app/public/' . $device->product_photo);
+                                        $photoData = '';
+                                        if (file_exists($photoPath)) {
+                                            $extension = pathinfo($photoPath, PATHINFO_EXTENSION);
+                                            $mimeType = $extension === 'png' ? 'image/png' : 'image/jpeg';
+                                            $photoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($photoPath));
+                                        }
+                                    @endphp
+                                    @if($photoData)
+                                        <img src="{{ $photoData }}" alt="Foto Produk" style="max-width: 80px; max-height: 60px;">
+                                    @else
+                                        <span style="color: #999;">-</span>
+                                    @endif
                                 @else
                                     <span style="color: #999;">-</span>
                                 @endif
-                            @else
-                                <span style="color: #999;">-</span>
-                            @endif
-                        </td>
-                        <td>{{ $device->keterangan ?? '-' }}</td>
-                    </tr>
+                            </td>
+                            <td>{{ $device->keterangan ?? '-' }}</td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td style="text-align: center;">1</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td style="text-align: center;">-</td>
-                        <td>-</td>
-                    </tr>
+                        <tr>
+                            <td style="text-align: center;">1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td style="text-align: center;">-</td>
+                            <td>-</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -522,41 +539,47 @@
         <!-- Technical Detail -->
         <div class="section">
             <div class="section-title olive">TECHNICAL DETAIL</div>
-            
+
             <table class="info-table">
                 <tr>
                     <td class="label">Activity</td>
                     <td>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_survey ? 'checked' : '' }}">{{ $form->activity_survey ? '✓' : '' }}</div>
+                                <div class="checkbox {{ $form->activity_survey ? 'checked' : '' }}">
+                                    {{ $form->activity_survey ? '✓' : '' }}</div>
                                 <span>Survey</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_activation ? 'checked' : '' }}">{{ $form->activity_activation ? '✓' : '' }}</div>
+                                <div class="checkbox {{ $form->activity_activation ? 'checked' : '' }}">
+                                    {{ $form->activity_activation ? '✓' : '' }}</div>
                                 <span>Activation</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_upgrade ? 'checked' : '' }}">{{ $form->activity_upgrade ? '✓' : '' }}</div>
+                                <div class="checkbox {{ $form->activity_upgrade ? 'checked' : '' }}">
+                                    {{ $form->activity_upgrade ? '✓' : '' }}</div>
                                 <span>Upgrade</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_downgrade ? 'checked' : '' }}">{{ $form->activity_downgrade ? '✓' : '' }}</div>
+                                <div class="checkbox {{ $form->activity_downgrade ? 'checked' : '' }}">
+                                    {{ $form->activity_downgrade ? '✓' : '' }}</div>
                                 <span>Downgrade</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_troubleshoot ? 'checked' : '' }}">{{ $form->activity_troubleshoot ? '✓' : '' }}</div>
+                                <div class="checkbox {{ $form->activity_troubleshoot ? 'checked' : '' }}">
+                                    {{ $form->activity_troubleshoot ? '✓' : '' }}</div>
                                 <span>Troubleshoot</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_preventive_maintenance ? 'checked' : '' }}">{{ $form->activity_preventive_maintenance ? '✓' : '' }}</div>
+                                <div class="checkbox {{ $form->activity_preventive_maintenance ? 'checked' : '' }}">
+                                    {{ $form->activity_preventive_maintenance ? '✓' : '' }}</div>
                                 <span>Preventive Maintenance</span>
                             </div>
                         </div>
                     </td>
                 </tr>
             </table>
-            
+
             <table class="info-table" style="margin-top: 8px;">
                 <tr>
                     <td class="label">Complaint</td>
@@ -564,7 +587,7 @@
                 </tr>
             </table>
             <div class="text-area">{{ $form->complaint ?: '-' }}</div>
-            
+
             <table class="info-table">
                 <tr>
                     <td class="label">Action</td>
@@ -582,16 +605,21 @@
                         <td class="label"><strong>Assessment</strong></td>
                         <td>
                             <div class="assessment-options">
-                                <div class="assessment-item {{ $form->assessment == 'tidak_puas' ? 'active-tidak-puas' : '' }}">
-                                    <div class="checkbox {{ $form->assessment == 'tidak_puas' ? 'checked' : '' }}">{{ $form->assessment == 'tidak_puas' ? '✓' : '' }}</div>
+                                <div
+                                    class="assessment-item {{ $form->assessment == 'tidak_puas' ? 'active-tidak-puas' : '' }}">
+                                    <div class="checkbox {{ $form->assessment == 'tidak_puas' ? 'checked' : '' }}">
+                                        {{ $form->assessment == 'tidak_puas' ? '✓' : '' }}</div>
                                     <span>Tidak Puas</span>
                                 </div>
                                 <div class="assessment-item {{ $form->assessment == 'puas' ? 'active-puas' : '' }}">
-                                    <div class="checkbox {{ $form->assessment == 'puas' ? 'checked' : '' }}">{{ $form->assessment == 'puas' ? '✓' : '' }}</div>
+                                    <div class="checkbox {{ $form->assessment == 'puas' ? 'checked' : '' }}">
+                                        {{ $form->assessment == 'puas' ? '✓' : '' }}</div>
                                     <span>Puas</span>
                                 </div>
-                                <div class="assessment-item {{ $form->assessment == 'sangat_puas' ? 'active-sangat-puas' : '' }}">
-                                    <div class="checkbox {{ $form->assessment == 'sangat_puas' ? 'checked' : '' }}">{{ $form->assessment == 'sangat_puas' ? '✓' : '' }}</div>
+                                <div
+                                    class="assessment-item {{ $form->assessment == 'sangat_puas' ? 'active-sangat-puas' : '' }}">
+                                    <div class="checkbox {{ $form->assessment == 'sangat_puas' ? 'checked' : '' }}">
+                                        {{ $form->assessment == 'sangat_puas' ? '✓' : '' }}</div>
                                     <span>Sangat Puas</span>
                                 </div>
                             </div>
@@ -602,7 +630,8 @@
         </div>
 
         <!-- Date and Location -->
-        <div style="text-align: right; margin: 10px 0 8px 0; font-style: italic; font-weight: bold; color: #1a5276; font-size: 10px;">
+        <div
+            style="text-align: right; margin: 10px 0 8px 0; font-style: italic; font-weight: bold; color: #1a5276; font-size: 10px;">
             {{ $form->location }}, {{ $form->form_date ? $form->form_date->format('d F Y') : '' }}
         </div>
 
@@ -615,7 +644,8 @@
                         <div class="company">PT TELEMEDIA DINAMIKA SARANA</div>
                         <div style="height: 80px; display: flex; align-items: center; justify-content: center;">
                             @if($form->signature_first_party)
-                                <img src="{{ $form->signature_first_party }}" alt="Signature" style="max-height: 70px; max-width: 180px;">
+                                <img src="{{ $form->signature_first_party }}" alt="Signature"
+                                    style="max-height: 70px; max-width: 180px;">
                             @endif
                         </div>
                         <div style="border-top: 1px solid #1a5276; padding-top: 5px; margin-top: 5px; font-size: 10px;">
@@ -629,7 +659,8 @@
                         <div style="height: 14px;">&nbsp;</div>
                         <div style="height: 80px; display: flex; align-items: center; justify-content: center;">
                             @if($form->signature_second_party)
-                                <img src="{{ $form->signature_second_party }}" alt="Signature" style="max-height: 70px; max-width: 180px;">
+                                <img src="{{ $form->signature_second_party }}" alt="Signature"
+                                    style="max-height: 70px; max-width: 180px;">
                             @endif
                         </div>
                         <div style="border-top: 1px solid #1a5276; padding-top: 5px; margin-top: 5px; font-size: 10px;">
@@ -648,20 +679,21 @@
 
     <script>
         // Set document title untuk nama file PDF saat save
-        (function() {
+        (function () {
             var customerName = @json($form->customer->customer_name);
             var formDate = '{{ $form->form_date ? $form->form_date->format("d-m-Y") : now()->format("d-m-Y") }}';
             var pdfTitle = customerName + ' - Formulir ' + formDate;
             document.title = pdfTitle;
         })();
-        
+
         @if(request('print'))
-            window.onload = function() {
-                setTimeout(function() {
+            window.onload = function () {
+                setTimeout(function () {
                     window.print();
                 }, 500);
             }
         @endif
     </script>
 </body>
+
 </html>

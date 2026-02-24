@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Rating Customer - Gasnet')</title>
-    
+    <link rel="icon" href="{{ asset('images/logoGASNET.png') }}" type="image/png">
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -14,21 +16,24 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
+
     <style>
         /* Hide browser default password reveal button */
         input[type="password"]::-ms-reveal,
         input[type="password"]::-webkit-credentials-auto-fill-button {
             display: none;
         }
+
         .custom-toast-success {
             border-radius: 8px !important;
             box-shadow: 0 4px 20px rgba(44, 82, 130, 0.3) !important;
             border-left: 4px solid #2c5282 !important;
         }
+
         .custom-toast-success .swal2-timer-progress-bar {
             background: #2c5282 !important;
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -51,7 +56,7 @@
             top: 0;
             z-index: 1000;
             border-right: 1px solid #e0e0e0;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
         }
 
         .sidebar-brand {
@@ -112,11 +117,14 @@
         .main-content {
             margin-left: 250px;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Content Wrapper */
         .content-wrapper {
             padding: 25px;
+            flex: 1;
         }
 
         /* Page Header */
@@ -148,7 +156,7 @@
             background: #fff;
             border: 1px solid #dee2e6;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .card-header {
@@ -169,7 +177,7 @@
             border: 1px solid #dee2e6;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .stat-card.primary {
@@ -246,13 +254,15 @@
             margin-bottom: 6px;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border: 1px solid #ced4da;
             border-radius: 6px;
             padding: 10px 12px;
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: #0d6efd;
             box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
         }
@@ -320,9 +330,17 @@
             margin-bottom: 10px;
         }
 
-        .assessment-option.tidak-puas i { color: #dc3545; }
-        .assessment-option.puas i { color: #ffc107; }
-        .assessment-option.sangat-puas i { color: #198754; }
+        .assessment-option.tidak-puas i {
+            color: #dc3545;
+        }
+
+        .assessment-option.puas i {
+            color: #ffc107;
+        }
+
+        .assessment-option.sangat-puas i {
+            color: #198754;
+        }
 
         .assessment-option input {
             display: none;
@@ -347,46 +365,47 @@
             border-radius: 6px;
             padding: 12px 16px;
         }
-        
+
         /* Alert Notification Styles */
         .alert-notification {
             border: none;
             border-radius: 10px;
             padding: 16px 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             animation: slideInDown 0.5s ease-out;
         }
-        
+
         .alert-notification .alert-icon {
             opacity: 0.9;
         }
-        
+
         .alert-notification.alert-success {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             border-left: 5px solid #28a745;
         }
-        
+
         .alert-notification.alert-danger {
             background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             border-left: 5px solid #dc3545;
         }
-        
+
         .alert-notification.alert-warning {
             background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
             border-left: 5px solid #ffc107;
         }
-        
+
         .alert-notification.alert-info {
             background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
             border-left: 5px solid #17a2b8;
         }
-        
+
         @keyframes slideInDown {
             from {
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -395,19 +414,25 @@
 
         /* Print Styles */
         @media print {
-            .sidebar, .no-print {
+
+            .sidebar,
+            .no-print {
                 display: none !important;
             }
+
             .main-content {
                 margin-left: 0 !important;
             }
+
             .card {
                 box-shadow: none !important;
                 border: 1px solid #000 !important;
             }
+
             body {
                 background: #fff !important;
             }
+
             .content-wrapper {
                 padding: 0 !important;
             }
@@ -416,6 +441,7 @@
         @stack('styles')
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <nav class="sidebar">
@@ -430,19 +456,20 @@
                 <i class="fas fa-home"></i>
                 Dashboard
             </a>
-            <a href="{{ route('forms.index') }}" class="{{ request()->routeIs('forms.*') || request()->routeIs('reports.*') ? 'active' : '' }}">
+            <a href="{{ route('forms.index') }}"
+                class="{{ request()->routeIs('forms.*') || request()->routeIs('reports.*') ? 'active' : '' }}">
                 <i class="fas fa-clipboard-list"></i>
                 Data Formulir
             </a>
-            
+
             @if(auth()->user()->isAdmin())
-            <div class="menu-label">Admin</div>
-            <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
-                <i class="fas fa-users"></i>
-                Kelola Petugas
-            </a>
+                <div class="menu-label">Admin</div>
+                <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+                    <i class="fas fa-users"></i>
+                    Kelola Petugas
+                </a>
             @endif
-            
+
             <div class="menu-label">Akun</div>
             <a href="{{ route('password.change') }}" class="{{ request()->routeIs('password.*') ? 'active' : '' }}">
                 <i class="fas fa-key"></i>
@@ -463,7 +490,7 @@
         <div class="content-wrapper">
             @yield('content')
         </div>
-        
+
         @include('layouts.footer')
     </main>
 
@@ -473,10 +500,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <!-- SweetAlert2 Session Alerts -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             @if(session('success'))
                 Swal.fire({
                     toast: true,
@@ -532,7 +559,7 @@
             @endif
         });
     </script>
-    
+
     @stack('scripts')
 
     <script>
@@ -555,4 +582,5 @@
         }
     </script>
 </body>
+
 </html>
