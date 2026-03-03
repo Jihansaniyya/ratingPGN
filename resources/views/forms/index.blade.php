@@ -2,6 +2,66 @@
 
 @section('title', 'Data Formulir Pelanggan')
 
+@push('styles')
+<style>
+    /* Card shadow seperti dashboard */
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    /* Hover effect pada baris tabel */
+    .table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    /* Dropdown menu yang lebih bagus */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+    .dropdown-item {
+        padding: 8px 16px;
+        transition: background-color 0.15s ease;
+    }
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+    
+    /* Badge yang bisa diklik */
+    .badge {
+        cursor: default;
+        transition: transform 0.15s ease;
+    }
+    .badge:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Button hover */
+    .btn {
+        transition: all 0.15s ease;
+    }
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+    
+    /* Input focus */
+    .form-control:focus, .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 2px rgba(78, 115, 223, 0.15);
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="page-header">
     <h1 class="page-title">
@@ -89,26 +149,24 @@
                     <input type="date" name="end_date" class="form-control form-control-sm"
                         value="{{ request('end_date') }}" title="Tanggal Akhir" style="width: 140px;">
 
-                    <!-- tombol terapkan filter -->
                     <button type="submit" class="btn btn-sm btn-primary" title="Terapkan Filter">
                         <i class="fas fa-check me-1"></i> Terapkan
                     </button>
 
                     @if(request('filter') || request('search') || request('start_date') || request('end_date'))
-                        <a href="{{ route('forms.index') }}" class="btn btn-sm btn-outline-secondary" title="Atur Ulang">
+                        <a href="{{ route('forms.index') }}" class="btn btn-sm btn-outline-secondary" title="Reset">
                             <i class="fas fa-times"></i>
                         </a>
                     @endif
                 </div>
             </div>
-            
         </form>
     </div>
     <div class="card-body p-0">
         @if(request('filter') || request('start_date') || request('end_date'))
             <div class="bg-light border-bottom px-3 py-2 small">
                 <i class="fas fa-filter me-2 text-secondary"></i>
-                Penyaringan:
+                Filter aktif:
                 @if(request('filter'))
                     <span class="badge bg-secondary me-1">
                         @if(request('filter') == 'tidak_puas') Tidak Puas
@@ -118,7 +176,7 @@
                     </span>
                 @endif
                 @if(request('start_date'))
-                    <span class="badge bg-secondary me-1">Mulai: {{ \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') }}</span>
+                    <span class="badge bg-secondary me-1">Dari: {{ \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') }}</span>
                 @endif
                 @if(request('end_date'))
                     <span class="badge bg-secondary">Sampai: {{ \Carbon\Carbon::parse(request('end_date'))->format('d/m/Y') }}</span>
@@ -136,7 +194,7 @@
                         <th class="text-center">Penilaian</th>
                         <th>Petugas</th>
                         <th>Tanggal</th>
-                        <th class="text-center" style="width: 80px;">Tindakan</th>
+                        <th class="text-center" style="width: 80px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -168,25 +226,25 @@
                         </td>
                         <td class="text-center">
                             <div class="dropdown">
-                                <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; color: #6c757d;">
+                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="{{ route('forms.show', $form) }}">
-                                            <i class="fas fa-eye me-2 text-primary"></i> Lihat Detail
+                                            <i class="fas fa-eye me-2 text-primary"></i> Lihat
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('forms.pdf', $form) }}" target="_blank">
-                                            <i class="fas fa-file-pdf me-2 text-danger"></i> Unduh PDF
+                                            <i class="fas fa-file-pdf me-2 text-danger"></i> PDF
                                         </a>
                                     </li>
                                     @if($form->user_id == auth()->id())
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item" href="{{ route('forms.edit', $form) }}">
-                                            <i class="fas fa-edit me-2 text-warning"></i> Edit Form
+                                            <i class="fas fa-edit me-2 text-warning"></i> Edit
                                         </a>
                                     </li>
                                     @endif
@@ -212,8 +270,8 @@
                         <td colspan="7" class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
                             <p class="text-muted mb-3">Belum ada data formulir</p>
-                            <a href="{{ route('forms.create') }}" class="btn btn-dark btn-sm">
-                                <i class="fas fa-plus me-1"></i> Buat Formulir Pertama
+                            <a href="{{ route('forms.create') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i> Buat Formulir Baru
                             </a>
                         </td>
                     </tr>

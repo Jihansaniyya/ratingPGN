@@ -1,5 +1,27 @@
 <?php $__env->startSection('title', 'Daftar Petugas'); ?>
 
+<?php $__env->startPush('styles'); ?>
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .table tbody tr:hover td {
+        background-color: #f8f9fc;
+    }
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startSection('content'); ?>
 <div class="page-header">
     <h1 class="page-title">
