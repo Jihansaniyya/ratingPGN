@@ -11,7 +11,7 @@
         </div>
         <div class="footer-right text-muted small">
             <p class="mb-0">
-                &copy; {{ date('Y') }} Gasnet. Hak Cipta Dilindungi Undang-Undang.
+                &copy; <?php echo e(date('Y')); ?> Gasnet. Hak Cipta Dilindungi Undang-Undang.
             </p>
         </div>
     </div>
@@ -44,3 +44,4 @@
         }
     }
 </style>
+<?php /**PATH /Users/gzaaa19/ratingPGN/resources/views/layouts/footer.blade.php ENDPATH**/ ?>

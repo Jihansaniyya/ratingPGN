@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $form->customer->customer_name }} - Formulir Kunjungan
-        {{ $form->form_date ? $form->form_date->format('d-m-Y') : now()->format('d-m-Y') }}</title>
-    <link rel="icon" href="{{ asset('images/logoGASNET.png') }}" type="image/png">
+    <title><?php echo e($form->customer->customer_name); ?> - Formulir Kunjungan
+        <?php echo e($form->form_date ? $form->form_date->format('d-m-Y') : now()->format('d-m-Y')); ?></title>
+    <link rel="icon" href="<?php echo e(asset('images/logoGASNET.png')); ?>" type="image/png">
     <style>
         * {
             margin: 0;
@@ -374,18 +374,18 @@
         <!-- Kop Surat dengan Logo -->
         <div class="kop-surat">
             <div class="kop-logo">
-                @php
+                <?php
                     $logoPath = public_path('images/logoGASNET.png');
                     $logoData = '';
                     if (file_exists($logoPath)) {
                         $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
                     }
-                @endphp
-                @if($logoData)
-                    <img src="{{ $logoData }}" alt="Logo Gasnet">
-                @else
-                    <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo Gasnet">
-                @endif
+                ?>
+                <?php if($logoData): ?>
+                    <img src="<?php echo e($logoData); ?>" alt="Logo Gasnet">
+                <?php else: ?>
+                    <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Logo Gasnet">
+                <?php endif; ?>
             </div>
             <div class="kop-text">
                 <h1>PT TELEMEDIA DINAMIKA SARANA</h1>
@@ -396,7 +396,7 @@
         </div>
 
         <!-- Nomor Surat -->
-        @php
+        <?php
             $bulanRomawi = [
                 1 => 'I',
                 2 => 'II',
@@ -419,7 +419,7 @@
             $tahun = $form->form_date
                 ? $form->form_date->format('Y')
                 : now()->format('Y');
-        @endphp
+        ?>
 
         <div style="text-align: right; margin-bottom: 10px; font-size: 10px;">
             <table style="margin-right: auto;">
@@ -427,7 +427,8 @@
                     <td style="padding: 2px 5px;">Nomor</td>
                     <td style="padding: 2px 5px;">:</td>
                     <td style="padding: 2px 5px; font-weight: bold;">
-                        {{ sprintf('%03d', $form->id) }}/OSC-GASNET/{{ $bulanRomawi[$bulan] }}/{{ $tahun }}
+                        <?php echo e(sprintf('%03d', $form->id)); ?>/OSC-GASNET/<?php echo e($bulanRomawi[$bulan]); ?>/<?php echo e($tahun); ?>
+
                     </td>
                 </tr>
 
@@ -435,7 +436,8 @@
                     <td style="padding: 2px 5px;">Tanggal</td>
                     <td style="padding: 2px 5px;">:</td>
                     <td style="padding: 2px 5px;">
-                        {{ $form->form_date ? $form->form_date->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
+                        <?php echo e($form->form_date ? $form->form_date->translatedFormat('d F Y') : now()->translatedFormat('d F Y')); ?>
+
                     </td>
                 </tr>
                 <tr>
@@ -451,33 +453,33 @@
             <table class="info-table">
                 <tr>
                     <td class="label">Customer Name</td>
-                    <td>: {{ $form->customer->customer_name }}</td>
+                    <td>: <?php echo e($form->customer->customer_name); ?></td>
                 </tr>
                 <tr>
                     <td class="label">CID</td>
-                    <td>: {{ $form->customer->cid ?? '-' }}</td>
+                    <td>: <?php echo e($form->customer->cid ?? '-'); ?></td>
                 </tr>
                 <tr>
                     <td class="label">Address</td>
-                    <td>: {{ $form->customer->alamat_lengkap }}, {{ $form->customer->kelurahan }},
-                        {{ $form->customer->kecamatan }}, {{ $form->customer->kota_kabupaten }},
-                        {{ $form->customer->provinsi }}</td>
+                    <td>: <?php echo e($form->customer->alamat_lengkap); ?>, <?php echo e($form->customer->kelurahan); ?>,
+                        <?php echo e($form->customer->kecamatan); ?>, <?php echo e($form->customer->kota_kabupaten); ?>,
+                        <?php echo e($form->customer->provinsi); ?></td>
                 </tr>
                 <tr>
                     <td class="label">Layanan / Service</td>
-                    <td>: {{ $form->customer->layanan_service }}</td>
+                    <td>: <?php echo e($form->customer->layanan_service); ?></td>
                 </tr>
                 <tr>
                     <td class="label">Kapasitas / Capacity</td>
-                    <td>: {{ $form->customer->kapasitas_capacity }}</td>
+                    <td>: <?php echo e($form->customer->kapasitas_capacity); ?></td>
                 </tr>
                 <tr>
                     <td class="label">No. Telp (PIC)</td>
-                    <td>: {{ $form->customer->no_telp_pic }}</td>
+                    <td>: <?php echo e($form->customer->no_telp_pic); ?></td>
                 </tr>
                 <tr>
                     <td class="label">E-mail</td>
-                    <td>: {{ $form->customer->email }}</td>
+                    <td>: <?php echo e($form->customer->email); ?></td>
                 </tr>
             </table>
         </div>
@@ -496,14 +498,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($form->maintenanceDevices as $index => $device)
+                    <?php $__empty_1 = true; $__currentLoopData = $form->maintenanceDevices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $device): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
-                            <td style="text-align: center;">{{ $index + 1 }}</td>
-                            <td>{{ $device->device_name }}</td>
-                            <td>{{ $device->serial_number }}</td>
+                            <td style="text-align: center;"><?php echo e($index + 1); ?></td>
+                            <td><?php echo e($device->device_name); ?></td>
+                            <td><?php echo e($device->serial_number); ?></td>
                             <td style="text-align: center;">
-                                @if($device->product_photo)
-                                    @php
+                                <?php if($device->product_photo): ?>
+                                    <?php
                                         $photoPath = storage_path('app/public/' . $device->product_photo);
                                         $photoData = '';
                                         if (file_exists($photoPath)) {
@@ -511,19 +513,19 @@
                                             $mimeType = $extension === 'png' ? 'image/png' : 'image/jpeg';
                                             $photoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($photoPath));
                                         }
-                                    @endphp
-                                    @if($photoData)
-                                        <img src="{{ $photoData }}" alt="Foto Produk" style="max-width: 80px; max-height: 60px;">
-                                    @else
+                                    ?>
+                                    <?php if($photoData): ?>
+                                        <img src="<?php echo e($photoData); ?>" alt="Foto Produk" style="max-width: 80px; max-height: 60px;">
+                                    <?php else: ?>
                                         <span style="color: #999;">-</span>
-                                    @endif
-                                @else
+                                    <?php endif; ?>
+                                <?php else: ?>
                                     <span style="color: #999;">-</span>
-                                @endif
+                                <?php endif; ?>
                             </td>
-                            <td>{{ $device->keterangan ?? '-' }}</td>
+                            <td><?php echo e($device->keterangan ?? '-'); ?></td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td style="text-align: center;">1</td>
                             <td>-</td>
@@ -531,7 +533,7 @@
                             <td style="text-align: center;">-</td>
                             <td>-</td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -546,33 +548,33 @@
                     <td>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_survey ? 'checked' : '' }}">
-                                    {{ $form->activity_survey ? '✓' : '' }}</div>
+                                <div class="checkbox <?php echo e($form->activity_survey ? 'checked' : ''); ?>">
+                                    <?php echo e($form->activity_survey ? '✓' : ''); ?></div>
                                 <span>Survey</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_activation ? 'checked' : '' }}">
-                                    {{ $form->activity_activation ? '✓' : '' }}</div>
+                                <div class="checkbox <?php echo e($form->activity_activation ? 'checked' : ''); ?>">
+                                    <?php echo e($form->activity_activation ? '✓' : ''); ?></div>
                                 <span>Activation</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_upgrade ? 'checked' : '' }}">
-                                    {{ $form->activity_upgrade ? '✓' : '' }}</div>
+                                <div class="checkbox <?php echo e($form->activity_upgrade ? 'checked' : ''); ?>">
+                                    <?php echo e($form->activity_upgrade ? '✓' : ''); ?></div>
                                 <span>Upgrade</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_downgrade ? 'checked' : '' }}">
-                                    {{ $form->activity_downgrade ? '✓' : '' }}</div>
+                                <div class="checkbox <?php echo e($form->activity_downgrade ? 'checked' : ''); ?>">
+                                    <?php echo e($form->activity_downgrade ? '✓' : ''); ?></div>
                                 <span>Downgrade</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_troubleshoot ? 'checked' : '' }}">
-                                    {{ $form->activity_troubleshoot ? '✓' : '' }}</div>
+                                <div class="checkbox <?php echo e($form->activity_troubleshoot ? 'checked' : ''); ?>">
+                                    <?php echo e($form->activity_troubleshoot ? '✓' : ''); ?></div>
                                 <span>Troubleshoot</span>
                             </div>
                             <div class="checkbox-item">
-                                <div class="checkbox {{ $form->activity_preventive_maintenance ? 'checked' : '' }}">
-                                    {{ $form->activity_preventive_maintenance ? '✓' : '' }}</div>
+                                <div class="checkbox <?php echo e($form->activity_preventive_maintenance ? 'checked' : ''); ?>">
+                                    <?php echo e($form->activity_preventive_maintenance ? '✓' : ''); ?></div>
                                 <span>Preventive Maintenance</span>
                             </div>
                         </div>
@@ -586,7 +588,7 @@
                     <td>:</td>
                 </tr>
             </table>
-            <div class="text-area">{{ $form->complaint ?: '-' }}</div>
+            <div class="text-area"><?php echo e($form->complaint ?: '-'); ?></div>
 
             <table class="info-table">
                 <tr>
@@ -594,7 +596,7 @@
                     <td>:</td>
                 </tr>
             </table>
-            <div class="text-area">{{ $form->action ?: '-' }}</div>
+            <div class="text-area"><?php echo e($form->action ?: '-'); ?></div>
         </div>
 
         <!-- Assessment -->
@@ -606,20 +608,20 @@
                         <td>
                             <div class="assessment-options">
                                 <div
-                                    class="assessment-item {{ $form->assessment == 'tidak_puas' ? 'active-tidak-puas' : '' }}">
-                                    <div class="checkbox {{ $form->assessment == 'tidak_puas' ? 'checked' : '' }}">
-                                        {{ $form->assessment == 'tidak_puas' ? '✓' : '' }}</div>
+                                    class="assessment-item <?php echo e($form->assessment == 'tidak_puas' ? 'active-tidak-puas' : ''); ?>">
+                                    <div class="checkbox <?php echo e($form->assessment == 'tidak_puas' ? 'checked' : ''); ?>">
+                                        <?php echo e($form->assessment == 'tidak_puas' ? '✓' : ''); ?></div>
                                     <span>Tidak Puas</span>
                                 </div>
-                                <div class="assessment-item {{ $form->assessment == 'puas' ? 'active-puas' : '' }}">
-                                    <div class="checkbox {{ $form->assessment == 'puas' ? 'checked' : '' }}">
-                                        {{ $form->assessment == 'puas' ? '✓' : '' }}</div>
+                                <div class="assessment-item <?php echo e($form->assessment == 'puas' ? 'active-puas' : ''); ?>">
+                                    <div class="checkbox <?php echo e($form->assessment == 'puas' ? 'checked' : ''); ?>">
+                                        <?php echo e($form->assessment == 'puas' ? '✓' : ''); ?></div>
                                     <span>Puas</span>
                                 </div>
                                 <div
-                                    class="assessment-item {{ $form->assessment == 'sangat_puas' ? 'active-sangat-puas' : '' }}">
-                                    <div class="checkbox {{ $form->assessment == 'sangat_puas' ? 'checked' : '' }}">
-                                        {{ $form->assessment == 'sangat_puas' ? '✓' : '' }}</div>
+                                    class="assessment-item <?php echo e($form->assessment == 'sangat_puas' ? 'active-sangat-puas' : ''); ?>">
+                                    <div class="checkbox <?php echo e($form->assessment == 'sangat_puas' ? 'checked' : ''); ?>">
+                                        <?php echo e($form->assessment == 'sangat_puas' ? '✓' : ''); ?></div>
                                     <span>Sangat Puas</span>
                                 </div>
                             </div>
@@ -632,7 +634,8 @@
         <!-- Date and Location -->
         <div
             style="text-align: right; margin: 10px 0 8px 0; font-style: italic; font-weight: bold; color: #1a5276; font-size: 10px;">
-            {{ $form->location }}, {{ $form->form_date ? $form->form_date->format('d F Y') : '' }}
+            <?php echo e($form->location); ?>, <?php echo e($form->form_date ? $form->form_date->format('d F Y') : ''); ?>
+
         </div>
 
         <!-- Signature -->
@@ -643,13 +646,13 @@
                         <div class="title">Pihak Kedua,</div>
                         <div style="height: 14px;">&nbsp;</div>
                         <div style="height: 80px; display: flex; align-items: center; justify-content: center;">
-                            @if($form->signature_second_party)
-                                <img src="{{ $form->signature_second_party }}" alt="Signature"
+                            <?php if($form->signature_second_party): ?>
+                                <img src="<?php echo e($form->signature_second_party); ?>" alt="Signature"
                                     style="max-height: 70px; max-width: 180px;">
-                            @endif
+                            <?php endif; ?>
                         </div>
                         <div style="border-top: 1px solid #1a5276; padding-top: 5px; margin-top: 5px; font-size: 10px;">
-                            <strong>( {{ $form->second_party_name ?: '________________' }} )</strong>
+                            <strong>( <?php echo e($form->second_party_name ?: '________________'); ?> )</strong>
                         </div>
                     </div>
                 </td>
@@ -658,13 +661,13 @@
                         <div class="title">Pihak Pertama,</div>
                         <div class="company">PT TELEMEDIA DINAMIKA SARANA</div>
                         <div style="height: 80px; display: flex; align-items: center; justify-content: center;">
-                            @if($form->signature_first_party)
-                                <img src="{{ $form->signature_first_party }}" alt="Signature"
+                            <?php if($form->signature_first_party): ?>
+                                <img src="<?php echo e($form->signature_first_party); ?>" alt="Signature"
                                     style="max-height: 70px; max-width: 180px;">
-                            @endif
+                            <?php endif; ?>
                         </div>
                         <div style="border-top: 1px solid #1a5276; padding-top: 5px; margin-top: 5px; font-size: 10px;">
-                            <strong>( {{ $form->first_party_name ?: '________________' }} )</strong>
+                            <strong>( <?php echo e($form->first_party_name ?: '________________'); ?> )</strong>
                         </div>
                     </div>
                 </td>
@@ -673,27 +676,27 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Dokumen ini dicetak dari Sistem Rating Customer Gasnet | © {{ date('Y') }} All Rights Reserved</p>
+            <p>Dokumen ini dicetak dari Sistem Rating Customer Gasnet | © <?php echo e(date('Y')); ?> All Rights Reserved</p>
         </div>
     </div>
 
     <script>
         // Set document title untuk nama file PDF saat save
         (function () {
-            var customerName = @json($form->customer->customer_name);
-            var formDate = '{{ $form->form_date ? $form->form_date->format("d-m-Y") : now()->format("d-m-Y") }}';
+            var customerName = <?php echo json_encode($form->customer->customer_name, 15, 512) ?>;
+            var formDate = '<?php echo e($form->form_date ? $form->form_date->format("d-m-Y") : now()->format("d-m-Y")); ?>';
             var pdfTitle = customerName + ' - Formulir ' + formDate;
             document.title = pdfTitle;
         })();
 
-        @if(request('print'))
+        <?php if(request('print')): ?>
             window.onload = function () {
                 setTimeout(function () {
                     window.print();
                 }, 500);
             }
-        @endif
+        <?php endif; ?>
     </script>
 </body>
 
-</html>
+</html><?php /**PATH /Users/gzaaa19/ratingPGN/resources/views/forms/pdf.blade.php ENDPATH**/ ?>

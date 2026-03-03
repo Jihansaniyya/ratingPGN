@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Assessment Customer - PT TELEMEDIA DINAMIKA SARANA</title>
-    <link rel="icon" href="{{ asset('images/logoGASNET.png') }}" type="image/png">
+    <link rel="icon" href="<?php echo e(asset('images/logoGASNET.png')); ?>" type="image/png">
     <style>
         * {
             margin: 0;
@@ -359,18 +359,18 @@
         <!-- Kop Surat Resmi -->
         <div class="kop-surat">
             <div class="kop-logo">
-                @php
+                <?php
                     $logoPath = public_path('images/logoGASNET.png');
                     $logoData = '';
                     if (file_exists($logoPath)) {
                         $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
                     }
-                @endphp
-                @if($logoData)
-                    <img src="{{ $logoData }}" alt="Logo Gasnet">
-                @else
-                    <img src="{{ asset('images/logoGASNET.png') }}" alt="Logo Gasnet">
-                @endif
+                ?>
+                <?php if($logoData): ?>
+                    <img src="<?php echo e($logoData); ?>" alt="Logo Gasnet">
+                <?php else: ?>
+                    <img src="<?php echo e(asset('images/logoGASNET.png')); ?>" alt="Logo Gasnet">
+                <?php endif; ?>
             </div>
             <div class="kop-text">
                 <h1>PT TELEMEDIA DINAMIKA SARANA</h1>
@@ -381,7 +381,7 @@
         </div>
 
         <!-- Nomor Surat -->
-        @php
+        <?php
             $bulanRomawi = [
                 1 => 'I',
                 2 => 'II',
@@ -400,7 +400,7 @@
             $bulan = (int) now()->format('m');
             $tahun = now()->format('Y');
             $nomorUrut = $forms->first() ? $forms->first()->id : 1;
-        @endphp
+        ?>
 
         <div style="text-align: right; margin-bottom: 10px; font-size: 10pt;">
             <table style="margin-right: auto;">
@@ -408,12 +408,12 @@
                     <td style="padding: 2px 5px;">Nomor</td>
                     <td style="padding: 2px 5px;">:</td>
                     <td style="padding: 2px 5px; font-weight: bold;">
-                        {{ sprintf('%03d', $nomorUrut) }}/LAP-GASNET/{{ $bulanRomawi[$bulan] }}/{{ $tahun }}</td>
+                        <?php echo e(sprintf('%03d', $nomorUrut)); ?>/LAP-GASNET/<?php echo e($bulanRomawi[$bulan]); ?>/<?php echo e($tahun); ?></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px 5px;">Tanggal</td>
                     <td style="padding: 2px 5px;">:</td>
-                    <td style="padding: 2px 5px;">{{ now()->translatedFormat('d F Y') }}</td>
+                    <td style="padding: 2px 5px;"><?php echo e(now()->translatedFormat('d F Y')); ?></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px 5px;">Perihal</td>
@@ -450,9 +450,9 @@
                                 Sangat Puas
                             </td>
                             <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;">
-                                {{ $stats['sangat_puas'] }}</td>
+                                <?php echo e($stats['sangat_puas']); ?></td>
                             <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;">
-                                {{ $stats['total'] > 0 ? number_format($stats['sangat_puas'] / $stats['total'] * 100, 1) : 0 }}%
+                                <?php echo e($stats['total'] > 0 ? number_format($stats['sangat_puas'] / $stats['total'] * 100, 1) : 0); ?>%
                             </td>
                         </tr>
                         <tr>
@@ -462,9 +462,9 @@
                                 Puas
                             </td>
                             <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;">
-                                {{ $stats['puas'] }}</td>
+                                <?php echo e($stats['puas']); ?></td>
                             <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;">
-                                {{ $stats['total'] > 0 ? number_format($stats['puas'] / $stats['total'] * 100, 1) : 0 }}%
+                                <?php echo e($stats['total'] > 0 ? number_format($stats['puas'] / $stats['total'] * 100, 1) : 0); ?>%
                             </td>
                         </tr>
                         <tr>
@@ -474,9 +474,9 @@
                                 Tidak Puas
                             </td>
                             <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;">
-                                {{ $stats['tidak_puas'] }}</td>
+                                <?php echo e($stats['tidak_puas']); ?></td>
                             <td style="padding: 8px 10px; border: 1px solid #000; text-align: center;">
-                                {{ $stats['total'] > 0 ? number_format($stats['tidak_puas'] / $stats['total'] * 100, 1) : 0 }}%
+                                <?php echo e($stats['total'] > 0 ? number_format($stats['tidak_puas'] / $stats['total'] * 100, 1) : 0); ?>%
                             </td>
                         </tr>
                         <tr>
@@ -484,7 +484,7 @@
                                 <strong>Total</strong></td>
                             <td
                                 style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: center;">
-                                <strong>{{ $stats['total'] }}</strong></td>
+                                <strong><?php echo e($stats['total']); ?></strong></td>
                             <td
                                 style="padding: 8px 10px; border: 1px solid #000; background: #f0f0f0; text-align: center;">
                                 <strong>100%</strong></td>
@@ -509,35 +509,35 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($forms as $index => $form)
+                <?php $__empty_1 = true; $__currentLoopData = $forms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <tr>
-                        <td class="center">{{ $index + 1 }}</td>
-                        <td class="center">{{ $form->form_date ? $form->form_date->format('d/m/Y') : '-' }}</td>
-                        <td>{{ $form->customer?->customer_name ?? '-' }} ({{ $form->customer?->cid ?? '-' }})</td>
-                        <td>{{ $form->customer?->layanan_service ?? '-' }}</td>
-                        <td class="center">{{ $form->customer?->kapasitas_capacity ?? '-' }}</td>
-                        <td>{{ $form->user->name ?? '-' }}</td>
+                        <td class="center"><?php echo e($index + 1); ?></td>
+                        <td class="center"><?php echo e($form->form_date ? $form->form_date->format('d/m/Y') : '-'); ?></td>
+                        <td><?php echo e($form->customer?->customer_name ?? '-'); ?> (<?php echo e($form->customer?->cid ?? '-'); ?>)</td>
+                        <td><?php echo e($form->customer?->layanan_service ?? '-'); ?></td>
+                        <td class="center"><?php echo e($form->customer?->kapasitas_capacity ?? '-'); ?></td>
+                        <td><?php echo e($form->user->name ?? '-'); ?></td>
                         <td class="center">
-                            @if($form->assessment == 'sangat_puas')
+                            <?php if($form->assessment == 'sangat_puas'): ?>
                                 Sangat Puas
-                            @elseif($form->assessment == 'puas')
+                            <?php elseif($form->assessment == 'puas'): ?>
                                 Puas
-                            @else
+                            <?php else: ?>
                                 Tidak Puas
-                            @endif
+                            <?php endif; ?>
                         </td>
 
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data.</td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
             </tbody>
         </table>
 
         <!-- TTD Section -->
         <div style="margin-top: 30px; page-break-inside: avoid;">
-            <p style="margin: 0 0 15px 0; text-align: right;">Jakarta, {{ now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0 0 15px 0; text-align: right;">Jakarta, <?php echo e(now()->translatedFormat('d F Y')); ?></p>
             <table style="width: 100%;">
                 <tr>
                     <td style="width: 50%; text-align: center; vertical-align: top;">
@@ -554,7 +554,7 @@
                     </td>
                     <td style="text-align: center; padding-top: 60px;">
                         <p style="margin: 0; font-weight: bold; text-decoration: underline;">
-                            {{ auth()->user()->name ?? '____________________' }}</p>
+                            <?php echo e(auth()->user()->name ?? '____________________'); ?></p>
                         <p style="margin: 0; font-size: 9pt;">Staff Administrasi</p>
                     </td>
                 </tr>
@@ -563,7 +563,7 @@
 
         <!-- Catatan Kaki -->
         <div class="catatan-kaki">
-            <p>Dokumen ini dicetak otomatis oleh Sistem Rating Customer Gasnet pada {{ now()->format('d/m/Y H:i') }} WIB
+            <p>Dokumen ini dicetak otomatis oleh Sistem Rating Customer Gasnet pada <?php echo e(now()->format('d/m/Y H:i')); ?> WIB
             </p>
         </div>
     </div>
@@ -574,10 +574,11 @@
 
     <script>
         const statsData = {
-            total: {{ $stats['total'] }},
-            sangat_puas: {{ $stats['sangat_puas'] }},
-            puas: {{ $stats['puas'] }},
-            tidak_puas: {{ $stats['tidak_puas'] }}
+            total: <?php echo e($stats['total']); ?>,
+            sangat_puas: <?php echo e($stats['sangat_puas']); ?>,
+            puas: <?php echo e($stats['puas']); ?>,
+            tidak_puas: <?php echo e($stats['tidak_puas']); ?>
+
         };
 
         const colors = {
@@ -617,4 +618,4 @@
 
 </body>
 
-</html>
+</html><?php /**PATH /Users/gzaaa19/ratingPGN/resources/views/reports/print.blade.php ENDPATH**/ ?>
