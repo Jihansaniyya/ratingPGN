@@ -256,8 +256,8 @@ class OnSiteFormController extends Controller
      */
     public function edit(OnSiteForm $form)
     {
-        // Hanya dapat mengedit form milik sendiri
-        if ($form->user_id !== auth()->id()) {
+        // Hanya dapat mengedit form milik sendiri atau jika user adalah Admin
+        if ($form->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
             return redirect()->route('forms.index')
                 ->with('error', 'Anda hanya dapat mengedit form yang Anda buat sendiri.');
         }
@@ -271,8 +271,8 @@ class OnSiteFormController extends Controller
      */
     public function update(Request $request, OnSiteForm $form)
     {
-        // Hanya dapat mengedit form milik sendiri
-        if ($form->user_id !== auth()->id()) {
+        // Hanya dapat mengedit form milik sendiri atau jika user adalah Admin
+        if ($form->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
             return redirect()->route('forms.index')
                 ->with('error', 'Anda hanya dapat mengedit form yang Anda buat sendiri.');
         }

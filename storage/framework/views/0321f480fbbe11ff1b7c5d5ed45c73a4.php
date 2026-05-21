@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Data Formulir Pelanggan'); ?>
 
-@section('title', 'Data Formulir Pelanggan')
-
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
     /* Card shadow seperti dashboard */
     .card {
@@ -60,19 +58,19 @@
         box-shadow: 0 0 0 2px rgba(78, 115, 223, 0.15);
     }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="page-header">
     <h1 class="page-title">
         <i class="fas fa-clipboard-list"></i>
         Data Formulir Pelanggan
     </h1>
     <div class="d-flex gap-2">
-        <a href="{{ route('reports.print', request()->query()) }}" target="_blank" class="btn btn-outline-secondary">
+        <a href="<?php echo e(route('reports.print', request()->query())); ?>" target="_blank" class="btn btn-outline-secondary">
             <i class="fas fa-print me-1"></i> Cetak Laporan
         </a>
-        <a href="{{ route('forms.create') }}" class="btn btn-sm btn-primary">
+        <a href="<?php echo e(route('forms.create')); ?>" class="btn btn-sm btn-primary">
             <i class="fas fa-plus me-2"></i> Buat Formulir Baru
         </a>
     </div>
@@ -82,7 +80,7 @@
 <div class="card mb-4">
     <div class="card-header">
         <strong>Ringkasan Penilaian</strong>
-        <span class="text-muted ms-2">(Total: {{ $stats['total'] ?? 0 }} data)</span>
+        <span class="text-muted ms-2">(Total: <?php echo e($stats['total'] ?? 0); ?> data)</span>
     </div>
     <div class="card-body">
         <div class="row">
@@ -101,18 +99,18 @@
                     <tbody>
                         <tr>
                             <td><span style="display:inline-block;width:10px;height:10px;background:#27ae60;margin-right:8px;"></span>Sangat Puas</td>
-                            <td class="text-center">{{ $stats['sangat_puas'] ?? 0 }}</td>
-                            <td class="text-center">{{ ($stats['total'] ?? 0) > 0 ? number_format(($stats['sangat_puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0 }}%</td>
+                            <td class="text-center"><?php echo e($stats['sangat_puas'] ?? 0); ?></td>
+                            <td class="text-center"><?php echo e(($stats['total'] ?? 0) > 0 ? number_format(($stats['sangat_puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0); ?>%</td>
                         </tr>
                         <tr>
                             <td><span style="display:inline-block;width:10px;height:10px;background:#f39c12;margin-right:8px;"></span>Puas</td>
-                            <td class="text-center">{{ $stats['puas'] ?? 0 }}</td>
-                            <td class="text-center">{{ ($stats['total'] ?? 0) > 0 ? number_format(($stats['puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0 }}%</td>
+                            <td class="text-center"><?php echo e($stats['puas'] ?? 0); ?></td>
+                            <td class="text-center"><?php echo e(($stats['total'] ?? 0) > 0 ? number_format(($stats['puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0); ?>%</td>
                         </tr>
                         <tr>
                             <td><span style="display:inline-block;width:10px;height:10px;background:#e74c3c;margin-right:8px;"></span>Tidak Puas</td>
-                            <td class="text-center">{{ $stats['tidak_puas'] ?? 0 }}</td>
-                            <td class="text-center">{{ ($stats['total'] ?? 0) > 0 ? number_format(($stats['tidak_puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0 }}%</td>
+                            <td class="text-center"><?php echo e($stats['tidak_puas'] ?? 0); ?></td>
+                            <td class="text-center"><?php echo e(($stats['total'] ?? 0) > 0 ? number_format(($stats['tidak_puas'] ?? 0)/($stats['total'] ?? 1)*100, 1) : 0); ?>%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -124,11 +122,11 @@
 <!-- Filter & Tabel Data -->
 <div class="card">
     <div class="card-header">
-        <form method="GET" action="{{ route('forms.index') }}" class="row g-2 align-items-center">
+        <form method="GET" action="<?php echo e(route('forms.index')); ?>" class="row g-2 align-items-center">
             <div class="col-md-4">
                 <div class="input-group input-group-sm">
                     <input type="text" name="search" id="search-input" class="form-control" 
-                           placeholder="Cari nama pelanggan..." value="{{ request('search') }}" autocomplete="off">
+                           placeholder="Cari nama pelanggan..." value="<?php echo e(request('search')); ?>" autocomplete="off">
                     <button type="submit" class="btn btn-sm btn-primary">
                         <i class="fas fa-search"></i>
                     </button>
@@ -138,51 +136,51 @@
                 <div class="d-flex gap-2 justify-content-end">
                     <select name="filter" class="form-select form-select-sm" style="width: 140px;">
                         <option value="">Semua Penilaian</option>
-                        <option value="tidak_puas" {{ request('filter') == 'tidak_puas' ? 'selected' : '' }}>Tidak Puas</option>
-                        <option value="puas" {{ request('filter') == 'puas' ? 'selected' : '' }}>Puas</option>
-                        <option value="sangat_puas" {{ request('filter') == 'sangat_puas' ? 'selected' : '' }}>Sangat Puas</option>
+                        <option value="tidak_puas" <?php echo e(request('filter') == 'tidak_puas' ? 'selected' : ''); ?>>Tidak Puas</option>
+                        <option value="puas" <?php echo e(request('filter') == 'puas' ? 'selected' : ''); ?>>Puas</option>
+                        <option value="sangat_puas" <?php echo e(request('filter') == 'sangat_puas' ? 'selected' : ''); ?>>Sangat Puas</option>
                     </select>
 
                     <input type="date" name="start_date" class="form-control form-control-sm"
-                        value="{{ request('start_date') }}" title="Tanggal Mulai" style="width: 140px;">
+                        value="<?php echo e(request('start_date')); ?>" title="Tanggal Mulai" style="width: 140px;">
 
                     <input type="date" name="end_date" class="form-control form-control-sm"
-                        value="{{ request('end_date') }}" title="Tanggal Akhir" style="width: 140px;">
+                        value="<?php echo e(request('end_date')); ?>" title="Tanggal Akhir" style="width: 140px;">
 
                     <button type="submit" class="btn btn-sm btn-primary" title="Terapkan Filter">
                         <i class="fas fa-check me-1"></i> Terapkan
                     </button>
 
-                    @if(request('filter') || request('search') || request('start_date') || request('end_date'))
-                        <a href="{{ route('forms.index') }}" class="btn btn-sm btn-outline-secondary" title="Reset">
+                    <?php if(request('filter') || request('search') || request('start_date') || request('end_date')): ?>
+                        <a href="<?php echo e(route('forms.index')); ?>" class="btn btn-sm btn-outline-secondary" title="Reset">
                             <i class="fas fa-times"></i>
                         </a>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </form>
     </div>
     <div class="card-body p-0">
-        @if(request('filter') || request('start_date') || request('end_date'))
+        <?php if(request('filter') || request('start_date') || request('end_date')): ?>
             <div class="bg-light border-bottom px-3 py-2 small">
                 <i class="fas fa-filter me-2 text-secondary"></i>
                 Filter aktif:
-                @if(request('filter'))
+                <?php if(request('filter')): ?>
                     <span class="badge bg-secondary me-1">
-                        @if(request('filter') == 'tidak_puas') Tidak Puas
-                        @elseif(request('filter') == 'puas') Puas
-                        @else Sangat Puas
-                        @endif
+                        <?php if(request('filter') == 'tidak_puas'): ?> Tidak Puas
+                        <?php elseif(request('filter') == 'puas'): ?> Puas
+                        <?php else: ?> Sangat Puas
+                        <?php endif; ?>
                     </span>
-                @endif
-                @if(request('start_date'))
-                    <span class="badge bg-secondary me-1">Dari: {{ \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') }}</span>
-                @endif
-                @if(request('end_date'))
-                    <span class="badge bg-secondary">Sampai: {{ \Carbon\Carbon::parse(request('end_date'))->format('d/m/Y') }}</span>
-                @endif
+                <?php endif; ?>
+                <?php if(request('start_date')): ?>
+                    <span class="badge bg-secondary me-1">Dari: <?php echo e(\Carbon\Carbon::parse(request('start_date'))->format('d/m/Y')); ?></span>
+                <?php endif; ?>
+                <?php if(request('end_date')): ?>
+                    <span class="badge bg-secondary">Sampai: <?php echo e(\Carbon\Carbon::parse(request('end_date'))->format('d/m/Y')); ?></span>
+                <?php endif; ?>
             </div>
-        @endif
+        <?php endif; ?>
         
         <div class="table-responsive">
             <table id="data-table" class="table table-hover align-middle mb-0">
@@ -198,31 +196,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($forms as $index => $form)
+                    <?php $__empty_1 = true; $__currentLoopData = $forms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <tr>
-                        <td class="text-center text-muted">{{ $forms->firstItem() + $index }}</td>
+                        <td class="text-center text-muted"><?php echo e($forms->firstItem() + $index); ?></td>
                         <td>
-                            <div class="fw-semibold">{{ $form->customer?->customer_name ?? '-' }}</div>
-                            <small class="text-muted">{{ $form->customer?->cid ?? '-' }}</small>
+                            <div class="fw-semibold"><?php echo e($form->customer?->customer_name ?? '-'); ?></div>
+                            <small class="text-muted"><?php echo e($form->customer?->cid ?? '-'); ?></small>
                         </td>
                         <td>
-                            <div>{{ $form->customer?->layanan_service ?? '-' }}</div>
-                            <small class="text-muted">{{ $form->customer?->kapasitas_capacity ?? '-' }}</small>
+                            <div><?php echo e($form->customer?->layanan_service ?? '-'); ?></div>
+                            <small class="text-muted"><?php echo e($form->customer?->kapasitas_capacity ?? '-'); ?></small>
                         </td>
                         <td class="text-center">
-                            @if($form->assessment == 'sangat_puas')
+                            <?php if($form->assessment == 'sangat_puas'): ?>
                                 <span class="badge" style="background-color: #27ae60;">Sangat Puas</span>
-                            @elseif($form->assessment == 'puas')
+                            <?php elseif($form->assessment == 'puas'): ?>
                                 <span class="badge" style="background-color: #f39c12;">Puas</span>
-                            @else
+                            <?php else: ?>
                                 <span class="badge" style="background-color: #e74c3c;">Tidak Puas</span>
-                            @endif
+                            <?php endif; ?>
                         </td>
                         <td>
-                            <small class="text-muted">{{ $form->user->name ?? '-' }}</small>
+                            <small class="text-muted"><?php echo e($form->user->name ?? '-'); ?></small>
                         </td>
                         <td>
-                            <small>{{ $form->form_date ? $form->form_date->format('d/m/Y') : $form->created_at->format('d/m/Y') }}</small>
+                            <small><?php echo e($form->form_date ? $form->form_date->format('d/m/Y') : $form->created_at->format('d/m/Y')); ?></small>
                         </td>
                         <td class="text-center">
                             <div class="dropdown">
@@ -231,80 +229,82 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('forms.show', $form) }}">
+                                        <a class="dropdown-item" href="<?php echo e(route('forms.show', $form)); ?>">
                                             <i class="fas fa-eye me-2 text-primary"></i> Lihat
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('forms.pdf', $form) }}" target="_blank">
+                                        <a class="dropdown-item" href="<?php echo e(route('forms.pdf', $form)); ?>" target="_blank">
                                             <i class="fas fa-file-pdf me-2 text-danger"></i> PDF
                                         </a>
                                     </li>
-                                    @if($form->user_id == auth()->id() || auth()->user()->isAdmin())
+                                    <?php if($form->user_id == auth()->id() || auth()->user()->isAdmin()): ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('forms.edit', $form) }}">
+                                        <a class="dropdown-item" href="<?php echo e(route('forms.edit', $form)); ?>">
                                             <i class="fas fa-edit me-2 text-warning"></i> Edit
                                         </a>
                                     </li>
-                                    @endif
-                                    @if(auth()->user()->isAdmin())
+                                    <?php endif; ?>
+                                    <?php if(auth()->user()->isAdmin()): ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); confirmDelete({{ $form->id }})">
+                                        <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); confirmDelete(<?php echo e($form->id); ?>)">
                                             <i class="fas fa-trash me-2"></i> Hapus
                                         </a>
                                     </li>
-                                    @endif
+                                    <?php endif; ?>
                                 </ul>
                             </div>
-                            <form id="delete-form-{{ $form->id }}" action="{{ route('forms.destroy', $form) }}" 
+                            <form id="delete-form-<?php echo e($form->id); ?>" action="<?php echo e(route('forms.destroy', $form)); ?>" 
                                   method="POST" style="display: none;">
-                                @csrf
-                                @method('DELETE')
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
                             </form>
                         </td>
                     </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="7" class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
                             <p class="text-muted mb-3">Belum ada data formulir</p>
-                            <a href="{{ route('forms.create') }}" class="btn btn-primary btn-sm">
+                            <a href="<?php echo e(route('forms.create')); ?>" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus me-1"></i> Buat Formulir Baru
                             </a>
                         </td>
                     </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
     
-    @if($forms->count() > 0)
+    <?php if($forms->count() > 0): ?>
     <div class="card-footer bg-white border-top">
         <div class="d-flex justify-content-between align-items-center">
             <small class="text-muted">
-                Menampilkan {{ $forms->firstItem() ?? 0 }} - {{ $forms->lastItem() ?? 0 }} dari {{ $forms->total() }} data
+                Menampilkan <?php echo e($forms->firstItem() ?? 0); ?> - <?php echo e($forms->lastItem() ?? 0); ?> dari <?php echo e($forms->total()); ?> data
             </small>
-            @if($forms->hasPages())
-                {{ $forms->withQueryString()->links() }}
-            @endif
+            <?php if($forms->hasPages()): ?>
+                <?php echo e($forms->withQueryString()->links()); ?>
+
+            <?php endif; ?>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const statsData = {
-            total: {{ $stats['total'] ?? 0 }},
-            sangat_puas: {{ $stats['sangat_puas'] ?? 0 }},
-            puas: {{ $stats['puas'] ?? 0 }},
-            tidak_puas: {{ $stats['tidak_puas'] ?? 0 }}
+            total: <?php echo e($stats['total'] ?? 0); ?>,
+            sangat_puas: <?php echo e($stats['sangat_puas'] ?? 0); ?>,
+            puas: <?php echo e($stats['puas'] ?? 0); ?>,
+            tidak_puas: <?php echo e($stats['tidak_puas'] ?? 0); ?>
+
         };
         
         const ctx = document.getElementById('formAssessmentChart').getContext('2d');
@@ -387,4 +387,6 @@
         });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\ACER\JihanCantik\Documents\ratingPGN\resources\views/forms/index.blade.php ENDPATH**/ ?>
